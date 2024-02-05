@@ -16,4 +16,6 @@ class ETERNALQUEST_API AEQGameMode : public AGameModeBase
 	
 public:
 	AEQGameMode();
+
+	//Test
 };
