@@ -88,8 +88,8 @@ void UEQBaseFSM::TickMove()
 		ChaseSpeed = Self->GetCharacterMovement()->MaxWalkSpeed  = 450.f;
 		Self->GetCharacterMovement()->MaxWalkSpeed = ChaseSpeed;
 		AI->MoveToLocation(Destination);
-		CurrentTime = AttackTime;
 		SetState(EMonsterState::Attack);
+		CurrentTime = AttackTime;
 	}
 	else
 	{
@@ -108,21 +108,7 @@ void UEQBaseFSM::TickMove()
 
 void UEQBaseFSM::TickAttack()
 {
-	CurrentTime += GetWorld()->GetDeltaSeconds();
-	float Dist = FVector::Dist(Target->GetActorLocation(),Self->GetActorLocation());
-	if(CurrentTime>AttackTime)
-	{
-		if(Dist > AttackRange)
-		{
-			
-			SetState(EMonsterState::Move);
-		}
-		else
-		{
-			UE_LOG(LogTemp,Warning,TEXT("Attack!!!!!!!!!!!"));
-			SetState(EMonsterState::Move);
-		}
-	}
+	
 }
 
 
