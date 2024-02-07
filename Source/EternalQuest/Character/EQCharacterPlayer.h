@@ -12,6 +12,9 @@ class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
 class UInputComponent;
+class UEQComponentMove;
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FInputSignature, UInputComponent*)
 
 UCLASS()
 class ETERNALQUEST_API AEQCharacterPlayer : public AEQCharacterBase
@@ -20,15 +23,18 @@ class ETERNALQUEST_API AEQCharacterPlayer : public AEQCharacterBase
 	
 public:
 	AEQCharacterPlayer();
+	FInputSignature InputSignature;
 
 public:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+	virtual void Jump() override;
+	virtual void StopJumping() override;
 
 protected:
 	virtual void BeginPlay() override;
 
 // Camera
-protected:
+public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<USpringArmComponent> CameraBoom;
 
@@ -37,22 +43,13 @@ protected:
 
 // Input
 protected:
-	void Move(const FInputActionValue& Value);
-	void Turn(const FInputActionValue& Value);
-	void Look(const FInputActionValue& Value);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
-	TObjectPtr<UInputAction> JumpAction;
+public:
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UEQComponentMove> MoveComp;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
-	TObjectPtr<UInputAction> MoveAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
-	TObjectPtr<UInputAction> TurnAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
-	TObjectPtr<UInputAction> LookAction;
 };
