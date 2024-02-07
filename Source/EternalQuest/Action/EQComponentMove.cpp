@@ -88,13 +88,13 @@ void UEQComponentMove::Look(const FInputActionValue& Value)
 	
 	const float LookAxis = Value.Get<float>();
 	
-	if (Player->CameraBoom->TargetArmLength >= 800 && LookAxis < 0) return;
-	if (Player->CameraBoom->TargetArmLength <= 200 && LookAxis > 0) return;
+	if (Player->GetCameraBoom()->TargetArmLength >= 800 && LookAxis < 0) return;
+	if (Player->GetCameraBoom()->TargetArmLength <= 200 && LookAxis > 0) return;
 
 	if (LookAxis > 0)
-		Player->CameraBoom->TargetArmLength = FMath::FInterpTo(Player->CameraBoom->TargetArmLength, Player->CameraBoom->TargetArmLength - 30.0f, GetWorld()->GetDeltaSeconds(), 150);
+		Player->GetCameraBoom()->TargetArmLength = FMath::FInterpTo(Player->GetCameraBoom()->TargetArmLength, Player->GetCameraBoom()->TargetArmLength - 30.0f, GetWorld()->GetDeltaSeconds(), 150);
 	else
-		Player->CameraBoom->TargetArmLength = FMath::FInterpTo(Player->CameraBoom->TargetArmLength, Player->CameraBoom->TargetArmLength + 30.0f, GetWorld()->GetDeltaSeconds(), 150);
+		Player->GetCameraBoom()->TargetArmLength = FMath::FInterpTo(Player->GetCameraBoom()->TargetArmLength, Player->GetCameraBoom()->TargetArmLength + 30.0f, GetWorld()->GetDeltaSeconds(), 150);
 }
 
 void UEQComponentMove::Jump(const FInputActionValue& Value)

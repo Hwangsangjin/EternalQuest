@@ -12,9 +12,22 @@ class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
 class UInputComponent;
+class UBoxComponent;
 class UEQComponentMove;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FInputSignature, UInputComponent*)
+
+UENUM(BlueprintType)
+enum class EJobType : uint8
+{
+	EJT_Mage,
+	EJT_Knight,
+	EJT_Priest,
+	EJT_Rogue,
+	EJT_Warrior,
+
+	MAX
+};
 
 UCLASS()
 class ETERNALQUEST_API AEQCharacterPlayer : public AEQCharacterBase
@@ -23,6 +36,7 @@ class ETERNALQUEST_API AEQCharacterPlayer : public AEQCharacterBase
 	
 public:
 	AEQCharacterPlayer();
+
 	FInputSignature InputSignature;
 
 public:
@@ -35,21 +49,39 @@ protected:
 
 // Camera
 public:
+	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<USpringArmComponent> CameraBoom;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UCameraComponent> FollowCamera;
 
+// Interaction Box
+public:
+	FORCEINLINE UBoxComponent* GetInteractionBox() const { return InteractionBox; }
+
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interaction, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UBoxComponent> InteractionBox;
+
 // Input
 protected:
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
 
-public:
+// Component
+protected:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UEQComponentMove> MoveComp;
 
+// Job Type
+public:
+	void SetJobType(EJobType InJobType);
 
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Job, Meta = (AllowPrivateAccess = true))
+	EJobType JobType;
 };
