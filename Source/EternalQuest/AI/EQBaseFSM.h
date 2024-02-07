@@ -58,7 +58,7 @@ public:
 
 protected:
 	void TickIdle();
-	void TickMove();
+	virtual void TickMove();
 	virtual void TickAttack();
 	virtual void InitializeComponent() override;
 
