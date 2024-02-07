@@ -10,6 +10,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Navigation/PathFollowingComponent.h"
 #include "AIController.h"
+#include "Components/ArrowComponent.h"
+#include "Projectile/EQSpiderWeb.h"
 
 void UEQRangerFSM::BeginPlay()
 {
@@ -87,4 +89,12 @@ void UEQRangerFSM::TickAttack()
 			
 		}
 	}
+}
+
+void UEQRangerFSM::ShootWeb()
+{
+	Super::ShootWeb();
+	
+	FTransform ShootPoint = Self->GetArrowComponent()->GetComponentTransform();
+	GetWorld()->SpawnActor<AEQSpiderWeb>(WebFactory,ShootPoint);
 }

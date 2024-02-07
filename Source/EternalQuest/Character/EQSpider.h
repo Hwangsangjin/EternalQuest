@@ -15,4 +15,5 @@ class ETERNALQUEST_API AEQSpider : public AEQNormalEnemy
 	GENERATED_BODY()
 
 	AEQSpider();
+	
 };

@@ -7,6 +7,7 @@
 #include "EQRangerFSM.generated.h"
 
 
+class AEQSpiderWeb;
 /**
  * 
  */
@@ -23,5 +24,8 @@ public:
 	UPROPERTY(EditAnywhere,Category="MonsterAnim")
 	UAnimMontage* AnimMontage;
 
-	
+	virtual void ShootWeb() override;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AEQSpiderWeb> WebFactory;
 };

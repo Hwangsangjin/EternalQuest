@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 #pragma once
 
@@ -13,5 +13,8 @@ UCLASS()
 class ETERNALQUEST_API UEQEnemyAnim : public UEQAnimInstance
 {
 	GENERATED_BODY()
-	
+
+
+	UFUNCTION()
+	void AnimNotify_ShootWeb();
 };

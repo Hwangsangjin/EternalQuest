@@ -3,6 +3,7 @@
 
 #include "Character/EQSpider.h"
 
+#include "Components/ArrowComponent.h"
 #include "Components/CapsuleComponent.h"
 
 AEQSpider::AEQSpider()
@@ -16,4 +17,6 @@ AEQSpider::AEQSpider()
 		GetCapsuleComponent()->SetCapsuleHalfHeight(74.f);
 		GetCapsuleComponent()->SetCapsuleRadius(70);
 	}
+
+	
 }
