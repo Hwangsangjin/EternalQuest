@@ -47,7 +47,7 @@ public:
 	UPROPERTY(EditAnywhere,Category="Monster")
 	ACharacter* Target;
 
-public:
+private:
 	float CurrentTime = 0;
 	float AttackTime = 2.0f;
 	float AttackRange = 300.f;
@@ -58,7 +58,7 @@ public:
 protected:
 	void TickIdle();
 	void TickMove();
-	void TickAttack();
+	virtual void TickAttack();
 
 public:
 	void SetState(EMonsterState Next);
