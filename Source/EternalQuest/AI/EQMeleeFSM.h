@@ -6,6 +6,7 @@
 #include "AI/EQBaseFSM.h"
 #include "EQMeleeFSM.generated.h"
 
+class UEQAnimInstance;
 /**
  * 
  */
@@ -14,10 +15,17 @@ class ETERNALQUEST_API UEQMeleeFSM : public UEQBaseFSM
 {
 	GENERATED_BODY()
 
-private:
-	float CurrentTime;
-	float AttackTime = 2.0f;
-	float AttackRange = 300;
-protected:
+
+	virtual void BeginPlay() override;
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+public:
 	virtual void TickAttack() override;
+	
+
+	UPROPERTY(EditAnywhere,Category="MonsterAnim")
+	UAnimMontage* AnimMontage;
+	
+	
+	
 };

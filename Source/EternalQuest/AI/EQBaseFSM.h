@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "EQBaseFSM.generated.h"
+class UEQAnimInstance;
 class AEQCharacterBase;
 class AAIController;
 class AEQNormalEnemy;
@@ -47,10 +48,10 @@ public:
 	UPROPERTY(EditAnywhere,Category="Monster")
 	ACharacter* Target;
 
-private:
+public:
 	float CurrentTime = 0;
 	float AttackTime = 2.0f;
-	float AttackRange = 300.f;
+	float AttackRange;
 	float ChaseSpeed;
 	float BasicSpeed;
 	FVector RandomLoc;
@@ -59,8 +60,13 @@ protected:
 	void TickIdle();
 	void TickMove();
 	virtual void TickAttack();
+	virtual void InitializeComponent() override;
 
 public:
 	void SetState(EMonsterState Next);
 	bool UpdateRandLoc(FVector OldLoc, float Radius, FVector& NewLoc);
+
+public:
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Animation")
+	UEQAnimInstance* AnimInst;
 };

@@ -10,3 +10,4 @@ AEQNormalEnemy::AEQNormalEnemy()
 {
 	BaseFsm = CreateDefaultSubobject<UEQBaseFSM>("BasFSM");
 }
+

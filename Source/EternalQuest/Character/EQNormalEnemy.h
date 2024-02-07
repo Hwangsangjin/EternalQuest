@@ -15,9 +15,13 @@ UCLASS()
 class ETERNALQUEST_API AEQNormalEnemy : public AEQCharacterNonPlayer
 {
 	GENERATED_BODY()
-
+public:
 	AEQNormalEnemy();
 
 	UPROPERTY(EditAnywhere,Category="FSM")
 	UEQBaseFSM* BaseFsm;
+
+	
+
+	
 };
