@@ -4,6 +4,7 @@
 #include "Character/EQCharacterPlayer.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Components/BoxComponent.h"
 #include "InputActionValue.h"
 #include "InputMappingContext.h"
 #include "EnhancedInputComponent.h"
@@ -37,6 +38,12 @@ AEQCharacterPlayer::AEQCharacterPlayer()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
 
+	// Interaction Box
+	InteractionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionBox"));
+	InteractionBox->SetupAttachment(RootComponent);
+	InteractionBox->SetBoxExtent(FVector(50));
+	InteractionBox->SetRelativeLocation(FVector(120, 0, -50));
+
 	// Input
 	static ConstructorHelpers::FObjectFinder<UInputMappingContext> InputMappingContextRef(TEXT("/Script/EnhancedInput.InputMappingContext'/Game/Blueprints/Input/IMC_Default.IMC_Default'"));
 	if (InputMappingContextRef.Object)
@@ -58,6 +65,11 @@ void AEQCharacterPlayer::BeginPlay()
 		Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		//Subsystem->RemoveMappingContext(DefaultMappingContext);
 	}
+}
+
+void AEQCharacterPlayer::SetJobType(EJobType InJobType)
+{
+	JobType = InJobType;
 }
 
 void AEQCharacterPlayer::Jump()
