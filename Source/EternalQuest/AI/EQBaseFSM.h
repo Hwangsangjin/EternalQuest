@@ -63,6 +63,7 @@ protected:
 	virtual void InitializeComponent() override;
 
 public:
+	virtual void ShootWeb();
 	void SetState(EMonsterState Next);
 	bool UpdateRandLoc(FVector OldLoc, float Radius, FVector& NewLoc);
 

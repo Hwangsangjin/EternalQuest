@@ -42,6 +42,9 @@ void UEQBaseFSM::InitializeComponent()
 	
 }
 
+void UEQBaseFSM::ShootWeb()
+{
+}
 
 
 void UEQBaseFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
