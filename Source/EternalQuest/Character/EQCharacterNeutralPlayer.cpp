@@ -3,16 +3,17 @@
 
 #include "Character/EQCharacterNeutralPlayer.h"
 
+#include "Blueprint/UserWidget.h"
+
 AEQCharacterNeutralPlayer::AEQCharacterNeutralPlayer()
 {
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshRef(TEXT("/Game/Assets/CasualFantasyMonster/Meshes/Goblin03/SK_Goblin3.SK_Goblin3"));
-	if (MeshRef.Succeeded())
-	{
-		GetMesh()->SetSkeletalMesh(MeshRef.Object);
-	}
 }
 
 void AEQCharacterNeutralPlayer::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void AEQCharacterNeutralPlayer::PlayPrompt()
+{
 }
