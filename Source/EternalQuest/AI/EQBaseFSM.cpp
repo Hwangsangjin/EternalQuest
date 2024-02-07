@@ -5,7 +5,9 @@
 
 #include "AIController.h"
 #include "NavigationSystem.h"
+#include "Animation/EQAnimInstance.h"
 #include "Character/EQCharacterBase.h"
+#include "Character/EQMush.h"
 #include "Character/EQNormalEnemy.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Navigation/PathFollowingComponent.h"
@@ -15,8 +17,7 @@ UEQBaseFSM::UEQBaseFSM()
 {
 
 	PrimaryComponentTick.bCanEverTick = true;
-	
-
+	bWantsInitializeComponent = true;
 	
 }
 
@@ -29,6 +30,15 @@ void UEQBaseFSM::BeginPlay()
 	Self = Cast<AEQNormalEnemy>(GetOwner());
 	AI = Cast<AAIController>(Self->GetController());
 	BasicSpeed = Self->GetCharacterMovement()->MaxWalkSpeed = 100;
+	AnimInst = Cast<UEQAnimInstance>(Self->GetMesh()->GetAnimInstance());
+	
+}
+
+void UEQBaseFSM::InitializeComponent()
+{
+	Super::InitializeComponent();
+	
+	
 	
 }
 
@@ -73,11 +83,13 @@ void UEQBaseFSM::TickMove()
 	AI-> BuildPathfindingQuery(Req,Query);
 	auto Result = NaviSys->FindPathSync(Query);
 	
-	if(Result.IsSuccessful() && Direction.Length() < 400 )
+	if(Result.IsSuccessful() && Direction.Length() < 800.f )
 	{
 		ChaseSpeed = Self->GetCharacterMovement()->MaxWalkSpeed  = 450.f;
 		Self->GetCharacterMovement()->MaxWalkSpeed = ChaseSpeed;
 		AI->MoveToLocation(Destination);
+		CurrentTime = AttackTime;
+		SetState(EMonsterState::Attack);
 	}
 	else
 	{
@@ -91,10 +103,6 @@ void UEQBaseFSM::TickMove()
 			ChaseSpeed = BasicSpeed;
 			
 		}
-	}
-	if(Direction.Length() < AttackRange)
-	{
-		SetState(EMonsterState::Attack);
 	}
 }
 
@@ -114,10 +122,10 @@ void UEQBaseFSM::TickAttack()
 			UE_LOG(LogTemp,Warning,TEXT("Attack!!!!!!!!!!!"));
 			SetState(EMonsterState::Move);
 		}
-		
-		
 	}
 }
+
+
 
 void UEQBaseFSM::SetState(EMonsterState Next)
 {
@@ -127,6 +135,7 @@ void UEQBaseFSM::SetState(EMonsterState Next)
 		UpdateRandLoc(Self->GetActorLocation(),500,RandomLoc);
 	
 	}
+	AnimInst->State = Next;
 	State = Next;
 	CurrentTime = 0;
 }
