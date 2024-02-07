@@ -4,10 +4,14 @@
 #include "Action/EQComponentInteraction.h"
 
 #include "EnhancedInputComponent.h"
+#include "Blueprint/UserWidget.h"
 #include "Character/EQCharacterNeutralPlayer.h"
 #include "Character/EQCharacterNonPlayer.h"
 #include "Character/EQCharacterPlayer.h"
 #include "Components/BoxComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "Components/TextBlock.h"
+#include "Widget/EQWidgetNpcPrompt.h"
 
 UEQComponentInteraction::UEQComponentInteraction()
 {
@@ -20,37 +24,29 @@ UEQComponentInteraction::UEQComponentInteraction()
 		InteractionAction = InteractionActionRef.Object;
 	}
 
-	InteractionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Interaction Box"));
-
-	InteractionBox->SetBoxExtent(FVector(50));
-	InteractionBox->SetRelativeLocation(FVector(120,0,0));
+	static ConstructorHelpers::FClassFinder<UUserWidget> PromptWidgetFactoryRef(TEXT("/Game/LDJ/UI/WBP_EQWidgetNpcPrompt.WBP_EQWidgetNpcPrompt_C"));
+	if (PromptWidgetFactoryRef.Succeeded())
+	{
+		PromptWidgetFactory = PromptWidgetFactoryRef.Class;
+	}
 }
 
 void UEQComponentInteraction::BeginPlay()
 {
 	Super::BeginPlay();
+	Player->GetInteractionBox()->OnComponentBeginOverlap.AddDynamic(this, &UEQComponentInteraction::OnBoxBeginOverlap);
+	Player->GetInteractionBox()->OnComponentEndOverlap.AddDynamic(this, &UEQComponentInteraction::OnBoxEndOverlap);
+	PromptWidget = Cast<UEQWidgetNpcPrompt>(CreateWidget(GetWorld(), PromptWidgetFactory));
 }
 
 void UEQComponentInteraction::TickComponent(float DeltaTime, ELevelTick TickType,FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	auto HitResult = GetWorld()->LineTraceSingleByChannel(HitInfo, Player->GetActorLocation(), Player->GetActorLocation() + Player->GetActorForwardVector() * 150, ECC_Visibility, Params);
-	
-	DrawDebugLine(GetWorld(), Player->GetActorLocation(), Player->GetActorLocation() + Player->GetActorForwardVector() * 150, FColor::Red);
-	
-	if (HitResult)
-	{
-		auto temp = Cast<AEQCharacterNeutralPlayer>(HitInfo.GetActor());
-		if (temp)
-		{
-		}
-	}
 }
 
 void UEQComponentInteraction::InitializeComponent()
 {
 	Super::InitializeComponent();
-	Params.AddIgnoredActor(Player);
 }
 
 void UEQComponentInteraction::SetupPlayerInput(UInputComponent* PlayerInputComponent)
@@ -64,5 +60,33 @@ void UEQComponentInteraction::SetupPlayerInput(UInputComponent* PlayerInputCompo
 
 void UEQComponentInteraction::Interaction()
 {
-	GEngine->AddOnScreenDebugMessage(-1,3,FColor::Red, TEXT("UEQComponentInteraction::Interaction"));
+	if (!NPC) return;
+	PromptWidget->PullNPCInfomation(NPC);
+	FInputModeUIOnly InData;
+	GetWorld()->GetFirstPlayerController()->SetInputMode(InData);
+	GetWorld()->GetFirstPlayerController()->SetShowMouseCursor(true);
+	/////
+	PromptWidget->AddToViewport();
+}
+
+void UEQComponentInteraction::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	NPC = Cast<AEQCharacterNeutralPlayer>(OtherActor);
+	if (NPC)
+	{
+		NPC->GetMesh()->SetRenderCustomDepth(true);
+	}
+}
+
+void UEQComponentInteraction::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	NPC = Cast<AEQCharacterNeutralPlayer>(OtherActor);
+	if (NPC)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Red, TEXT("OnBoxEndOverlap"));
+		NPC->GetMesh()->SetRenderCustomDepth(false);
+		NPC = nullptr;
+	}
 }

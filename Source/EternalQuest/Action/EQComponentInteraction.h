@@ -7,6 +7,8 @@
 #include "Action/EQComponentBase.h"
 #include "EQComponentInteraction.generated.h"
 
+class UEQWidgetNpcPrompt;
+class AEQCharacterNeutralPlayer;
 class UBoxComponent;
 
 /**
@@ -27,6 +29,18 @@ public:
 
 	// ----- 함수 -----
 	void Interaction();
+	UFUNCTION()
+	void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex,
+		bool bFromSweep,
+		const FHitResult & SweepResult);
+	UFUNCTION()
+	void OnBoxEndOverlap(UPrimitiveComponent* OverlappedComponent,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex);
 	// ----- 함수 -----
 
 	// ----- 변수 -----
@@ -34,10 +48,12 @@ public:
 	TObjectPtr<UInputAction> InteractionAction;
 
 	UPROPERTY()
-	TObjectPtr<UBoxComponent> InteractionBox;
+	TObjectPtr<AEQCharacterNeutralPlayer> NPC;
 
-	FHitResult HitInfo;
+	UPROPERTY()
+	TSubclassOf<UUserWidget> PromptWidgetFactory;
 
-	FCollisionQueryParams Params;
+	UPROPERTY()
+	TObjectPtr<UEQWidgetNpcPrompt> PromptWidget;
 	// ----- 변수 -----
 };
