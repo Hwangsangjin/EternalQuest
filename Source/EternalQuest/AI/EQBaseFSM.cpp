@@ -125,7 +125,7 @@ void UEQBaseFSM::SetState(EMonsterState Next)
 	{
 		
 		UpdateRandLoc(Self->GetActorLocation(),500,RandomLoc);
-
+	
 	}
 	State = Next;
 	CurrentTime = 0;
