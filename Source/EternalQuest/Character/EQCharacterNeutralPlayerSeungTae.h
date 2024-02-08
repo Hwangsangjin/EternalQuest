@@ -18,7 +18,8 @@ public:
 
 	// ----- 오버라이드 함수 -----
 	virtual void BeginPlay() override;
-	virtual void PlayPrompt() override;
+	virtual void QuestAccepted() override;
+	virtual void QuestDenied() override;
 	// ----- 오버라이드 함수 -----
 	
 };

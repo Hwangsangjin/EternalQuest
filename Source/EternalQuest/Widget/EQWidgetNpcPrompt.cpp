@@ -28,42 +28,46 @@ void UEQWidgetNpcPrompt::PullNPCInfomation(AEQCharacterNeutralPlayer* InNPC)
 
 void UEQWidgetNpcPrompt::NextPrompt()
 {
-	if (NPC->NPCPrompt[PromptCurrent].Contains(TEXT("QuestTag")))
+	if (PromptLast == PromptCurrent)
 	{
-		return;
-	}
-	
-	if (PromptCurrent == PromptLast)
-	{
+		RemoveFromParent();
 		const FInputModeGameOnly InData;
 		GetWorld()->GetFirstPlayerController()->SetInputMode(InData);
 		GetWorld()->GetFirstPlayerController()->SetShowMouseCursor(false);
-		this->RemoveFromParent();
 		return;
 	}
 	
 	PromptCurrent++;
-	
+
+	// 퀘스트 로직
 	if (NPC->NPCPrompt[PromptCurrent].Contains(TEXT("QuestTag")))
 	{
+		auto temp = NPC->NPCPrompt[PromptCurrent].Find(TEXT("QuestTag"));
 		HorizonBox_Quest->SetVisibility(ESlateVisibility::Visible);
-	}
-	else
-	{
+		NPC->NPCPrompt[PromptCurrent].RemoveAt(temp, 8);
 		Txt_NPCPrompt->SetText(FText::FromString(FString::Printf(TEXT("%s"), *NPC->NPCPrompt[PromptCurrent])));
+		return;
 	}
+	
+	Txt_NPCPrompt->SetText(FText::FromString(FString::Printf(TEXT("%s"), *NPC->NPCPrompt[PromptCurrent])));
 }
 
 void UEQWidgetNpcPrompt::AcceptQuest()
 {
-	PromptCurrent++;
-	Txt_NPCPrompt->SetText(FText::FromString(FString::Printf(TEXT("%s"), *NPC->NPCPrompt[PromptCurrent])));
 	HorizonBox_Quest->SetVisibility(ESlateVisibility::Hidden);
+	RemoveFromParent();
+	const FInputModeGameOnly InData;
+	GetWorld()->GetFirstPlayerController()->SetInputMode(InData);
+	GetWorld()->GetFirstPlayerController()->SetShowMouseCursor(false);
+	NPC->QuestAccepted();
 }
 
 void UEQWidgetNpcPrompt::DenyQuest()
 {
-	PromptCurrent++;
-	Txt_NPCPrompt->SetText(FText::FromString(FString::Printf(TEXT("%s"), *NPC->NPCPrompt[PromptCurrent])));
 	HorizonBox_Quest->SetVisibility(ESlateVisibility::Hidden);
+	RemoveFromParent();
+	const FInputModeGameOnly InData;
+	GetWorld()->GetFirstPlayerController()->SetInputMode(InData);
+	GetWorld()->GetFirstPlayerController()->SetShowMouseCursor(false);
+	NPC->QuestDenied();
 }
