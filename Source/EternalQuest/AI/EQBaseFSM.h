@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "EQBaseFSM.generated.h"
+class AEQCharacterPlayer;
+class UEQEnemyAnim;
 class UEQAnimInstance;
 class AEQCharacterBase;
 class AAIController;
@@ -46,7 +48,7 @@ public:
 	AAIController* AI;
 
 	UPROPERTY(EditAnywhere,Category="Monster")
-	ACharacter* Target;
+	AEQCharacterPlayer* Target;
 
 public:
 	float CurrentTime = 0;
@@ -54,6 +56,7 @@ public:
 	float AttackRange;
 	float ChaseSpeed;
 	float BasicSpeed;
+	float DetectionRange = 450;
 	FVector RandomLoc;
 
 protected:
@@ -69,5 +72,5 @@ public:
 
 public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Animation")
-	UEQAnimInstance* AnimInst;
+	UEQEnemyAnim* AnimInst;
 };

@@ -4,6 +4,7 @@
 #include "AI/EQMeleeFSM.h"
 
 #include "AIController.h"
+#include "Character/EQCharacterPlayer.h"
 #include "Character/EQNormalEnemy.h"
 
 void UEQMeleeFSM::BeginPlay()
