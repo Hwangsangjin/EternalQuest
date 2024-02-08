@@ -67,6 +67,7 @@ protected:
 
 public:
 	virtual void ShootWeb();
+	virtual void ScorpionPrj();
 	void SetState(EMonsterState Next);
 	bool UpdateRandLoc(FVector OldLoc, float Radius, FVector& NewLoc);
 

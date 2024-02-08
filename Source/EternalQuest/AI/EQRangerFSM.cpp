@@ -69,7 +69,6 @@ void UEQRangerFSM::TickMove()
 void UEQRangerFSM::TickAttack()
 {
 	Super::TickAttack();
-
 	
 	DrawDebugSphere(GetWorld(),Self->GetActorLocation(),AttackRange,100,FColor::Blue);
 	
@@ -92,11 +91,6 @@ void UEQRangerFSM::TickAttack()
 				// Move로 전이
 				SetState(EMonsterState::Move);
 				Self->StopAnimMontage();
-			}
-			// 그거리가 공격가능 범위보다 짧다면
-			else
-			{
-			
 			}
 		}
 	}
