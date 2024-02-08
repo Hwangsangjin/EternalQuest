@@ -17,14 +17,20 @@ AEQCharacterNeutralPlayerSeungTae::AEQCharacterNeutralPlayerSeungTae()
 void AEQCharacterNeutralPlayerSeungTae::BeginPlay()
 {
 	Super::BeginPlay();
-	NPCName = TEXT("김승태");
-	NPCPrompt.PushLast(TEXT("행님, 버거형이 코볼트의 어금니 10개만 모아오래요"));
-	NPCPrompt.PushLast(TEXT("QuestTag"));
-	NPCPrompt.PushLast(TEXT("저는 쥬신 가볼게요, 버거형이 깜지써오래요."));
-	NPCPrompt.PushLast(TEXT("다음에 국밥 한사바리 하시죠."));
+	NPCName = TEXT("고브승태");
+	NPCPrompt.PushLast(TEXT("안녕고브!, 넌 엘리시움에 못보던 얼굴인데 모험가인가봐?"));
+	NPCPrompt.PushLast(TEXT("나는 서쪽광산에서 일하고 있는 고브승태 라고 해,"));
+	NPCPrompt.PushLast(TEXT("갑작스럽지만, 지금 서쪽 광산에서 이상한 사건들이 발생하고 있어서\n못들어가고 있는데 혹시 서쪽광산을 조사해줄 수 있어? QuestTag"));
 }
 
-void AEQCharacterNeutralPlayerSeungTae::PlayPrompt()
+void AEQCharacterNeutralPlayerSeungTae::QuestAccepted()
 {
-	Super::PlayPrompt();
+	GEngine->AddOnScreenDebugMessage(-1,3,FColor::Green, TEXT("퀘스트를 수락하였습니다."));
+	NPCPrompt.Reset();
+	NPCPrompt.PushLast(TEXT("이미 퀘스트를 받았잖아!"));
+}
+
+void AEQCharacterNeutralPlayerSeungTae::QuestDenied()
+{
+	GEngine->AddOnScreenDebugMessage(-1,3,FColor::Red, TEXT("퀘스트를 거절했습니다."));
 }

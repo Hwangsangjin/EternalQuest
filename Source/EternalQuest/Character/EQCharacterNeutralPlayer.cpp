@@ -14,6 +14,10 @@ void AEQCharacterNeutralPlayer::BeginPlay()
 	Super::BeginPlay();
 }
 
-void AEQCharacterNeutralPlayer::PlayPrompt()
+void AEQCharacterNeutralPlayer::QuestAccepted()
+{
+}
+
+void AEQCharacterNeutralPlayer::QuestDenied()
 {
 }

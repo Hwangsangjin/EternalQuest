@@ -21,6 +21,6 @@ class ETERNALQUEST_API IEQInterfaceNPCPrompt
 	GENERATED_BODY()
 
 public:
-
-	virtual void PlayPrompt() = 0;
+	virtual void QuestAccepted() = 0;
+	virtual void QuestDenied() = 0;
 };
