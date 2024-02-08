@@ -44,7 +44,7 @@ void AEQSpiderWeb::Tick(float DeltaTime)
 
 	if(Target != nullptr)
 	{
-		FVector Direction = Target->GetActorLocation() - Self->GetActorLocation();
+		FVector Direction = GetActorForwardVector();
 		Direction.Normalize();
 		FVector Velocity = Direction * Speed;
 		SetActorLocation(GetActorLocation()+Velocity*DeltaTime);	

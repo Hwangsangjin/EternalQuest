@@ -6,8 +6,9 @@
 #include "AIController.h"
 #include "NavigationSystem.h"
 #include "Animation/EQAnimInstance.h"
+#include "Animation/EQEnemyAnim.h"
 #include "Character/EQCharacterBase.h"
-#include "Character/EQMush.h"
+#include "Character/EQCharacterPlayer.h"
 #include "Character/EQNormalEnemy.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Navigation/PathFollowingComponent.h"
@@ -30,7 +31,7 @@ void UEQBaseFSM::BeginPlay()
 	Self = Cast<AEQNormalEnemy>(GetOwner());
 	AI = Cast<AAIController>(Self->GetController());
 	BasicSpeed = Self->GetCharacterMovement()->MaxWalkSpeed = 100;
-	AnimInst = Cast<UEQAnimInstance>(Self->GetMesh()->GetAnimInstance());
+	AnimInst = Cast<UEQEnemyAnim>(Self->GetMesh()->GetAnimInstance());
 	
 }
 
@@ -65,7 +66,7 @@ void UEQBaseFSM::TickIdle()
 {
 	
 
-	Target = Cast<ACharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	Target = Cast<AEQCharacterPlayer>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	if(Target != nullptr)
 	{
 		
@@ -85,16 +86,17 @@ void UEQBaseFSM::TickMove()
 	Req.SetGoalLocation(Destination);
 	AI-> BuildPathfindingQuery(Req,Query);
 	auto Result = NaviSys->FindPathSync(Query);
-	
-	if(Result.IsSuccessful() && Direction.Length() < 800.f )
+
+
+	if(Result.IsSuccessful() && Direction.Length() < DetectionRange)
 	{
-		ChaseSpeed = Self->GetCharacterMovement()->MaxWalkSpeed  = 450.f;
+		// 속도를 추적속도로 바꾸고
+		ChaseSpeed = Self->GetCharacterMovement()->MaxWalkSpeed  = 350.f;
 		Self->GetCharacterMovement()->MaxWalkSpeed = ChaseSpeed;
 		AI->MoveToLocation(Destination);
-		SetState(EMonsterState::Attack);
-		CurrentTime = AttackTime;
+	
 	}
-	else
+	else if(Result.IsSuccessful() && Direction.Length() > DetectionRange)
 	{
 		Self->GetCharacterMovement()->MaxWalkSpeed = BasicSpeed;
 		FPathFollowingRequestResult R;
@@ -104,9 +106,16 @@ void UEQBaseFSM::TickMove()
 		{
 			UpdateRandLoc(Self->GetActorLocation(),500,RandomLoc);
 			ChaseSpeed = BasicSpeed;
-			
+		
 		}
 	}
+	if(Direction.Length()<=AttackRange)
+	{
+		SetState(EMonsterState::Attack);
+		CurrentTime = AttackTime;
+		AI->StopMovement();
+	}
+	
 }
 
 void UEQBaseFSM::TickAttack()

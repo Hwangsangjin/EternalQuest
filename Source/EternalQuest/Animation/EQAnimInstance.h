@@ -50,7 +50,5 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
 	float JumpingThreshold;
 
-public:
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category= EnemyFSM)
-	EMonsterState State;
+
 };
