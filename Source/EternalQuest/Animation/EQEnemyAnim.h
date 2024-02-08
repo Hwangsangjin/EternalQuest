@@ -21,4 +21,8 @@ public:
 	//// Spider ////
 	UFUNCTION()
 	void AnimNotify_ShootWeb();
+
+	//// Scorpion ////
+	UFUNCTION()
+	void AnimNotify_ScorSkill();
 };

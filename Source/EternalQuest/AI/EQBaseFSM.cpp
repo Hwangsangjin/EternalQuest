@@ -47,6 +47,11 @@ void UEQBaseFSM::ShootWeb()
 {
 }
 
+void UEQBaseFSM::ScorpionPrj()
+{
+}
+
+
 
 void UEQBaseFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
