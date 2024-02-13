@@ -8,14 +8,14 @@
 #include "EQGameInstance.generated.h"
 
 UENUM(BlueprintType)
-enum class ECharacterClass : uint8
+enum class EClassType : uint8
 {
-	ECC_None	UMETA(DisplayName = "None"),
-	ECC_Mage	UMETA(DisplayName = "Mage"),
-	ECC_Paladin	UMETA(DisplayName = "Paladin"),
-	ECC_Priest	UMETA(DisplayName = "Priest"),
-	ECC_Rogue	UMETA(DisplayName = "Rogue"),
-	ECC_Warrior	UMETA(DisplayName = "Warrior"),
+	ECT_None	UMETA(DisplayName = "None"),
+	ECT_Mage	UMETA(DisplayName = "Mage"),
+	ECT_Paladin	UMETA(DisplayName = "Paladin"),
+	ECT_Priest	UMETA(DisplayName = "Priest"),
+	ECT_Rogue	UMETA(DisplayName = "Rogue"),
+	ECT_Warrior	UMETA(DisplayName = "Warrior"),
 
 	MAX
 };
@@ -75,15 +75,15 @@ private:
 	int32 NumPublicConnections;
 	FString MatchType;
 
-// Character Class
+// Class Type
 public:
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE ECharacterClass GetCharacterClass() { return CharacterClass; }
+	FORCEINLINE EClassType GetClassType() { return ClassType; }
 
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE void SetCharacterClass(ECharacterClass NewCharacterClass) { CharacterClass = NewCharacterClass; }
+	FORCEINLINE void SetClassType(EClassType NewClassType) { ClassType = NewClassType; }
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character, Meta = (AllowPrivateAccess = true))
-	ECharacterClass CharacterClass = ECharacterClass::ECC_None;
+	EClassType ClassType = EClassType::ECT_None;
 };
