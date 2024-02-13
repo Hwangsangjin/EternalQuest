@@ -10,6 +10,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Action/EQComponentMove.h"
+#include "Action/EQComponentInteraction.h"
 #include "Kismet/GameplayStatics.h"
 
 AEQCharacterPlayer::AEQCharacterPlayer()
@@ -54,6 +55,7 @@ AEQCharacterPlayer::AEQCharacterPlayer()
 
 	// Component
 	MoveComp = CreateDefaultSubobject<UEQComponentMove>(TEXT("Move Component"));
+	InteractionComp = CreateDefaultSubobject<UEQComponentInteraction>(TEXT("Interaction Component"));
 }
 
 void AEQCharacterPlayer::BeginPlay()
