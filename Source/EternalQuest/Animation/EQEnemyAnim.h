@@ -25,4 +25,9 @@ public:
 	//// Scorpion ////
 	UFUNCTION()
 	void AnimNotify_ScorSkill();
+	UFUNCTION()
+	void AnimNotify_DieEnd();
+
+public:
+	bool IsDieDone = false;
 };

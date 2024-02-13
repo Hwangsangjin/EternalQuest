@@ -24,3 +24,8 @@ void UEQEnemyAnim::AnimNotify_ScorSkill()
 		Scorpion->BaseFsm->ScorpionPrj();
 	}
 }
+
+void UEQEnemyAnim::AnimNotify_DieEnd()
+{
+	IsDieDone = true;
+}

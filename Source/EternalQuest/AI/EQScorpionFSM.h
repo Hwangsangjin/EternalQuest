@@ -24,6 +24,7 @@ protected:
 	virtual void TickMove() override;
 	virtual void TickAttack() override;
 	virtual void TickHit() override;
+	virtual void TickDie() override;
 
 public:
 	UPROPERTY(EditAnywhere,Category="MonsterAnim")

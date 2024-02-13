@@ -18,7 +18,7 @@ void UEQScorpionFSM::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	ChaseSpeed = 3000.f;
+	ChaseSpeed = 1000.f;
 	DetectionRange = 2000.f;
 	AttackTime = 3.0f;
 	
@@ -43,7 +43,7 @@ void UEQScorpionFSM::TickMove()
 	{
 		UE_LOG(LogTemp,Warning,TEXT("TIckMove11111111111111111111111111111111!!!!!!!!!!"));
 		Self->GetCharacterMovement()->MaxWalkSpeed = ChaseSpeed;
-		AI->MoveToLocation(Destination);
+		//AI->MoveToLocation(Destination);
 		if(Direction.Length() < MeleeAttackRange)
 		{
 			UE_LOG(LogTemp,Warning,TEXT("TIckMove333333333333333333333333333333333333!!!!!!!!!!"));
@@ -87,6 +87,21 @@ void UEQScorpionFSM::TickHit()
 	Super::TickHit();
 	Self->PlayAnimMontage(AnimMontage,1,FName("Hit"));
 	SetState(EMonsterState::Attack);
+}
+
+void UEQScorpionFSM::TickDie()
+{
+	Super::TickDie();
+	CurrentTime += GetWorld()->GetDeltaSeconds();
+	UE_LOG(LogTemp,Warning,TEXT("DIE!!!!!!!!!!!!!!!!!!!!!!!!!!"));
+	Self->PlayAnimMontage(AnimMontage,1,FName("Died"));
+	
+	Self->SetActorEnableCollision(ECollisionEnabled::NoCollision);
+	if(CurrentTime>DieTime)
+	{
+		Self->Destroy();
+	}
+	
 }
 
 

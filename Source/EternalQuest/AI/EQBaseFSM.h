@@ -59,14 +59,17 @@ public:
 	float ChaseSpeed;
 	float BasicSpeed;
 	float DetectionRange = 450;
+	float DieTime = 2.0f;
 	FVector RandomLoc;
+	
 
 protected:
 	void TickIdle();
 	virtual void TickMove();
 	virtual void TickAttack();
 	virtual void TickHit();
-	void TickDie();
+	virtual void TickDie();
+
 
 public:
 	virtual void ShootWeb();
