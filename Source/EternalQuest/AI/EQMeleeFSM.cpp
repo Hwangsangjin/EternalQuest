@@ -45,5 +45,12 @@ void UEQMeleeFSM::TickAttack()
 	
 }
 
+void UEQMeleeFSM::TickHit()
+{
+	Super::TickHit();
+	Self->PlayAnimMontage(AnimMontage,1,FName("Hit"));
+	SetState(EMonsterState::Move);
+}
+
 
 

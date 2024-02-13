@@ -21,6 +21,7 @@ class ETERNALQUEST_API UEQMeleeFSM : public UEQBaseFSM
 
 public:
 	virtual void TickAttack() override;
+	virtual void TickHit() override;
 	
 
 	UPROPERTY(EditAnywhere,Category="MonsterAnim")

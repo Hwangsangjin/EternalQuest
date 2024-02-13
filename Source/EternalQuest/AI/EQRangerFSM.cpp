@@ -96,6 +96,13 @@ void UEQRangerFSM::TickAttack()
 	}
 }
 
+void UEQRangerFSM::TickHit()
+{
+	Super::TickHit();
+	SetState(EMonsterState::Move);
+	Self->PlayAnimMontage(AnimMontage,1,FName("Hit"));
+}
+
 void UEQRangerFSM::ShootWeb()
 {
 	Super::ShootWeb();

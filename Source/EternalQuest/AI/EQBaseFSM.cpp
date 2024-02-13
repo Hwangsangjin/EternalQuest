@@ -35,21 +35,6 @@ void UEQBaseFSM::BeginPlay()
 	
 }
 
-void UEQBaseFSM::InitializeComponent()
-{
-	Super::InitializeComponent();
-	
-	
-	
-}
-
-void UEQBaseFSM::ShootWeb()
-{
-}
-
-void UEQBaseFSM::ScorpionPrj()
-{
-}
 
 
 
@@ -62,6 +47,8 @@ void UEQBaseFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompo
 	case EMonsterState::Idle : TickIdle(); break;
 	case EMonsterState::Move : TickMove(); break;
 	case EMonsterState::Attack : TickAttack(); break;
+	case EMonsterState::Hit : TickHit(); break;
+	case EMonsterState::Die : TickDie(); break;
 	}
 
 	
@@ -128,7 +115,21 @@ void UEQBaseFSM::TickAttack()
 	
 }
 
+void UEQBaseFSM::TickHit()
+{
+}
 
+void UEQBaseFSM::TickDie()
+{
+}
+
+void UEQBaseFSM::ShootWeb()
+{
+}
+
+void UEQBaseFSM::ScorpionPrj()
+{
+}
 
 void UEQBaseFSM::SetState(EMonsterState Next)
 {
