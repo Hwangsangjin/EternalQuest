@@ -17,18 +17,6 @@ class UEQComponentMove;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FInputSignature, UInputComponent*)
 
-UENUM(BlueprintType)
-enum class EJobType : uint8
-{
-	EJT_Mage,
-	EJT_Knight,
-	EJT_Priest,
-	EJT_Rogue,
-	EJT_Warrior,
-
-	MAX
-};
-
 UCLASS()
 class ETERNALQUEST_API AEQCharacterPlayer : public AEQCharacterBase
 {
@@ -45,6 +33,8 @@ public:
 	virtual void StopJumping() override;
 
 protected:
+	virtual void PossessedBy(AController* NewController) override;
+	virtual void OnRep_Owner() override;
 	virtual void BeginPlay() override;
 
 // Camera
@@ -76,12 +66,4 @@ protected:
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UEQComponentMove> MoveComp;
-
-// Job Type
-public:
-	void SetJobType(EJobType InJobType);
-
-protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Job, Meta = (AllowPrivateAccess = true))
-	EJobType JobType;
 };

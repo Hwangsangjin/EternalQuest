@@ -17,5 +17,7 @@ class ETERNALQUEST_API AEQGameMode : public AGameModeBase
 public:
 	AEQGameMode();
 
-	//Test
+public:
+	virtual void PostLogin(APlayerController* NewPlayer) override;
+	virtual void Logout(AController* Exiting) override;
 };

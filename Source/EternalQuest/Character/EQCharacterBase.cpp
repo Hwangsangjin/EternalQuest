@@ -31,3 +31,13 @@ AEQCharacterBase::AEQCharacterBase()
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	GetMesh()->SetCollisionProfileName(TEXT("CharacterMesh"));
 }
+
+void AEQCharacterBase::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+}
+
+void AEQCharacterBase::OnRep_Owner()
+{
+	Super::OnRep_Owner();
+}
