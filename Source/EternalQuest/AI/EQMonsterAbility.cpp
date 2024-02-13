@@ -13,7 +13,7 @@
 UEQMonsterAbility::UEQMonsterAbility()
 {
 	
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 
 	MaxHealth = 100;
 	CurrentHealth = MaxHealth;
@@ -27,7 +27,7 @@ void UEQMonsterAbility::BeginPlay()
 	Super::BeginPlay();
 
 	AActor* Owner = GetOwner();
-	if(Owner != nullptr)
+	if(Owner)
 	{
 		Owner->OnTakeAnyDamage.AddDynamic(this,&UEQMonsterAbility::TakeDamage);
 	}
@@ -36,7 +36,9 @@ void UEQMonsterAbility::BeginPlay()
 
 void UEQMonsterAbility::UpdateHP(float UpdateHealth)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Current Health222: %f"), CurrentHealth);
 	CurrentHealth = FMath::Max(0,CurrentHealth+UpdateHealth);
+	UE_LOG(LogTemp,Warning,TEXT("damage: %.1f, curent Health: %.1f"), UpdateHealth, CurrentHealth);
 }
 
 
@@ -56,6 +58,7 @@ void UEQMonsterAbility::TakeDamage(AActor* DamagedActor, float Damage, const UDa
 	}
 
 	UpdateHP(-Damage);
+	
 	if(DamagedActor->IsA<AEQNormalEnemy>())
 	{
 		auto Monster = Cast<AEQNormalEnemy>(DamagedActor);

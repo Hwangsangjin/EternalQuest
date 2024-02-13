@@ -28,7 +28,7 @@ public:
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Ability")
 	UWidgetComponent* HPComp;
-
+	
 	
 	void Tick(float DeltaSeconds) override;
 	
