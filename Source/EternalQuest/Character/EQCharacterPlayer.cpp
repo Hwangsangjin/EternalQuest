@@ -10,6 +10,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Action/EQComponentMove.h"
+#include "Kismet/GameplayStatics.h"
 
 AEQCharacterPlayer::AEQCharacterPlayer()
 {
@@ -58,18 +59,12 @@ AEQCharacterPlayer::AEQCharacterPlayer()
 void AEQCharacterPlayer::BeginPlay()
 {
 	Super::BeginPlay();
-
-	APlayerController* PlayerController = CastChecked<APlayerController>(GetController());
-	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-	{
-		Subsystem->AddMappingContext(DefaultMappingContext, 0);
-		//Subsystem->RemoveMappingContext(DefaultMappingContext);
-	}
 }
 
-void AEQCharacterPlayer::SetJobType(EJobType InJobType)
+void AEQCharacterPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
-	JobType = InJobType;
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	InputSignature.Broadcast(PlayerInputComponent);
 }
 
 void AEQCharacterPlayer::Jump()
@@ -82,8 +77,26 @@ void AEQCharacterPlayer::StopJumping()
 	Super::StopJumping();
 }
 
-void AEQCharacterPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void AEQCharacterPlayer::PossessedBy(AController* NewController)
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	InputSignature.Broadcast(PlayerInputComponent);
+	Super::PossessedBy(NewController);
+
+	APlayerController* PlayerController = CastChecked<APlayerController>(GetController());
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+	{
+		Subsystem->AddMappingContext(DefaultMappingContext, 0);
+		//Subsystem->RemoveMappingContext(DefaultMappingContext);
+	}
+}
+
+void AEQCharacterPlayer::OnRep_Owner()
+{
+	Super::OnRep_Owner();
+
+	APlayerController* PlayerController = CastChecked<APlayerController>(GetController());
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+	{
+		Subsystem->AddMappingContext(DefaultMappingContext, 0);
+		//Subsystem->RemoveMappingContext(DefaultMappingContext);
+	}
 }

@@ -14,4 +14,8 @@ class ETERNALQUEST_API AEQCharacterBase : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AEQCharacterBase();
+
+protected:
+	virtual void OnRep_Owner() override;
+	virtual void PossessedBy(AController* NewController) override;
 };
