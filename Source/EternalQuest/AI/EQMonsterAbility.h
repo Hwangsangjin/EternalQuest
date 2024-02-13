@@ -24,5 +24,14 @@ public:
 	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Monster")
+	float MaxHealth;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Monster")
+	float CurrentHealth;
+
+	void UpdateHP(float UpdateHealth);
+	
+	UFUNCTION()
+	void TakeDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser);
 };

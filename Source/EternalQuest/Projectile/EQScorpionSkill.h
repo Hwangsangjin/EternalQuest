@@ -23,4 +23,10 @@ private:
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
+private:
+	float CurrentTime;
+	float FixedTime = 2.0f;
+
+	
+	
 };

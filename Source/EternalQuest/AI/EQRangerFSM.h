@@ -20,6 +20,7 @@ public:
 	virtual void BeginPlay() override;
 	virtual void TickMove() override;
 	virtual void TickAttack() override;
+	virtual void TickHit() override;
 
 	UPROPERTY(EditAnywhere,Category="MonsterAnim")
 	UAnimMontage* AnimMontage;

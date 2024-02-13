@@ -18,6 +18,8 @@ enum class EMonsterState : uint8
 	Idle,
 	Move,
 	Attack,
+	Hit,
+	Die,
 };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -63,7 +65,8 @@ protected:
 	void TickIdle();
 	virtual void TickMove();
 	virtual void TickAttack();
-	virtual void InitializeComponent() override;
+	virtual void TickHit();
+	void TickDie();
 
 public:
 	virtual void ShootWeb();

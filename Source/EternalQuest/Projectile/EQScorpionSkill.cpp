@@ -6,7 +6,7 @@
 
 AEQScorpionSkill::AEQScorpionSkill()
 {
-	
+	Speed = 300;
 }
 
 void AEQScorpionSkill::FindTarget()
@@ -23,12 +23,20 @@ void AEQScorpionSkill::BeginPlay()
 void AEQScorpionSkill::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+	CurrentTime += GetWorld()->GetDeltaSeconds();
 	if(Target)
 	{
 		FVector Direction = (Target->GetActorLocation()-GetActorLocation()).GetSafeNormal();
+		if(CurrentTime > FixedTime)
+		{
+			FVector LooseTarget = this->GetActorForwardVector();
+			Direction = LooseTarget;
+			
+		}
 		SetActorRotation(Direction.Rotation());
 		FVector NewLocation = GetActorLocation() + Direction * Speed * DeltaSeconds;
 		SetActorLocation(NewLocation);
+		
 	}
 }
 

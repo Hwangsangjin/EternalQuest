@@ -17,14 +17,18 @@
 void UEQScorpionFSM::BeginPlay()
 {
 	Super::BeginPlay();
-	ChaseSpeed = 550.f;
-	DetectionRange = 700.f;
+	
+	ChaseSpeed = 3000.f;
+	DetectionRange = 2000.f;
 	AttackTime = 3.0f;
+	
 }
 
 void UEQScorpionFSM::TickMove()
 {
 	Super::TickMove();
+	DrawDebugSphere(GetWorld(),Self->GetActorLocation(),DetectionRange,100,FColor::Blue);
+	UE_LOG(LogTemp,Warning,TEXT("TIckMove!!!!!!!!!!"));
 	FVector Direction = Target->GetActorLocation() - Self->GetActorLocation();
 	FVector Destination = Target->GetActorLocation();
 	UNavigationSystemV1* NaviSys = UNavigationSystemV1::GetNavigationSystem(GetWorld());
@@ -34,16 +38,25 @@ void UEQScorpionFSM::TickMove()
 	Req.SetGoalLocation(Destination);
 	AI-> BuildPathfindingQuery(Req,Query);
 	auto Result = NaviSys->FindPathSync(Query);
-
-
+	
 	if(Result.IsSuccessful() && Direction.Length() < DetectionRange)
 	{
+		UE_LOG(LogTemp,Warning,TEXT("TIckMove11111111111111111111111111111111!!!!!!!!!!"));
 		Self->GetCharacterMovement()->MaxWalkSpeed = ChaseSpeed;
 		AI->MoveToLocation(Destination);
-	
+		if(Direction.Length() < MeleeAttackRange)
+		{
+			UE_LOG(LogTemp,Warning,TEXT("TIckMove333333333333333333333333333333333333!!!!!!!!!!"));
+			SetState(EMonsterState::Attack);
+			CurrentTime = AttackTime;
+			AI->StopMovement();
+		}
 	}
-	else if(Result.IsSuccessful() && Direction.Length() > DetectionRange)
+	
+	// 플레이어와거리가 탐지 범위보다 작을때  
+	else if(Result.IsSuccessful() || Direction.Length() > DetectionRange)
 	{
+		UE_LOG(LogTemp,Warning,TEXT("TIckMove22222222222222222222222222222222222222!!!!!!!!!!"));
 		Self->GetCharacterMovement()->MaxWalkSpeed = BasicSpeed;
 		FPathFollowingRequestResult R;
 		// Ai는 Controller가 Server에만 있기 떄문에 Has Authority 를 사용하여 서버임을 알린다.
@@ -55,12 +68,7 @@ void UEQScorpionFSM::TickMove()
 		
 		}
 	}
-	if(Direction.Length()<=MeleeAttackRange)
-	{
-		SetState(EMonsterState::Attack);
-		CurrentTime = AttackTime;
-		AI->StopMovement();
-	}
+	
 }
 
 void UEQScorpionFSM::TickAttack()
@@ -70,31 +78,26 @@ void UEQScorpionFSM::TickAttack()
 	CurrentTime += GetWorld()->GetDeltaSeconds();
 	if(CurrentTime > AttackTime && Target != nullptr)
 	{
-		
 		CheckPlayerLoc();
 	}
 }
 
+void UEQScorpionFSM::TickHit()
+{
+	Super::TickHit();
+	Self->PlayAnimMontage(AnimMontage,1,FName("Hit"));
+	SetState(EMonsterState::Attack);
+}
 
 
 void UEQScorpionFSM::ScorpionAttack()
 {
-	
-	float RandomValue = FMath::FRand();
-	if(RandomValue <= 0.2)
+	AI->MoveToLocation(Target->GetActorLocation());
+	SetFocus();
+	// 근거리 공격
+	float Dist = FVector::Dist(Target->GetActorLocation(),Self->GetActorLocation());
+	if(Dist < MeleeAttackRange)
 	{
-		SetFocus();
-		UE_LOG(LogTemp,Warning,TEXT("2222222222222222222222222222222222222"));
-		// 원거리 공격
-		Self->PlayAnimMontage(AnimMontage,1,FName("Skill"));
-		SetState(EMonsterState::Attack);
-	}
-	else
-	{
-		AI->MoveToLocation(Target->GetActorLocation());
-		SetFocus();
-		// 근거리 공격
-		UE_LOG(LogTemp,Warning,TEXT("111111111111111111111111111111111111"));
 		Self->PlayAnimMontage(AnimMontage,1,FName("Attack"));
 		SetState(EMonsterState::Attack);
 	}
@@ -103,15 +106,31 @@ void UEQScorpionFSM::ScorpionAttack()
 void UEQScorpionFSM::ScorpionSkill()
 {
 	SetFocus();
-	UE_LOG(LogTemp,Warning,TEXT("3333333333333333333333333333333333333"));
-	Self->PlayAnimMontage(AnimMontage,1,FName("Skill"));
-	SetState(EMonsterState::Attack);
-	
+	float RandomValue = FMath::FRand();
+	if(RandomValue <= 0.6f)
+	{
+		UE_LOG(LogTemp,Warning,TEXT("3333333333333333333333333333333333333"));
+		Self->PlayAnimMontage(AnimMontage,1,FName("Skill"));
+		SetState(EMonsterState::Attack);
+	}
+	else
+	{
+		SetFocus();
+		// 근거리 공격
+		UE_LOG(LogTemp,Warning,TEXT("111111111111111111111111111111111111"));
+		Self->SetActorLocation(Target->GetActorLocation());
+		float Dist = FVector::Dist(Target->GetActorLocation(),Self->GetActorLocation());
+		if(Dist < MeleeAttackRange)
+		{
+			Self->PlayAnimMontage(AnimMontage,1,FName("Attack"));
+			SetState(EMonsterState::Attack);
+		}
+		
+	}
 }
 
 void UEQScorpionFSM::CheckPlayerLoc()
 {
-	
 	float Dist = FVector::Dist(Target->GetActorLocation(),Self->GetActorLocation());
 	// 플레이어와 의 거리가 근접공격 범위 보다 작을 떄 Melee Attack;
 	if(Dist < MeleeAttackRange) ScorpionAttack();
