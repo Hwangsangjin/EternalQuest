@@ -65,6 +65,7 @@ void UEQComponentMove::SetupPlayerInput(UInputComponent* PlayerInputComponent)
 void UEQComponentMove::Move(const FInputActionValue& Value)
 {
 	const FVector2D MovementVector = Value.Get<FVector2D>();
+	
 	const FRotator Rotation = PlayerController->GetControlRotation();
 	const FRotator YawRotation(0, Rotation.Yaw, 0);
 

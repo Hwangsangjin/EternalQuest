@@ -5,7 +5,10 @@
 
 #include "AIController.h"
 #include "NavigationSystem.h"
+#include "Animation/EQAnimInstance.h"
+#include "Animation/EQEnemyAnim.h"
 #include "Character/EQCharacterBase.h"
+#include "Character/EQCharacterPlayer.h"
 #include "Character/EQNormalEnemy.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Navigation/PathFollowingComponent.h"
@@ -15,8 +18,7 @@ UEQBaseFSM::UEQBaseFSM()
 {
 
 	PrimaryComponentTick.bCanEverTick = true;
-	
-
+	bWantsInitializeComponent = true;
 	
 }
 
@@ -29,8 +31,10 @@ void UEQBaseFSM::BeginPlay()
 	Self = Cast<AEQNormalEnemy>(GetOwner());
 	AI = Cast<AAIController>(Self->GetController());
 	BasicSpeed = Self->GetCharacterMovement()->MaxWalkSpeed = 100;
+	AnimInst = Cast<UEQEnemyAnim>(Self->GetMesh()->GetAnimInstance());
 	
 }
+
 
 
 
@@ -43,6 +47,8 @@ void UEQBaseFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompo
 	case EMonsterState::Idle : TickIdle(); break;
 	case EMonsterState::Move : TickMove(); break;
 	case EMonsterState::Attack : TickAttack(); break;
+	case EMonsterState::Hit : TickHit(); break;
+	case EMonsterState::Die : TickDie(); break;
 	}
 
 	
@@ -52,7 +58,7 @@ void UEQBaseFSM::TickIdle()
 {
 	
 
-	Target = Cast<ACharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	Target = Cast<AEQCharacterPlayer>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	if(Target != nullptr)
 	{
 		
@@ -72,14 +78,17 @@ void UEQBaseFSM::TickMove()
 	Req.SetGoalLocation(Destination);
 	AI-> BuildPathfindingQuery(Req,Query);
 	auto Result = NaviSys->FindPathSync(Query);
-	
-	if(Result.IsSuccessful() && Direction.Length() < 400 )
+
+
+	if(Result.IsSuccessful() && Direction.Length() < DetectionRange)
 	{
-		ChaseSpeed = Self->GetCharacterMovement()->MaxWalkSpeed  = 450.f;
+		// 속도를 추적속도로 바꾸고
+		ChaseSpeed = Self->GetCharacterMovement()->MaxWalkSpeed  = 350.f;
 		Self->GetCharacterMovement()->MaxWalkSpeed = ChaseSpeed;
 		AI->MoveToLocation(Destination);
+	
 	}
-	else
+	else if(Result.IsSuccessful() && Direction.Length() > DetectionRange)
 	{
 		Self->GetCharacterMovement()->MaxWalkSpeed = BasicSpeed;
 		FPathFollowingRequestResult R;
@@ -89,34 +98,37 @@ void UEQBaseFSM::TickMove()
 		{
 			UpdateRandLoc(Self->GetActorLocation(),500,RandomLoc);
 			ChaseSpeed = BasicSpeed;
-			
+		
 		}
 	}
-	if(Direction.Length() < AttackRange)
+	if(Direction.Length()<=AttackRange)
 	{
 		SetState(EMonsterState::Attack);
+		CurrentTime = AttackTime;
+		AI->StopMovement();
 	}
+	
 }
 
 void UEQBaseFSM::TickAttack()
 {
-	CurrentTime += GetWorld()->GetDeltaSeconds();
-	float Dist = FVector::Dist(Target->GetActorLocation(),Self->GetActorLocation());
-	if(CurrentTime>AttackTime)
-	{
-		if(Dist > AttackRange)
-		{
-			
-			SetState(EMonsterState::Move);
-		}
-		else
-		{
-			UE_LOG(LogTemp,Warning,TEXT("Attack!!!!!!!!!!!"));
-			SetState(EMonsterState::Move);
-		}
-		
-		
-	}
+	
+}
+
+void UEQBaseFSM::TickHit()
+{
+}
+
+void UEQBaseFSM::TickDie()
+{
+}
+
+void UEQBaseFSM::ShootWeb()
+{
+}
+
+void UEQBaseFSM::ScorpionPrj()
+{
 }
 
 void UEQBaseFSM::SetState(EMonsterState Next)
@@ -127,6 +139,7 @@ void UEQBaseFSM::SetState(EMonsterState Next)
 		UpdateRandLoc(Self->GetActorLocation(),500,RandomLoc);
 	
 	}
+	AnimInst->State = Next;
 	State = Next;
 	CurrentTime = 0;
 }

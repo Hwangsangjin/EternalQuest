@@ -6,8 +6,21 @@
     <projectFile>../Unreal/UE_5.3/Engine/Source/Programs/UnrealBuildTool/UnrealBuildTool.csproj</projectFile>
     <projectFile>Intermediate/ProjectFiles/EternalQuest.vcxproj</projectFile>
   </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="63226f85-0a41-4fd5-9731-20837f29bd3b" name="변경" comment="" />
+    <list default="true" id="63226f85-0a41-4fd5-9731-20837f29bd3b" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.EternalQuest/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.EternalQuest/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/BP_CharacterPlayer.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/BP_CharacterPlayer.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Input/IMC_Default.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Input/IMC_Default.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Character/EQCharacterNeutralPlayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Character/EQCharacterNeutralPlayer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Character/EQCharacterNeutralPlayer.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Character/EQCharacterNeutralPlayer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Character/EQCharacterNeutralPlayerSeungTae.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Character/EQCharacterNeutralPlayerSeungTae.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Character/EQCharacterNeutralPlayerSeungTae.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Character/EQCharacterNeutralPlayerSeungTae.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Interface/EQInterfaceNPCPrompt.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Interface/EQInterfaceNPCPrompt.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Widget/EQWidgetNpcPrompt.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Widget/EQWidgetNpcPrompt.cpp" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -27,26 +40,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "C++ 프로젝트.EternalQuest.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "LDJ",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;rider.external.source.directories&quot;: [
-      &quot;C:\\Users\\Rooney\\AppData\\Roaming\\JetBrains\\Rider2023.3\\resharper-host\\DecompilerCache&quot;,
-      &quot;C:\\Users\\Rooney\\AppData\\Roaming\\JetBrains\\Rider2023.3\\resharper-host\\SourcesCache&quot;,
-      &quot;C:\\Users\\Rooney\\AppData\\Local\\Symbols\\src&quot;
+  "keyToStringList": {
+    "rider.external.source.directories": [
+      "C:\\Users\\Rooney\\AppData\\Roaming\\JetBrains\\Rider2023.3\\resharper-host\\DecompilerCache",
+      "C:\\Users\\Rooney\\AppData\\Roaming\\JetBrains\\Rider2023.3\\resharper-host\\SourcesCache",
+      "C:\\Users\\Rooney\\AppData\\Local\\Symbols\\src"
     ]
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="C++ 프로젝트.EternalQuest">
     <configuration name="EternalQuest" type="CppProject" factoryName="C++ Project">
       <configuration_1>
@@ -170,6 +184,7 @@
       <option name="presentableId" value="Default" />
       <updated>1707120520026</updated>
       <workItem from="1707120522354" duration="506000" />
+      <workItem from="1707354322729" duration="6697000" />
     </task>
     <servers />
   </component>
