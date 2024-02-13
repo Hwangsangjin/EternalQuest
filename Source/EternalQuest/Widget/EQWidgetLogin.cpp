@@ -95,7 +95,7 @@ void UEQWidgetLogin::LoginSetoff()
 
 void UEQWidgetLogin::MageButtonClicked()
 {
-	GameInstance->SetCharacterClass(ECharacterClass::ECC_Mage);
+	GameInstance->SetClassType(EClassType::ECT_Mage);
 
 	Button_Mage->SetBackgroundColor(FLinearColor(0.411765f, 0.8f, 0.941177f, 1.0f));
 	Button_Warrior->SetBackgroundColor(FLinearColor(1.0f, 1.0f, 1.0f, 0.8f));
@@ -103,7 +103,7 @@ void UEQWidgetLogin::MageButtonClicked()
 
 void UEQWidgetLogin::WarriorButtonClicked()
 {
-	GameInstance->SetCharacterClass(ECharacterClass::ECC_Warrior);
+	GameInstance->SetClassType(EClassType::ECT_Warrior);
 
 	Button_Warrior->SetBackgroundColor(FLinearColor(0.780392f, 0.611765f, 0.431373f, 1.0f));
 	Button_Mage->SetBackgroundColor(FLinearColor(1.0f, 1.0f, 1.0f, 0.8f));
