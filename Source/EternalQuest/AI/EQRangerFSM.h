@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 #pragma once
 
@@ -6,6 +6,8 @@
 #include "AI/EQBaseFSM.h"
 #include "EQRangerFSM.generated.h"
 
+
+class AEQSpiderWeb;
 /**
  * 
  */
@@ -13,5 +15,18 @@ UCLASS()
 class ETERNALQUEST_API UEQRangerFSM : public UEQBaseFSM
 {
 	GENERATED_BODY()
-	
+
+public:
+	virtual void BeginPlay() override;
+	virtual void TickMove() override;
+	virtual void TickAttack() override;
+	virtual void TickHit() override;
+
+	UPROPERTY(EditAnywhere,Category="MonsterAnim")
+	UAnimMontage* AnimMontage;
+
+	virtual void ShootWeb() override;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AEQSpiderWeb> WebFactory;
 };

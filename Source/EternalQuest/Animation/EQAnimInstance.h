@@ -6,6 +6,7 @@
 #include "Animation/AnimInstance.h"
 #include "EQAnimInstance.generated.h"
 
+enum class EMonsterState : uint8;
 class ACharacter;
 class UCharacterMovementComponent;
 
@@ -48,4 +49,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character)
 	float JumpingThreshold;
+
+
 };

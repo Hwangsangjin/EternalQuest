@@ -5,6 +5,9 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "EQBaseFSM.generated.h"
+class AEQCharacterPlayer;
+class UEQEnemyAnim;
+class UEQAnimInstance;
 class AEQCharacterBase;
 class AAIController;
 class AEQNormalEnemy;
@@ -15,6 +18,8 @@ enum class EMonsterState : uint8
 	Idle,
 	Move,
 	Attack,
+	Hit,
+	Die,
 };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -45,22 +50,31 @@ public:
 	AAIController* AI;
 
 	UPROPERTY(EditAnywhere,Category="Monster")
-	ACharacter* Target;
+	AEQCharacterPlayer* Target;
 
-private:
+public:
 	float CurrentTime = 0;
 	float AttackTime = 2.0f;
-	float AttackRange = 300.f;
+	float AttackRange;
 	float ChaseSpeed;
 	float BasicSpeed;
+	float DetectionRange = 450;
 	FVector RandomLoc;
 
 protected:
 	void TickIdle();
-	void TickMove();
+	virtual void TickMove();
 	virtual void TickAttack();
+	virtual void TickHit();
+	void TickDie();
 
 public:
+	virtual void ShootWeb();
+	virtual void ScorpionPrj();
 	void SetState(EMonsterState Next);
 	bool UpdateRandLoc(FVector OldLoc, float Radius, FVector& NewLoc);
+
+public:
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Animation")
+	UEQEnemyAnim* AnimInst;
 };
