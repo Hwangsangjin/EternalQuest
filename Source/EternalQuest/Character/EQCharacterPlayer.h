@@ -6,6 +6,9 @@
 #include "Character/EQCharacterBase.h"
 #include "EQCharacterPlayer.generated.h"
 
+class UEQComponentMenuManager;
+class UEQComponentInventory;
+class UEQComponentBase;
 class USpringArmComponent;
 class UCameraComponent;
 class UInputMappingContext;
@@ -70,4 +73,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UEQComponentInteraction> InteractionComp;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UEQComponentInventory> InventoryComp;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UEQComponentMenuManager> MenuManagerComp;
 };

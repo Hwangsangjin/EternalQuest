@@ -11,6 +11,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "Action/EQComponentMove.h"
 #include "Action/EQComponentInteraction.h"
+#include "Action/EQComponentInventory.h"
+#include "Action/EQComponentMenuManager.h"
 #include "Kismet/GameplayStatics.h"
 
 AEQCharacterPlayer::AEQCharacterPlayer()
@@ -56,6 +58,8 @@ AEQCharacterPlayer::AEQCharacterPlayer()
 	// Component
 	MoveComp = CreateDefaultSubobject<UEQComponentMove>(TEXT("Move Component"));
 	InteractionComp = CreateDefaultSubobject<UEQComponentInteraction>(TEXT("Interaction Component"));
+	InventoryComp = CreateDefaultSubobject<UEQComponentInventory>(TEXT("Inventory Component"));
+	MenuManagerComp = CreateDefaultSubobject<UEQComponentMenuManager>(TEXT("MenuManager Component"));
 }
 
 void AEQCharacterPlayer::BeginPlay()
