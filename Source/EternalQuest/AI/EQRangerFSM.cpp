@@ -17,7 +17,8 @@
 void UEQRangerFSM::BeginPlay()
 {
 	Super::BeginPlay();
-	AttackRange = 800;
+	AttackRange = 800.f;
+	BasicSpeed = 250.f;
 }
 
 void UEQRangerFSM::TickMove()
@@ -96,12 +97,7 @@ void UEQRangerFSM::TickAttack()
 	}
 }
 
-void UEQRangerFSM::TickHit()
-{
-	Super::TickHit();
-	SetState(EMonsterState::Move);
-	Self->PlayAnimMontage(AnimMontage,1,FName("Hit"));
-}
+
 
 void UEQRangerFSM::ShootWeb()
 {

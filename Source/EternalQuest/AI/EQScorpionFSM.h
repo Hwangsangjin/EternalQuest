@@ -23,21 +23,18 @@ class ETERNALQUEST_API UEQScorpionFSM : public UEQBaseFSM
 protected:
 	virtual void TickMove() override;
 	virtual void TickAttack() override;
-	virtual void TickHit() override;
-	virtual void TickDie() override;
 
 public:
-	UPROPERTY(EditAnywhere,Category="MonsterAnim")
-	UAnimMontage* AnimMontage;
-
 	UPROPERTY(EditAnywhere,Category="Skills")
 	TSubclassOf<AEQScorpionSkill> SkillFactory;
 
 	
 	
 private:
-	float MeleeAttackRange = 500;
-	float RangeAttackRange = 1500;
+	float MeleeAttackRange = 400;
+	float MinRangeAttackRange = 800;
+	float MaxRangeAttackRange = 1500;
+	bool bIsUsingSkill;
 
 public:
 	void ScorpionAttack();

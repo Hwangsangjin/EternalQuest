@@ -52,15 +52,22 @@ public:
 	UPROPERTY(EditAnywhere,Category="Monster")
 	AEQCharacterPlayer* Target;
 
-public:
+	UPROPERTY(EditAnywhere,Category="Animation")
+	UAnimMontage* AnimMontage;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Animation")
+	UEQEnemyAnim* AnimInst;
+
+protected:
 	float CurrentTime = 0;
 	float AttackTime = 2.0f;
 	float AttackRange;
-	float ChaseSpeed;
+	float ChaseSpeed = 800;
 	float BasicSpeed;
 	float DetectionRange = 450;
 	float DieTime = 2.0f;
 	FVector RandomLoc;
+	
 	
 
 protected:
@@ -69,6 +76,7 @@ protected:
 	virtual void TickAttack();
 	virtual void TickHit();
 	virtual void TickDie();
+	
 
 
 public:
@@ -76,8 +84,4 @@ public:
 	virtual void ScorpionPrj();
 	void SetState(EMonsterState Next);
 	bool UpdateRandLoc(FVector OldLoc, float Radius, FVector& NewLoc);
-
-public:
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Animation")
-	UEQEnemyAnim* AnimInst;
 };

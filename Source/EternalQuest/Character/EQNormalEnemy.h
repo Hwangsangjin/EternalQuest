@@ -28,7 +28,16 @@ public:
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Ability")
 	UWidgetComponent* HPComp;
-	
+
+	UPROPERTY(EditAnywhere,Category="Ability")
+	float DetectRange = 1500.f;
+	bool bCanShowHP = false;
+
+	void SetActive(bool InActive);
+	bool IsActive();
+	void Deactivate();
+
+	bool Active;
 	
 	void Tick(float DeltaSeconds) override;
 	

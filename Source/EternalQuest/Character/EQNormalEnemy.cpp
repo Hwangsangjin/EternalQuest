@@ -3,6 +3,7 @@
 
 #include "Character/EQNormalEnemy.h"
 
+#include "EQCharacterPlayer.h"
 #include "AI/EQBaseFSM.h"
 #include "AI/EQMonsterAbility.h"
 #include "Components/WidgetComponent.h"
@@ -23,18 +24,38 @@ AEQNormalEnemy::AEQNormalEnemy()
 		HPComp->SetDrawSize(FVector2D(150,20));
 		HPComp->SetRelativeLocation(FVector(0,0,120));
 		HPComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		HPComp->SetVisibility(false);
 	}
+}
+
+void AEQNormalEnemy::SetActive(bool InActive)
+{
+	Active = InActive;
+	SetActorHiddenInGame(!InActive);
+}
+
+bool AEQNormalEnemy::IsActive()
+{
+	return Active;
+}
+
+void AEQNormalEnemy::Deactivate()
+{
+	SetActive(false);
 }
 
 void AEQNormalEnemy::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
+	auto Player = Cast<AEQCharacterPlayer>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	float Dist = FVector::Dist(Player->GetActorLocation(),this->GetActorLocation());
 	FVector Start = HPComp->GetComponentLocation();
 	FVector Target = UGameplayStatics::GetPlayerCameraManager(GetWorld(),0)->GetCameraLocation();
 	FRotator NewRotation = UKismetMathLibrary::FindLookAtRotation(Start,Target);
 	HPComp->SetWorldRotation(NewRotation);
-
+	if(Dist < DetectRange || bCanShowHP == true ) HPComp->SetVisibility(true);
+	else  HPComp->SetVisibility(false);
 	
 }
 

@@ -49,8 +49,6 @@ void AEQSpiderWeb::Tick(float DeltaTime)
 		FVector Velocity = Direction * Speed;
 		SetActorLocation(GetActorLocation()+Velocity*DeltaTime);	
 	}
-	
-
 }
 
 void AEQSpiderWeb::OverLapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
