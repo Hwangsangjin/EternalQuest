@@ -11,6 +11,7 @@
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/TextBlock.h"
+#include "Item/EQItemBase.h"
 #include "Widget/EQWidgetNpcPrompt.h"
 
 UEQComponentInteraction::UEQComponentInteraction()
@@ -28,6 +29,12 @@ UEQComponentInteraction::UEQComponentInteraction()
 	if (PromptWidgetFactoryRef.Succeeded())
 	{
 		PromptWidgetFactory = PromptWidgetFactoryRef.Class;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> EatItemRef(TEXT("/Game/LDJ/Inputs/IA_EatItem.IA_EatItem"));
+	if (EatItemRef.Succeeded())
+	{
+		EatItemAction = EatItemRef.Object;
 	}
 }
 
@@ -55,6 +62,7 @@ void UEQComponentInteraction::SetupPlayerInput(UInputComponent* PlayerInputCompo
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		EnhancedInputComponent->BindAction(InteractionAction, ETriggerEvent::Started, this, &UEQComponentInteraction::Interaction);
+		EnhancedInputComponent->BindAction(EatItemAction, ETriggerEvent::Started, this, &UEQComponentInteraction::EatItem);
 	}
 }
 
@@ -69,13 +77,23 @@ void UEQComponentInteraction::Interaction()
 	PromptWidget->AddToViewport();
 }
 
+void UEQComponentInteraction::EatItem()
+{
+	GEngine->AddOnScreenDebugMessage(-1,3,FColor::Red,TEXT("UEQComponentInteraction::EatItem"));
+}
+
 void UEQComponentInteraction::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                                                UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	NPC = Cast<AEQCharacterNeutralPlayer>(OtherActor);
+	Item = Cast<AEQItemBase>(OtherActor);
 	if (NPC)
 	{
 		NPC->GetMesh()->SetRenderCustomDepth(true);
+	}
+	if (Item)
+	{
+		Item->MeshComp->SetRenderCustomDepth(true);
 	}
 }
 
@@ -83,10 +101,15 @@ void UEQComponentInteraction::OnBoxEndOverlap(UPrimitiveComponent* OverlappedCom
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	NPC = Cast<AEQCharacterNeutralPlayer>(OtherActor);
+	Item = Cast<AEQItemBase>(OtherActor);
 	if (NPC)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Red, TEXT("OnBoxEndOverlap"));
 		NPC->GetMesh()->SetRenderCustomDepth(false);
 		NPC = nullptr;
+	}
+	if (Item)
+	{
+		Item->MeshComp->SetRenderCustomDepth(false);
+		Item = nullptr;
 	}
 }
