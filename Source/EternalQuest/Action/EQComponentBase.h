@@ -30,6 +30,6 @@ public:
 	TObjectPtr<AEQCharacterPlayer> Player;
 
 	UPROPERTY()
-	TObjectPtr<AEQPlayerController> PlayerController;
+	TObjectPtr<AEQPlayerController> EQPlayerController;
 	// ----- 변수 -----
 };

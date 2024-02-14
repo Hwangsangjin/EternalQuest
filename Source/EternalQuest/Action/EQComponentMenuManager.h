@@ -7,6 +7,7 @@
 #include "Action/EQComponentBase.h"
 #include "EQComponentMenuManager.generated.h"
 
+class UEQWidgetIconBar;
 /**
  * 
  */
@@ -24,12 +25,17 @@ public:
 	// ----- Override 함수 -----
 
 	// ----- 함수 -----
-	void CallMenu(const FInputActionValue& Value);
+	void CallInventory(const FInputActionValue& Value);
+	void FlipFlopMouseMode(const FInputActionValue& Value);
 	// ----- 함수 -----
 
 	// ----- 변수 -----
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
-	TObjectPtr<UInputAction> CallMenuAction;
+	TObjectPtr<UInputAction> CallInventoryAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UInputAction> MouseModeAction;
 	
+	bool bMouseModeFlag = false;
 	// ----- 변수 -----
 };

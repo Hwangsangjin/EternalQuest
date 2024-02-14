@@ -4,13 +4,23 @@
 #include "Action/EQComponentMenuManager.h"
 
 #include "EnhancedInputComponent.h"
+#include "Player/EQPlayerController.h"
+#include "Widget/EQWidgetIconBar.h"
+#include "Widget/EQWidgetInventory.h"
+#include "Widget/EQWidgetMainUI.h"
 
 UEQComponentMenuManager::UEQComponentMenuManager()
 {
-	static ConstructorHelpers::FObjectFinder<UInputAction> CallMenuRef(TEXT("/Game/LDJ/Inputs/IA_CallMenu.IA_CallMenu"));
-	if (CallMenuRef.Object)
+	static ConstructorHelpers::FObjectFinder<UInputAction> CallInventoryRef(TEXT("/Game/LDJ/Inputs/IA_CallInventory.IA_CallInventory"));
+	if (CallInventoryRef.Object)
 	{
-		CallMenuAction = CallMenuRef.Object;
+		CallInventoryAction = CallInventoryRef.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> MouseModeRef(TEXT("/Game/LDJ/Inputs/IA_MouseMode.Ia_MouseMode"));
+	if (MouseModeRef.Object)
+	{
+		MouseModeAction = MouseModeRef.Object;
 	}
 }
 
@@ -30,11 +40,32 @@ void UEQComponentMenuManager::SetupPlayerInput(UInputComponent* PlayerInputCompo
 	Super::SetupPlayerInput(PlayerInputComponent);
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-		EnhancedInputComponent->BindAction(CallMenuAction, ETriggerEvent::Started, this, &UEQComponentMenuManager::CallMenu);
+		EnhancedInputComponent->BindAction(CallInventoryAction, ETriggerEvent::Started, this, &UEQComponentMenuManager::CallInventory);
+		EnhancedInputComponent->BindAction(MouseModeAction, ETriggerEvent::Started, this, &UEQComponentMenuManager::FlipFlopMouseMode);
 	}
 }
 
-void UEQComponentMenuManager::CallMenu(const FInputActionValue& Value)
+void UEQComponentMenuManager::CallInventory(const FInputActionValue& Value)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, TEXT("CallMenu"));
+	EQPlayerController->EQWidgetMainUI->WBP_EQWidgetIconBar->OnClickInventory();
+}
+
+void UEQComponentMenuManager::FlipFlopMouseMode(const FInputActionValue& Value)
+{
+	if (bMouseModeFlag)
+	{
+		bMouseModeFlag = false;
+		EQPlayerController->SetShowMouseCursor(false);
+		const FInputModeGameOnly GameOnly;
+		EQPlayerController->SetInputMode(GameOnly);
+		GEngine->AddOnScreenDebugMessage(-1,3,FColor::Red, TEXT("Closed"));
+	}
+	else
+	{
+		bMouseModeFlag = true;
+		EQPlayerController->SetShowMouseCursor(true);
+		const FInputModeGameAndUI GameAndUI;
+		EQPlayerController->SetInputMode(GameAndUI);
+		GEngine->AddOnScreenDebugMessage(-1,3,FColor::Red, TEXT("Open"));
+	}
 }

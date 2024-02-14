@@ -11,7 +11,11 @@
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/TextBlock.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Item/EQItemBase.h"
+#include "Player/EQPlayerController.h"
+#include "Widget/EQWidgetInteract.h"
+#include "Widget/EQWidgetMainUI.h"
 #include "Widget/EQWidgetNpcPrompt.h"
 
 UEQComponentInteraction::UEQComponentInteraction()
@@ -70,7 +74,7 @@ void UEQComponentInteraction::Interaction()
 {
 	if (!NPC) return;
 	PromptWidget->PullNPCInfomation(NPC);
-	FInputModeUIOnly InData;
+	FInputModeGameAndUI InData;
 	GetWorld()->GetFirstPlayerController()->SetInputMode(InData);
 	GetWorld()->GetFirstPlayerController()->SetShowMouseCursor(true);
 	/////
@@ -90,9 +94,13 @@ void UEQComponentInteraction::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedC
 	if (NPC)
 	{
 		NPC->GetMesh()->SetRenderCustomDepth(true);
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetInteract->InteractDisable();
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetInteract->InteractShowNPC();
 	}
 	if (Item)
 	{
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetInteract->InteractDisable();
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetInteract->InteractShowItem();
 		Item->MeshComp->SetRenderCustomDepth(true);
 	}
 }
@@ -104,11 +112,13 @@ void UEQComponentInteraction::OnBoxEndOverlap(UPrimitiveComponent* OverlappedCom
 	Item = Cast<AEQItemBase>(OtherActor);
 	if (NPC)
 	{
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetInteract->InteractDisable();
 		NPC->GetMesh()->SetRenderCustomDepth(false);
 		NPC = nullptr;
 	}
 	if (Item)
 	{
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetInteract->InteractDisable();
 		Item->MeshComp->SetRenderCustomDepth(false);
 		Item = nullptr;
 	}

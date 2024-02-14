@@ -6,6 +6,8 @@
 #include "Blueprint/UserWidget.h"
 #include "EQWidgetMainUI.generated.h"
 
+class UEQWidgetInventory;
+class UEQWidgetIconBar;
 class UEQWidgetInteract;
 /**
  * 
@@ -16,5 +18,11 @@ class ETERNALQUEST_API UEQWidgetMainUI : public UUserWidget
 	GENERATED_BODY()
 public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, meta=(BindWidget))
-	UEQWidgetInteract* WBP_EQWidgetInteract;
+	TObjectPtr<UEQWidgetInteract> WBP_EQWidgetInteract;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, meta=(BindWidget))
+	TObjectPtr<UEQWidgetIconBar> WBP_EQWidgetIconBar;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, meta=(BindWidget))
+	TObjectPtr<UEQWidgetInventory> WBP_EQWidgetInventory;
 };
