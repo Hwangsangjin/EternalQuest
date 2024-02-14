@@ -7,6 +7,7 @@
 #include "Action/EQComponentBase.h"
 #include "EQComponentInteraction.generated.h"
 
+class AEQItemBase;
 class UEQWidgetNpcPrompt;
 class AEQCharacterNeutralPlayer;
 class UBoxComponent;
@@ -29,6 +30,7 @@ public:
 
 	// ----- 함수 -----
 	void Interaction();
+	void EatItem();
 	UFUNCTION()
 	void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 		AActor* OtherActor,
@@ -47,8 +49,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UInputAction> InteractionAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UInputAction> EatItemAction;
+
 	UPROPERTY()
 	TObjectPtr<AEQCharacterNeutralPlayer> NPC;
+	
+	UPROPERTY()
+	TObjectPtr<AEQItemBase> Item;
 
 	UPROPERTY()
 	TSubclassOf<UUserWidget> PromptWidgetFactory;
