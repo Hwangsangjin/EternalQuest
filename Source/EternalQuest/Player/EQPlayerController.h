@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "EQPlayerController.generated.h"
 
+class UEQWidgetInventory;
 class UEQWidgetMainUI;
 /**
  * 
@@ -26,4 +27,5 @@ public:
 
 	UPROPERTY()
 	TObjectPtr<UEQWidgetMainUI> EQWidgetMainUI;
+	
 };

@@ -16,6 +16,8 @@ UEQComponentInventory::UEQComponentInventory()
 void UEQComponentInventory::BeginPlay()
 {
 	Super::BeginPlay();
+
+	FItemSlot* Result = ItemID->FindRow<FItemSlot>(FName("TestItem"), "");
 }
 
 void UEQComponentInventory::TickComponent(float DeltaTime, ELevelTick TickType,

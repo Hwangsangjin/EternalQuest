@@ -44,7 +44,7 @@ void UEQComponentBase::InitializeComponent()
 	FTimerHandle Handle;
 	GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
 	{
-		PlayerController = Cast<AEQPlayerController>(Player->Controller);
+		EQPlayerController = Cast<AEQPlayerController>(Player->Controller);
 	}), 0.2, false, 0.2);
 }
 
