@@ -11,15 +11,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="63226f85-0a41-4fd5-9731-20837f29bd3b" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.EternalQuest/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.EternalQuest/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/BP_CharacterPlayer.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/BP_CharacterPlayer.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Input/IMC_Default.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Input/IMC_Default.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Character/EQCharacterNeutralPlayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Character/EQCharacterNeutralPlayer.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Character/EQCharacterNeutralPlayer.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Character/EQCharacterNeutralPlayer.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Character/EQCharacterNeutralPlayerSeungTae.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Character/EQCharacterNeutralPlayerSeungTae.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Character/EQCharacterNeutralPlayerSeungTae.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Character/EQCharacterNeutralPlayerSeungTae.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Interface/EQInterfaceNPCPrompt.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Interface/EQInterfaceNPCPrompt.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Widget/EQWidgetNpcPrompt.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Widget/EQWidgetNpcPrompt.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/BP_Mush.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/BP_Mush.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Maps/KesTestMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/KesTestMap.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/AI/EQEnemyPool.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/AI/EQEnemyPool.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/AI/EQEnemyPool.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/AI/EQEnemyPool.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/AI/EQScorpionFSM.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/AI/EQScorpionFSM.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,7 +41,8 @@
     "C++ 프로젝트.EternalQuest.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "LDJ",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "KSE",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -118,6 +115,17 @@
         <option name="PASS_PARENT_ENVS" value="1" />
         <option name="USE_EXTERNAL_CONSOLE" value="0" />
       </configuration_5>
+      <configuration_6>
+        <option name="CONFIGURATION" value="" />
+        <option name="PLATFORM" value="" />
+        <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/EternalQuest.vcxproj" />
+        <option name="CURRENT_LAUNCH_PROFILE" value="Local" />
+        <option name="EXE_PATH" value="$(TargetPath)" />
+        <option name="PROGRAM_PARAMETERS" value="" />
+        <option name="WORKING_DIRECTORY" value="$(ProjectDir)" />
+        <option name="PASS_PARENT_ENVS" value="1" />
+        <option name="USE_EXTERNAL_CONSOLE" value="0" />
+      </configuration_6>
       <option name="DEFAULT_PROJECT_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/EternalQuest.vcxproj" />
       <method v="2">
         <option name="Build" />
@@ -185,6 +193,7 @@
       <updated>1707120520026</updated>
       <workItem from="1707120522354" duration="506000" />
       <workItem from="1707354322729" duration="6697000" />
+      <workItem from="1707929295937" duration="5000" />
     </task>
     <servers />
   </component>

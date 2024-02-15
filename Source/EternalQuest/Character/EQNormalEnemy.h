@@ -28,7 +28,16 @@ public:
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Ability")
 	UWidgetComponent* HPComp;
-	
+
+	UPROPERTY(EditAnywhere,Category="Ability")
+	float DetectRange = 1500.f;
+	bool bCanShowHP = false;
+
+	void ActivateEnemy(const FVector& SpawnLocation);
+	bool IsActive();
+	void Deactivate();
+private:
+	bool bIsActive;
 	
 	void Tick(float DeltaSeconds) override;
 	

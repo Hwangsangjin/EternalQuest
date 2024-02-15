@@ -4,14 +4,14 @@
 #include "AI/EQBaseFSM.h"
 
 #include "AIController.h"
+#include "EQEnemyPool.h"
 #include "NavigationSystem.h"
-#include "Animation/EQAnimInstance.h"
 #include "Animation/EQEnemyAnim.h"
 #include "Character/EQCharacterBase.h"
 #include "Character/EQCharacterPlayer.h"
 #include "Character/EQNormalEnemy.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Navigation/PathFollowingComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 
 UEQBaseFSM::UEQBaseFSM()
@@ -19,7 +19,6 @@ UEQBaseFSM::UEQBaseFSM()
 
 	PrimaryComponentTick.bCanEverTick = true;
 	bWantsInitializeComponent = true;
-	
 }
 
 
@@ -27,7 +26,6 @@ UEQBaseFSM::UEQBaseFSM()
 void UEQBaseFSM::BeginPlay()
 {
 	Super::BeginPlay();
-
 	Self = Cast<AEQNormalEnemy>(GetOwner());
 	AI = Cast<AAIController>(Self->GetController());
 	BasicSpeed = Self->GetCharacterMovement()->MaxWalkSpeed = 100;
@@ -56,8 +54,6 @@ void UEQBaseFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompo
 
 void UEQBaseFSM::TickIdle()
 {
-	
-
 	Target = Cast<AEQCharacterPlayer>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	if(Target != nullptr)
 	{
@@ -66,71 +62,42 @@ void UEQBaseFSM::TickIdle()
 	}
 }
 
-void UEQBaseFSM::TickMove()
-{
-	
-	FVector Direction = Target->GetActorLocation() - Self->GetActorLocation();
-	FVector Destination = Target->GetActorLocation();
-	UNavigationSystemV1* NaviSys = UNavigationSystemV1::GetNavigationSystem(GetWorld());
-	FPathFindingQuery Query;
-	FAIMoveRequest Req;
-	Req.SetAcceptanceRadius(50);
-	Req.SetGoalLocation(Destination);
-	AI-> BuildPathfindingQuery(Req,Query);
-	auto Result = NaviSys->FindPathSync(Query);
+void UEQBaseFSM::TickMove() {}
 
-
-	if(Result.IsSuccessful() && Direction.Length() < DetectionRange)
-	{
-		// 속도를 추적속도로 바꾸고
-		ChaseSpeed = Self->GetCharacterMovement()->MaxWalkSpeed  = 350.f;
-		Self->GetCharacterMovement()->MaxWalkSpeed = ChaseSpeed;
-		AI->MoveToLocation(Destination);
-	
-	}
-	else if(Result.IsSuccessful() && Direction.Length() > DetectionRange)
-	{
-		Self->GetCharacterMovement()->MaxWalkSpeed = BasicSpeed;
-		FPathFollowingRequestResult R;
-		// Ai는 Controller가 Server에만 있기 떄문에 Has Authority 를 사용하여 서버임을 알린다.
-		R.Code = AI -> MoveToLocation(RandomLoc);
-		if(R != EPathFollowingRequestResult::RequestSuccessful)
-		{
-			UpdateRandLoc(Self->GetActorLocation(),500,RandomLoc);
-			ChaseSpeed = BasicSpeed;
-		
-		}
-	}
-	if(Direction.Length()<=AttackRange)
-	{
-		SetState(EMonsterState::Attack);
-		CurrentTime = AttackTime;
-		AI->StopMovement();
-	}
-	
-}
-
-void UEQBaseFSM::TickAttack()
-{
-	
-}
+void UEQBaseFSM::TickAttack() {}
 
 void UEQBaseFSM::TickHit()
 {
+	Self->PlayAnimMontage(AnimMontage, 1, FName("Hit"));
+	AActor* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	if (PlayerCharacter)
+	{
+		FVector PlayerLocation = PlayerCharacter->GetActorLocation();
+		AI->MoveToLocation(PlayerLocation);
+		SetState(EMonsterState::Attack);
+	}
+	Self->bCanShowHP = true;
 }
 
 void UEQBaseFSM::TickDie()
 {
+	CurrentTime += GetWorld()->GetDeltaSeconds();
+	
+	Self->PlayAnimMontage(AnimMontage,1,FName("Died"));
+	
+	Self->SetActorEnableCollision(ECollisionEnabled::NoCollision);
+	if(CurrentTime>DieTime)
+	{
+		Pool->ReturnEnemyToPool(Self);
+		UE_LOG(LogTemp,Warning,TEXT("BackToPool"));
+	}
 }
 
 
-void UEQBaseFSM::ShootWeb()
-{
-}
 
-void UEQBaseFSM::ScorpionPrj()
-{
-}
+void UEQBaseFSM::ShootWeb() {}
+
+void UEQBaseFSM::ScorpionPrj() {}
 
 
 
@@ -149,6 +116,7 @@ void UEQBaseFSM::SetState(EMonsterState Next)
 
 bool UEQBaseFSM::UpdateRandLoc(FVector OldLoc, float Radius, FVector& NewLoc)
 {
+	
 	auto NS = UNavigationSystemV1::GetNavigationSystem(GetWorld());
 	FNavLocation Location;
 	bool Result = NS->GetRandomReachablePointInRadius(OldLoc,Radius,Location);
@@ -162,6 +130,8 @@ bool UEQBaseFSM::UpdateRandLoc(FVector OldLoc, float Radius, FVector& NewLoc)
 		return UpdateRandLoc(OldLoc,Radius,NewLoc);
 	}
 }
+
+
 
 
 
