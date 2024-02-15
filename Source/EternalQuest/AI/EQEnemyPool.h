@@ -22,23 +22,30 @@ public:
 protected:
 	
 	virtual void BeginPlay() override;
-
 public:	
 	
 	virtual void Tick(float DeltaTime) override;
 
-	
-	AEQNormalEnemy* GetPooledMonster();
-	void ReturnToPool(AEQMush* ReturnMush);
-	
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Pool")
-	TMap<TSubclassOf<AEQNormalEnemy>,int32> Pool;
-	
-	UPROPERTY(EditAnywhere,Category="MonsterPool")
-	float SpawnInterval;
-
-	FTimerHandle TimerHandle;
 public:
-	UPROPERTY(EditAnywhere,Category="MonsterPool")
-	TSubclassOf<AEQMush> PooledMushClass;
+	UFUNCTION()
+	void SpawnEnemy(const FVector& SpawnLocation);
+
+public:
+	UPROPERTY(EditDefaultsOnly,Category="Pool")
+	TSubclassOf<AEQNormalEnemy> EnemyFactory;
+
+	TArray<AEQNormalEnemy*> EnemyPool;
+
+	void InitPool();
+	int32 PoolSize = 10;
+	AEQNormalEnemy* GetInActiveEnemy();
+	void ReturnEnemyToPool(AEQNormalEnemy* Enemy);
+	
+
+
+	
+
+	
+
+
 };

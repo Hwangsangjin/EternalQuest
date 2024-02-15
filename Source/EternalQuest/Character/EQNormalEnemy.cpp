@@ -26,22 +26,30 @@ AEQNormalEnemy::AEQNormalEnemy()
 		HPComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		HPComp->SetVisibility(false);
 	}
+
+	bIsActive = false;
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 }
 
-void AEQNormalEnemy::SetActive(bool InActive)
+
+void AEQNormalEnemy::ActivateEnemy(const FVector& SpawnLocation)
 {
-	Active = InActive;
-	SetActorHiddenInGame(!InActive);
+	SetActorLocation(SpawnLocation);
+	SetActorEnableCollision(true);
+	SetActorHiddenInGame(false);
+	bIsActive = true;
 }
 
 bool AEQNormalEnemy::IsActive()
 {
-	return Active;
+	return bIsActive;
 }
 
 void AEQNormalEnemy::Deactivate()
 {
-	SetActive(false);
+	SetActorEnableCollision(false);
+	SetActorHiddenInGame(true);
+	bIsActive = false;
 }
 
 void AEQNormalEnemy::Tick(float DeltaSeconds)

@@ -33,11 +33,11 @@ public:
 	float DetectRange = 1500.f;
 	bool bCanShowHP = false;
 
-	void SetActive(bool InActive);
+	void ActivateEnemy(const FVector& SpawnLocation);
 	bool IsActive();
 	void Deactivate();
-
-	bool Active;
+private:
+	bool bIsActive;
 	
 	void Tick(float DeltaSeconds) override;
 	

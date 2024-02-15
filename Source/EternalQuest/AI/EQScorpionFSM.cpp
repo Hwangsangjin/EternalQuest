@@ -20,7 +20,7 @@ void UEQScorpionFSM::BeginPlay()
 	
 	DetectionRange = 2000.f;
 	AttackTime = 2.0f;
-	BasicSpeed = 350.f;
+	BasicSpeed = 300.f;
 	
 }
 

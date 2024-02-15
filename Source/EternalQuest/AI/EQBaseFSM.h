@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "EQBaseFSM.generated.h"
+class AEQEnemyPool;
 class AEQCharacterPlayer;
 class UEQEnemyAnim;
 class UEQAnimInstance;
@@ -57,6 +58,10 @@ public:
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Animation")
 	UEQEnemyAnim* AnimInst;
+
+	UPROPERTY(EditAnywhere,Category="Pool")
+	AEQEnemyPool* Pool;
+
 
 protected:
 	float CurrentTime = 0;

@@ -51,24 +51,25 @@ void UEQMeleeFSM::TickAttack()
 void UEQMeleeFSM::TickMove()
 {
 	Super::TickMove();
+	
 	FVector Direction = Target->GetActorLocation() - Self->GetActorLocation();
 	FVector Destination = Target->GetActorLocation();
 	UNavigationSystemV1* NaviSys = UNavigationSystemV1::GetNavigationSystem(GetWorld());
 	FPathFindingQuery Query;
 	FAIMoveRequest Req;
-	Req.SetAcceptanceRadius(50);
+	Req.SetAcceptanceRadius(100);
 	Req.SetGoalLocation(Destination);
 	AI-> BuildPathfindingQuery(Req,Query);
 	auto Result = NaviSys->FindPathSync(Query);
 
-
+	//UE_LOG(LogTemp,Warning,TEXT("%d,%f,%f"),Result.IsSuccessful(),Direction.Length(),DetectionRange);
 	if(Result.IsSuccessful() && Direction.Length() < DetectionRange)
 	{
+		
 		// 속도를 추적속도로 바꾸고
 		ChaseSpeed = Self->GetCharacterMovement()->MaxWalkSpeed  = 450.f;
 		Self->GetCharacterMovement()->MaxWalkSpeed = ChaseSpeed;
 		AI->MoveToLocation(Destination);
-	
 	}
 	else if(Result.IsSuccessful() && Direction.Length() > DetectionRange)
 	{
@@ -80,7 +81,7 @@ void UEQMeleeFSM::TickMove()
 		{
 			UpdateRandLoc(Self->GetActorLocation(),500,RandomLoc);
 			ChaseSpeed = BasicSpeed;
-		
+			
 		}
 	}
 	if(Direction.Length()<=AttackRange)

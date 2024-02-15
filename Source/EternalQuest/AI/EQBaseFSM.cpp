@@ -4,6 +4,7 @@
 #include "AI/EQBaseFSM.h"
 
 #include "AIController.h"
+#include "EQEnemyPool.h"
 #include "NavigationSystem.h"
 #include "Animation/EQEnemyAnim.h"
 #include "Character/EQCharacterBase.h"
@@ -81,13 +82,14 @@ void UEQBaseFSM::TickHit()
 void UEQBaseFSM::TickDie()
 {
 	CurrentTime += GetWorld()->GetDeltaSeconds();
-	UE_LOG(LogTemp,Warning,TEXT("DIE!!!!!!!!!!!!!!!!!!!!!!!!!!"));
+	
 	Self->PlayAnimMontage(AnimMontage,1,FName("Died"));
 	
 	Self->SetActorEnableCollision(ECollisionEnabled::NoCollision);
 	if(CurrentTime>DieTime)
 	{
-		Self->Destroy();
+		Pool->ReturnEnemyToPool(Self);
+		UE_LOG(LogTemp,Warning,TEXT("BackToPool"));
 	}
 }
 
@@ -114,6 +116,7 @@ void UEQBaseFSM::SetState(EMonsterState Next)
 
 bool UEQBaseFSM::UpdateRandLoc(FVector OldLoc, float Radius, FVector& NewLoc)
 {
+	
 	auto NS = UNavigationSystemV1::GetNavigationSystem(GetWorld());
 	FNavLocation Location;
 	bool Result = NS->GetRandomReachablePointInRadius(OldLoc,Radius,Location);
