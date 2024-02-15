@@ -3,9 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Action/EQComponentInventory.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/WrapBox.h"
 #include "EQWidgetInventory.generated.h"
 
+class UEQWidgetItemSlot;
+class UEQComponentInventory;
+class UWrapBox;
+class UWidgetSwitcher;
+class UButton;
 class USizeBox;
 /**
  * 
@@ -15,14 +22,69 @@ class ETERNALQUEST_API UEQWidgetInventory : public UUserWidget
 {
 	GENERATED_BODY()
 
+	UEQWidgetInventory(const FObjectInitializer &ObjectInitializer);
 public:
-
+	virtual void NativeConstruct() override;
 	// ----- 함수 -----
 	void OpenCloseInventoryWidget();
-	// ----- 함수 -----
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(BindWidget))
-	USizeBox* SizeBox_Base;
+	void UpdateItemInInventoryUI();
+	void ClearItemInventory();
+	void AddItemInventory();
 
-	bool bVisibilityFlag = false;
+	UFUNCTION()
+	void OnClickBtnEquip();
+
+	UFUNCTION()
+	void OnClickBtnConsume();
+
+	UFUNCTION()
+	void OnClickBtnMaterial();
+
+	UFUNCTION()
+	void OnClickBtnQuestItem();
+	// ----- 함수 -----
+
+	// ----- 변수 -----
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(BindWidget))
+	TObjectPtr<USizeBox> SizeBox_Base;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(BindWidget))
+	TObjectPtr<UButton> Btn_Equip;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(BindWidget))
+	TObjectPtr<UButton> Btn_Consume;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(BindWidget))
+	TObjectPtr<UButton> Btn_Material;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(BindWidget))
+	TObjectPtr<UButton> Btn_QuestItem;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(BindWidget))
+	TObjectPtr<UWidgetSwitcher> WS_Inventory;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(BindWidget))
+	TObjectPtr<UWrapBox> WrapBox_Equip;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(BindWidget))
+	TObjectPtr<UWrapBox> WrapBox_Consume;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(BindWidget))
+	TObjectPtr<UWrapBox> WrapBox_Material;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(BindWidget))
+	TObjectPtr<UWrapBox> WrapBox_QuestItem;
+	
+	bool bVisibilityFlag = false;
+
+	UPROPERTY()
+	TObjectPtr<UEQComponentInventory> EQComponentInventory;
+
+	UPROPERTY()
+	TObjectPtr<AEQCharacterPlayer> Player;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=ABCSettings)
+	TSubclassOf<UUserWidget> ItemSlotFactory;
+	// ----- 변수 -----
+
 };
