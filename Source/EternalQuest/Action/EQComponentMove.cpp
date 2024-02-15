@@ -7,6 +7,7 @@
 #include "Character/EQCharacterPlayer.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Player/EQPlayerController.h"
 
 UEQComponentMove::UEQComponentMove()
@@ -36,6 +37,12 @@ UEQComponentMove::UEQComponentMove()
 	{
 		LookAction = InputActionLookRef.Object;
 	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionSprintRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/Input/Actions/IA_Sprint.IA_Sprint'"));
+	if (InputActionSprintRef.Object)
+	{
+		SprintAction = InputActionSprintRef.Object;
+	}
 }
 
 void UEQComponentMove::BeginPlay()
@@ -59,6 +66,8 @@ void UEQComponentMove::SetupPlayerInput(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &UEQComponentMove::Move);
 		EnhancedInputComponent->BindAction(TurnAction, ETriggerEvent::Triggered, this, &UEQComponentMove::Turn);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &UEQComponentMove::Look);
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &ThisClass::Sprint);
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ThisClass::Sprint);
 	}
 }
 
@@ -96,6 +105,12 @@ void UEQComponentMove::Look(const FInputActionValue& Value)
 		Player->GetCameraBoom()->TargetArmLength = FMath::FInterpTo(Player->GetCameraBoom()->TargetArmLength, Player->GetCameraBoom()->TargetArmLength - 30.0f, GetWorld()->GetDeltaSeconds(), 150);
 	else
 		Player->GetCameraBoom()->TargetArmLength = FMath::FInterpTo(Player->GetCameraBoom()->TargetArmLength, Player->GetCameraBoom()->TargetArmLength + 30.0f, GetWorld()->GetDeltaSeconds(), 150);
+}
+
+void UEQComponentMove::Sprint(const FInputActionValue& Value)
+{
+	const bool bIsSprinting = Value.Get<bool>();
+	bIsSprinting ? Player->GetCharacterMovement()->MaxWalkSpeed = 600.0f : Player->GetCharacterMovement()->MaxWalkSpeed = 450.0f;
 }
 
 void UEQComponentMove::Jump(const FInputActionValue& Value)
