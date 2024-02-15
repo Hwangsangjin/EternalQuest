@@ -25,6 +25,7 @@ AEQNormalEnemy::AEQNormalEnemy()
 		HPComp->SetRelativeLocation(FVector(0,0,120));
 		HPComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		HPComp->SetVisibility(false);
+		HPComp->SetCastShadow(false);
 	}
 
 	bIsActive = false;
