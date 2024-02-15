@@ -29,6 +29,7 @@ public:
 	void Look(const FInputActionValue& Value);
 	void Jump(const FInputActionValue& Value);
 	void StopJumping(const FInputActionValue& Value);
+	void Sprint(const FInputActionValue& Value);
 	// ----- 함수 -----
 
 	// ----- 변수 -----
@@ -43,5 +44,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UInputAction> LookAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UInputAction> SprintAction;
 	// ----- 변수 -----
 };

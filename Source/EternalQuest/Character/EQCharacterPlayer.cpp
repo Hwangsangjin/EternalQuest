@@ -10,6 +10,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Action/EQComponentMove.h"
+#include "Action/EQComponentAttack.h"
 #include "Action/EQComponentInteraction.h"
 #include "Action/EQComponentInventory.h"
 #include "Action/EQComponentMenuManager.h"
@@ -57,6 +58,7 @@ AEQCharacterPlayer::AEQCharacterPlayer()
 
 	// Component
 	MoveComp = CreateDefaultSubobject<UEQComponentMove>(TEXT("Move Component"));
+	AttackComp = CreateDefaultSubobject<UEQComponentAttack>(TEXT("Attack Component"));
 	InteractionComp = CreateDefaultSubobject<UEQComponentInteraction>(TEXT("Interaction Component"));
 	InventoryComp = CreateDefaultSubobject<UEQComponentInventory>(TEXT("Inventory Component"));
 	MenuManagerComp = CreateDefaultSubobject<UEQComponentMenuManager>(TEXT("MenuManager Component"));

@@ -17,6 +17,7 @@ struct FInputActionValue;
 class UInputComponent;
 class UBoxComponent;
 class UEQComponentMove;
+class UEQComponentAttack;
 class UEQComponentInteraction;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FInputSignature, UInputComponent*)
@@ -55,6 +56,7 @@ protected:
 
 // Interaction Box
 public:
+	FORCEINLINE UEQComponentMove* GetMoveComponent() const { return MoveComp; }
 	FORCEINLINE UBoxComponent* GetInteractionBox() const { return InteractionBox; }
 
 protected:
@@ -70,6 +72,9 @@ protected:
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UEQComponentMove> MoveComp;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UEQComponentAttack> AttackComp;
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UEQComponentInteraction> InteractionComp;

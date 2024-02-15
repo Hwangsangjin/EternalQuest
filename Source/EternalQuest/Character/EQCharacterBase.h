@@ -12,7 +12,6 @@ class ETERNALQUEST_API AEQCharacterBase : public ACharacter
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	AEQCharacterBase();
 
 protected:
