@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "EQEnemySpawnManager.generated.h"
 
+class AEQNormalEnemy;
 class AEQMush;
 class AEQEnemyPool;
 
@@ -29,6 +30,8 @@ public:
 	UPROPERTY(EditAnywhere,Category="Pool")
 	AEQEnemyPool* Pool;
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AEQNormalEnemy> EnemyType;
 
 private:
 	FTimerHandle SpawnTimerHandle;
