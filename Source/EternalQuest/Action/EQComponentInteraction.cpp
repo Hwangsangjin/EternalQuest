@@ -4,6 +4,7 @@
 #include "Action/EQComponentInteraction.h"
 
 #include "EnhancedInputComponent.h"
+#include "EQComponentInventory.h"
 #include "Blueprint/UserWidget.h"
 #include "Character/EQCharacterNeutralPlayer.h"
 #include "Character/EQCharacterNonPlayer.h"
@@ -15,6 +16,7 @@
 #include "Item/EQItemBase.h"
 #include "Player/EQPlayerController.h"
 #include "Widget/EQWidgetInteract.h"
+#include "Widget/EQWidgetInventory.h"
 #include "Widget/EQWidgetMainUI.h"
 #include "Widget/EQWidgetNpcPrompt.h"
 
@@ -48,6 +50,7 @@ void UEQComponentInteraction::BeginPlay()
 	Player->GetInteractionBox()->OnComponentBeginOverlap.AddDynamic(this, &UEQComponentInteraction::OnBoxBeginOverlap);
 	Player->GetInteractionBox()->OnComponentEndOverlap.AddDynamic(this, &UEQComponentInteraction::OnBoxEndOverlap);
 	PromptWidget = Cast<UEQWidgetNpcPrompt>(CreateWidget(GetWorld(), PromptWidgetFactory));
+	EQComponentInventory = Player->FindComponentByClass<UEQComponentInventory>();
 }
 
 void UEQComponentInteraction::TickComponent(float DeltaTime, ELevelTick TickType,FActorComponentTickFunction* ThisTickFunction)
@@ -83,7 +86,127 @@ void UEQComponentInteraction::Interaction()
 
 void UEQComponentInteraction::EatItem()
 {
-	GEngine->AddOnScreenDebugMessage(-1,3,FColor::Red,TEXT("UEQComponentInteraction::EatItem"));
+	if (Item)
+	{
+		GEngine->AddOnScreenDebugMessage(-1,3,FColor::Red,TEXT("UEQComponentInteraction::EatItem"));
+		if (AddToInventory(Item->Slot))
+		{
+			Item->Destroy();
+			EQPlayerController->EQWidgetMainUI->WBP_EQWidgetInventory->UpdateItemInInventoryUI();
+		}
+	}
+}
+
+bool UEQComponentInteraction::AddToInventory(const FEQSlot& InSlot)
+{
+	if (InSlot.ItemType == EEQItemType::Equipment)
+	{
+		for (int i = 0; i < EQComponentInventory->EQAllItem.Equipment.Num(); i++)
+		{
+			if (Item->Slot.ItemID.RowName == EQComponentInventory->EQAllItem.Equipment[i].ItemID.RowName)
+			{
+				auto OutRow = Item->Slot.ItemID.DataTable->FindRow<FEQItem>(Item->Slot.ItemID.RowName, "");
+				if (OutRow->StackSize >= (Item->Slot.Quantity + EQComponentInventory->EQAllItem.Equipment[i].Quantity))
+				{
+					EQComponentInventory->EQAllItem.Equipment[i].Quantity = (Item->Slot.Quantity + EQComponentInventory
+						->EQAllItem.Equipment[i].Quantity);
+					return true;
+				}
+			}
+		}
+
+		for	(int i = 0; i < EQComponentInventory->EQAllItem.Equipment.Num(); i++)
+		{
+			if(EQComponentInventory->EQAllItem.Equipment[i].Quantity == 0)
+			{
+				EQComponentInventory->EQAllItem.Equipment[i] = Item->Slot;
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	else if(InSlot.ItemType == EEQItemType::Consumtion)
+	{
+		for (int i = 0; i < EQComponentInventory->EQAllItem.Consumtion.Num(); i++)
+		{
+			if (Item->Slot.ItemID.RowName == EQComponentInventory->EQAllItem.Consumtion[i].ItemID.RowName)
+			{
+				auto OutRow = Item->Slot.ItemID.DataTable->FindRow<FEQItem>(Item->Slot.ItemID.RowName, "");
+				if (OutRow->StackSize >= (Item->Slot.Quantity + EQComponentInventory->EQAllItem.Consumtion[i].Quantity))
+				{
+					EQComponentInventory->EQAllItem.Consumtion[i].Quantity = (Item->Slot.Quantity + EQComponentInventory
+						->EQAllItem.Consumtion[i].Quantity);
+					return true;
+				}
+			}
+		}
+
+		for	(int i = 0; i < EQComponentInventory->EQAllItem.Consumtion.Num(); i++)
+		{
+			if(EQComponentInventory->EQAllItem.Consumtion[i].Quantity == 0)
+			{
+				EQComponentInventory->EQAllItem.Consumtion[i] = Item->Slot;
+				return true;
+			}
+		}
+
+		return false;
+	}
+	else if(InSlot.ItemType == EEQItemType::Material)
+	{
+		for (int i = 0; i < EQComponentInventory->EQAllItem.Material.Num(); i++)
+		{
+			if (Item->Slot.ItemID.RowName == EQComponentInventory->EQAllItem.Material[i].ItemID.RowName)
+			{
+				auto OutRow = Item->Slot.ItemID.DataTable->FindRow<FEQItem>(Item->Slot.ItemID.RowName, "");
+				if (OutRow->StackSize >= (Item->Slot.Quantity + EQComponentInventory->EQAllItem.Material[i].Quantity))
+				{
+					EQComponentInventory->EQAllItem.Material[i].Quantity = (Item->Slot.Quantity + EQComponentInventory
+						->EQAllItem.Material[i].Quantity);
+					return true;
+				}
+			}
+		}
+
+		for	(int i = 0; i < EQComponentInventory->EQAllItem.Material.Num(); i++)
+		{
+			if(EQComponentInventory->EQAllItem.Material[i].Quantity == 0)
+			{
+				EQComponentInventory->EQAllItem.Material[i] = Item->Slot;
+				return true;
+			}
+		}
+
+		return false;
+	}
+	else if(InSlot.ItemType == EEQItemType::Questitem)
+	{
+		for (int i = 0; i < EQComponentInventory->EQAllItem.QuestItem.Num(); i++)
+		{
+			if (Item->Slot.ItemID.RowName == EQComponentInventory->EQAllItem.QuestItem[i].ItemID.RowName)
+			{
+				auto OutRow = Item->Slot.ItemID.DataTable->FindRow<FEQItem>(Item->Slot.ItemID.RowName, "");
+				if (OutRow->StackSize >= (Item->Slot.Quantity + EQComponentInventory->EQAllItem.QuestItem[i].Quantity))
+				{
+					EQComponentInventory->EQAllItem.QuestItem[i].Quantity = (Item->Slot.Quantity + EQComponentInventory
+						->EQAllItem.QuestItem[i].Quantity);
+					return true;
+				}
+			}
+		}
+
+		for	(int i = 0; i < EQComponentInventory->EQAllItem.QuestItem.Num(); i++)
+		{
+			if(EQComponentInventory->EQAllItem.QuestItem[i].Quantity == 0)
+			{
+				EQComponentInventory->EQAllItem.QuestItem[i] = Item->Slot;
+				return true;
+			}
+		}
+		return false;
+	}
+	return false;
 }
 
 void UEQComponentInteraction::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
