@@ -66,7 +66,7 @@ void UEQComponentMove::Move(const FInputActionValue& Value)
 {
 	const FVector2D MovementVector = Value.Get<FVector2D>();
 	
-	const FRotator Rotation = PlayerController->GetControlRotation();
+	const FRotator Rotation = EQPlayerController->GetControlRotation();
 	const FRotator YawRotation(0, Rotation.Yaw, 0);
 
 	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);

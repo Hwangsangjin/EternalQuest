@@ -6,6 +6,9 @@
 #include "Character/EQCharacterBase.h"
 #include "EQCharacterPlayer.generated.h"
 
+class UEQComponentMenuManager;
+class UEQComponentInventory;
+class UEQComponentBase;
 class USpringArmComponent;
 class UCameraComponent;
 class UInputMappingContext;
@@ -14,6 +17,7 @@ struct FInputActionValue;
 class UInputComponent;
 class UBoxComponent;
 class UEQComponentMove;
+class UEQComponentInteraction;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FInputSignature, UInputComponent*)
 
@@ -66,4 +70,13 @@ protected:
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UEQComponentMove> MoveComp;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UEQComponentInteraction> InteractionComp;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UEQComponentInventory> InventoryComp;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UEQComponentMenuManager> MenuManagerComp;
 };
