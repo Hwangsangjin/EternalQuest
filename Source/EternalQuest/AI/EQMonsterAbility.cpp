@@ -72,7 +72,7 @@ void UEQMonsterAbility::TakeDamage(AActor* DamagedActor, float Damage, const UDa
 			Monster->BaseFsm->SetState(EMonsterState::Die);
 		}
 	}
-	else if()
+	//else if()
 	{
 		
 	}
