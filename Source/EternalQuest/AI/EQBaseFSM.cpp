@@ -90,6 +90,7 @@ void UEQBaseFSM::TickDie()
 	{
 		Pool->ReturnEnemyToPool(Self);
 		UE_LOG(LogTemp,Warning,TEXT("BackToPool"));
+		SetState(EMonsterState::Idle);
 	}
 }
 

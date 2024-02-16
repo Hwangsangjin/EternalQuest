@@ -7,6 +7,8 @@
 #include "Action/EQComponentBase.h"
 #include "EQComponentInteraction.generated.h"
 
+class UEQComponentInventory;
+struct FEQSlot;
 class AEQItemBase;
 class UEQWidgetNpcPrompt;
 class AEQCharacterNeutralPlayer;
@@ -31,6 +33,8 @@ public:
 	// ----- 함수 -----
 	void Interaction();
 	void EatItem();
+	bool AddToInventory(const FEQSlot& InSlot);
+	
 	UFUNCTION()
 	void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 		AActor* OtherActor,
@@ -63,5 +67,8 @@ public:
 
 	UPROPERTY()
 	TObjectPtr<UEQWidgetNpcPrompt> PromptWidget;
+
+	UPROPERTY()
+	TObjectPtr<UEQComponentInventory> EQComponentInventory;
 	// ----- 변수 -----
 };

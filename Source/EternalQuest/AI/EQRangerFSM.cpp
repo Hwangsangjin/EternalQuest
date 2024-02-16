@@ -19,6 +19,7 @@ void UEQRangerFSM::BeginPlay()
 	Super::BeginPlay();
 	AttackRange = 800.f;
 	BasicSpeed = 250.f;
+	DetectionRange = 500.f;
 }
 
 void UEQRangerFSM::TickMove()

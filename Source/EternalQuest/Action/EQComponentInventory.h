@@ -5,33 +5,13 @@
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
 #include "Action/EQComponentBase.h"
+#include "Struct/EQStructEnumBase.h"
 #include "EQComponentInventory.generated.h"
 
+class UEQWidgetInventory;
 class AEQItemBase;
 class UInputAction;
 
-UENUM(BlueprintType)
-enum EItemType
-{
-	None,
-	Equipment,
-	Consumtion,
-	Material,
-	QuestItem
-};
-
-USTRUCT(Blueprintable)
-struct FItemSlot : public FTableRowBase
-{
-	GENERATED_BODY()
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=MyDataTable)
-	TObjectPtr<UDataTable> ItemID;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=MyDataTable)
-	int32 Quantity = 0;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=MyDataTable)
-	TEnumAsByte<EItemType> ItemType;
-};
 /**
  * 
  */
@@ -63,5 +43,11 @@ public:
 	// ----- 변수 -----
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TObjectPtr<UDataTable> ItemID;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FEQAllItem EQAllItem;
+
+	UPROPERTY()
+	FEQSlot EmptySlot;
 	// ----- 변수 -----
 };

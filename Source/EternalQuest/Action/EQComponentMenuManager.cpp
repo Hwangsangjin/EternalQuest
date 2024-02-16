@@ -4,6 +4,7 @@
 #include "Action/EQComponentMenuManager.h"
 
 #include "EnhancedInputComponent.h"
+#include "Character/EQCharacterPlayer.h"
 #include "Player/EQPlayerController.h"
 #include "Widget/EQWidgetIconBar.h"
 #include "Widget/EQWidgetInventory.h"
@@ -27,6 +28,7 @@ UEQComponentMenuManager::UEQComponentMenuManager()
 void UEQComponentMenuManager::BeginPlay()
 {
 	Super::BeginPlay();
+	EQComponentInventory = Player->FindComponentByClass<UEQComponentInventory>();
 }
 
 void UEQComponentMenuManager::TickComponent(float DeltaTime, ELevelTick TickType,

@@ -3,6 +3,7 @@
 
 #include "Action/EQComponentInventory.h"
 
+#include "Struct/EQStructItem.h"
 #include "EnhancedInputComponent.h"
 #include "Character/EQCharacterPlayer.h"
 #include "Item/EQItemBase.h"
@@ -11,13 +12,29 @@
 UEQComponentInventory::UEQComponentInventory()
 {
 	PrimaryComponentTick.bCanEverTick = true;
+	static ConstructorHelpers::FObjectFinder<UDataTable> DTItemRef(TEXT("/Game/LDJ/DataTable/DT_Item.DT_Item"));
+	if (DTItemRef.Succeeded())
+	{
+		ItemID = DTItemRef.Object;
+	}
 }
 
 void UEQComponentInventory::BeginPlay()
 {
 	Super::BeginPlay();
+	EmptySlot.ItemID.DataTable = ItemID;
 
-	FItemSlot* Result = ItemID->FindRow<FItemSlot>(FName("TestItem"), "");
+	EmptySlot.ItemType = EEQItemType::Equipment;
+	for (int i = 0; i < 20; i++) EQAllItem.Equipment.Push(EmptySlot);
+
+	EmptySlot.ItemType = EEQItemType::Consumtion;
+	for (int i = 0; i < 20; i++) EQAllItem.Consumtion.Push(EmptySlot);
+
+	EmptySlot.ItemType = EEQItemType::Material;
+	for (int i = 0; i < 20; i++) EQAllItem.Material.Push(EmptySlot);
+
+	EmptySlot.ItemType = EEQItemType::Questitem;
+	for (int i = 0; i < 20; i++) EQAllItem.QuestItem.Push(EmptySlot);
 }
 
 void UEQComponentInventory::TickComponent(float DeltaTime, ELevelTick TickType,
