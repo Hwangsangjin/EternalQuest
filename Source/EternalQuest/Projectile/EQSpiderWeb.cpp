@@ -5,6 +5,7 @@
 #include "Character/EQCharacterPlayer.h"
 #include "Character/EQSpider.h"
 #include "Components/SphereComponent.h"
+#include "Engine/DamageEvents.h"
 
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -55,8 +56,10 @@ void AEQSpiderWeb::OverLapBegin(UPrimitiveComponent* OverlappedComponent, AActor
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	 auto Player = Cast<AEQCharacterPlayer>(OtherActor);
+	FDamageEvent DamageEvent;
 	if(Player != nullptr)
 	{
+		Player->TakeDamage(Damage,DamageEvent,nullptr,this);
 		this -> Destroy();
 	}
 }

@@ -25,6 +25,7 @@ AEQNormalEnemy::AEQNormalEnemy()
 		HPComp->SetRelativeLocation(FVector(0,0,120));
 		HPComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		HPComp->SetVisibility(false);
+		HPComp->SetCastShadow(false);
 	}
 
 	bIsActive = false;
@@ -50,6 +51,18 @@ void AEQNormalEnemy::Deactivate()
 	SetActorEnableCollision(false);
 	SetActorHiddenInGame(true);
 	bIsActive = false;
+}
+
+float AEQNormalEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	AActor* DamageCauser)
+{
+	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	Ability->TakeDamage(this,DamageAmount,Type,EventInstigator,DamageCauser);
+
+	return DamageAmount;
+	
+	
 }
 
 void AEQNormalEnemy::Tick(float DeltaSeconds)
