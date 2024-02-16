@@ -42,6 +42,8 @@ public:
 	void DestroySession();
 	void StartSession();
 
+	bool IsValidSessionInterface();
+
 	FMultiplayerOnCreateSessionComplete MultiplayerOnCreateSessionComplete;
 	FMultiplayerOnFindSessionsComplete MultiplayerOnFindSessionsComplete;
 	FMultiplayerOnJoinSessionComplete MultiplayerOnJoinSessionComplete;

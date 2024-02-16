@@ -17,7 +17,7 @@ class ETERNALQUEST_API UEQWidgetLogin : public UUserWidget
 
 public:
 	UFUNCTION(BlueprintCallable)
-	void LoginSetup(int32 NumberOfPublicConnections = 4, FString TypeOfMatch = FString(TEXT("FreeForAll")), FString LobbyPath = FString(TEXT("/Game/Maps/GameMap")));
+	void LoginSetup(int32 NumberOfPublicConnections = 4, FString TypeOfMatch = FString(TEXT("FreeForAll")), FString LobbyPath = FString(TEXT("/Game/Maps/VillageMap")));
 
 protected:
 	virtual bool Initialize() override;
@@ -53,7 +53,7 @@ private:
 
 	int32 NumPublicConnections{ 4 };
 	FString MatchType{ TEXT("FreeForAll") };
-	FString PathToGame{ TEXT("") };
+	FString PathToLevel{ TEXT("") };
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Player, Meta = (BindWidget), Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UButton> Button_Host;

@@ -3,20 +3,22 @@
 
 #include "Widget/EQWidgetLogin.h"
 #include "Components/Button.h"
+#include "Kismet/GameplayStatics.h"
 #include "Game/EQGameInstance.h"
+#include "Game/EQGameMode.h"
 #include "OnlineSessionSettings.h"
 #include "OnlineSubsystem.h"
 
-void UEQWidgetLogin::LoginSetup(int32 NumberOfPublicConnections, FString TypeOfMatch, FString LobbyPath)
+void UEQWidgetLogin::LoginSetup(int32 NumberOfPublicConnections, FString TypeOfMatch, FString LevelPath)
 {
-	PathToGame = FString::Printf(TEXT("%s?listen"), *LobbyPath);
+	PathToLevel = FString::Printf(TEXT("%s?listen"), *LevelPath);
 	NumPublicConnections = NumberOfPublicConnections;
 	MatchType = TypeOfMatch;
 	AddToViewport();
 	SetVisibility(ESlateVisibility::Visible);
 	bIsFocusable = true;
 
-	const UWorld* World = GetWorld();
+	UWorld* World = GetWorld();
 	if (World)
 	{
 		APlayerController* PlayerController = World->GetFirstPlayerController();
@@ -118,7 +120,7 @@ void UEQWidgetLogin::HostButtonClicked()
 void UEQWidgetLogin::JoinButtonClicked()
 {
 	Button_Join->SetIsEnabled(false);
-	GameInstance->FindSessions(10000);
+	GameInstance->FindSessions(100000);
 }
 
 void UEQWidgetLogin::OnCreateSession(bool bWasSuccessful)
@@ -133,7 +135,7 @@ void UEQWidgetLogin::OnCreateSession(bool bWasSuccessful)
 		UWorld* World = GetWorld();
 		if (World)
 		{
-			World->ServerTravel(PathToGame);
+			World->ServerTravel(PathToLevel);
 		}
 	}
 	else
@@ -160,6 +162,7 @@ void UEQWidgetLogin::OnFindSessions(const TArray<FOnlineSessionSearchResult>& Se
 		const FString User = Result.Session.OwningUserName;
 		FString SettingsValue;
 		Result.Session.SessionSettings.Get(FName("MatchType"), SettingsValue);
+
 		if (SettingsValue == MatchType)
 		{
 			if (GEngine)
@@ -180,10 +183,10 @@ void UEQWidgetLogin::OnFindSessions(const TArray<FOnlineSessionSearchResult>& Se
 
 void UEQWidgetLogin::OnJoinSession(EOnJoinSessionCompleteResult::Type Result)
 {
-	const IOnlineSubsystem* Subsystem = IOnlineSubsystem::Get();
+	IOnlineSubsystem* Subsystem = IOnlineSubsystem::Get();
 	if (Subsystem)
 	{
-		const IOnlineSessionPtr SessionInterface = Subsystem->GetSessionInterface();
+		IOnlineSessionPtr SessionInterface = Subsystem->GetSessionInterface();
 		if (SessionInterface.IsValid())
 		{
 			FString Address;

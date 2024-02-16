@@ -12,24 +12,13 @@ UEQGameInstance::UEQGameInstance()
 	, FindSessionsCompleteDelegate(FOnFindSessionsCompleteDelegate::CreateUObject(this, &ThisClass::OnFindSessionsComplete))
 	, JoinSessionCompleteDelegate(FOnJoinSessionCompleteDelegate::CreateUObject(this, &ThisClass::OnJoinSessionComplete))
 	, DestroySessionCompleteDelegate(FOnDestroySessionCompleteDelegate::CreateUObject(this, &ThisClass::OnDestroySessionComplete))
-	, StartSessionCompleteDelegate(FOnStartSessionCompleteDelegate::CreateUObject(this, &ThisClass::OnCreateSessionComplete))
+	, StartSessionCompleteDelegate(FOnStartSessionCompleteDelegate::CreateUObject(this, &ThisClass::OnStartSessionComplete))
 {
-	// Session
-	IOnlineSubsystem* Subsystem = IOnlineSubsystem::Get();
-	if (Subsystem)
-	{
-		SessionInterface = Subsystem->GetSessionInterface();
-
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Blue, FString::Printf(TEXT("Found Subsystem %s"), *Subsystem->GetSubsystemName().ToString()));
-		}
-	}
 }
 
 void UEQGameInstance::CreateSession(int32 InNumPublicConnections, FString InMatchType)
 {
-	if (!SessionInterface.IsValid())
+	if (!IsValidSessionInterface())
 	{
 		return;
 	}
@@ -68,7 +57,7 @@ void UEQGameInstance::CreateSession(int32 InNumPublicConnections, FString InMatc
 
 void UEQGameInstance::FindSessions(int32 MaxSearchResults)
 {
-	if (!SessionInterface.IsValid())
+	if (!IsValidSessionInterface())
 	{
 		return;
 	}
@@ -91,7 +80,7 @@ void UEQGameInstance::FindSessions(int32 MaxSearchResults)
 
 void UEQGameInstance::JoinSession(const FOnlineSessionSearchResult& SessionResult)
 {
-	if (!SessionInterface.IsValid())
+	if (!IsValidSessionInterface())
 	{
 		MultiplayerOnJoinSessionComplete.Broadcast(EOnJoinSessionCompleteResult::UnknownError);
 		return;
@@ -110,7 +99,7 @@ void UEQGameInstance::JoinSession(const FOnlineSessionSearchResult& SessionResul
 
 void UEQGameInstance::DestroySession()
 {
-	if (!SessionInterface.IsValid())
+	if (!IsValidSessionInterface())
 	{
 		MultiplayerOnDestroySessionComplete.Broadcast(false);
 		return;
@@ -129,6 +118,25 @@ void UEQGameInstance::StartSession()
 {
 }
 
+bool UEQGameInstance::IsValidSessionInterface()
+{
+	if (!SessionInterface)
+	{
+		IOnlineSubsystem* Subsystem = IOnlineSubsystem::Get();
+		if (Subsystem)
+		{
+			SessionInterface = Subsystem->GetSessionInterface();
+
+			if (GEngine)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Blue, FString::Printf(TEXT("Found Subsystem %s"), *Subsystem->GetSubsystemName().ToString()));
+			}
+		}
+	}
+
+	return SessionInterface.IsValid();
+}
+
 void UEQGameInstance::OnCreateSessionComplete(FName SessionName, bool bWasSuccessful)
 {
 	if (SessionInterface)
@@ -137,28 +145,6 @@ void UEQGameInstance::OnCreateSessionComplete(FName SessionName, bool bWasSucces
 	}
 
 	MultiplayerOnCreateSessionComplete.Broadcast(bWasSuccessful);
-
-
-	if (bWasSuccessful)
-	{
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Blue, FString::Printf(TEXT("Created Session: %s"), *SessionName.ToString()));
-		}
-
-		UWorld* World = GetWorld();
-		if (World)
-		{
-			World->ServerTravel(FString("/Game/Maps/GameMap?listen"));
-		}
-	}
-	else
-	{
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString(TEXT("Failed to Create Session")));
-		}
-	}
 }
 
 void UEQGameInstance::OnFindSessionsComplete(bool bWasSuccessful)
