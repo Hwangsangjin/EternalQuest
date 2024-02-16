@@ -55,12 +55,16 @@ void AEQSpiderWeb::Tick(float DeltaTime)
 void AEQSpiderWeb::OverLapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	 auto Player = Cast<AEQCharacterPlayer>(OtherActor);
+	/*auto Player = Cast<AEQCharacterPlayer>(OtherActor);
 	FDamageEvent DamageEvent;
 	if(Player != nullptr)
 	{
 		Player->TakeDamage(Damage,DamageEvent,nullptr,this);
 		this -> Destroy();
-	}
+	}*/
+
+	FDamageEvent DamageEvent;
+	OtherActor->TakeDamage(Damage, DamageEvent, nullptr, this);
+	this->Destroy();
 }
 
