@@ -15,7 +15,7 @@ AEQCharacterBase::AEQCharacterBase()
 
 	// Capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.0f, 96.0f);
-	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Pawn"));
+	GetCapsuleComponent()->SetCollisionProfileName(TEXT("EQCapsule"));
 
 	// Movement
 	GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -29,7 +29,7 @@ AEQCharacterBase::AEQCharacterBase()
 
 	// Mesh
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-	GetMesh()->SetCollisionProfileName(TEXT("CharacterMesh"));
+	GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
 }
 
 void AEQCharacterBase::PossessedBy(AController* NewController)

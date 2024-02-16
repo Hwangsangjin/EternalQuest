@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Action/EQComponentAttack.h"
+#include "Component/EQComponentAttack.h"
 #include "EnhancedInputComponent.h"
 #include "Animation/AnimMontage.h"
 #include "Character/EQCharacterPlayer.h"
@@ -9,6 +9,8 @@
 #include "Action/EQComponentMove.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Game/EQGameInstance.h"
+#include "Components/CapsuleComponent.h"
+#include "Engine/DamageEvents.h"
 
 UEQComponentAttack::UEQComponentAttack()
 {
@@ -42,17 +44,51 @@ void UEQComponentAttack::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 void UEQComponentAttack::Attack()
 {
 	UEQGameInstance* GameInstance = Cast<UEQGameInstance>(Player->GetGameInstance());
-	if (GameInstance->GetClassType() == EClassType::ECT_Mage)
+	EClassType ClassType = GameInstance->GetClassType();
+	switch (ClassType)
 	{
-		DefaultAttackProcess();
-	}
-	else if (GameInstance->GetClassType() == EClassType::ECT_Warrior)
-	{
-		ComboAttackCommand();
+	case EClassType::ECT_Mage:
+		DefaultAttack();
+		break;
+	case EClassType::ECT_Paladin:
+		break;
+	case EClassType::ECT_Priest:
+		break;
+	case EClassType::ECT_Rogue:
+		break;
+	case EClassType::ECT_Warrior:
+		ComboAttack();
+		break;
 	}
 }
 
-void UEQComponentAttack::DefaultAttackProcess()
+void UEQComponentAttack::HitCheck()
+{
+	FHitResult OutHitResult;
+	FCollisionQueryParams Params(SCENE_QUERY_STAT(Attack), false, Player);
+
+	const float AttackRange = 100.0f;
+	const float AttackRadius = 50.0f;
+	const float AttackDamage = 30.0f;
+	const FVector Start = Player->GetActorLocation() + Player->GetActorForwardVector() * Player->GetCapsuleComponent()->GetScaledCapsuleRadius();
+	const FVector End = Start + Player->GetActorForwardVector() * AttackRange;
+
+	const bool bHitDetected = GetWorld()->SweepSingleByChannel(OutHitResult, Start, End, FQuat::Identity, ECC_GameTraceChannel1, FCollisionShape::MakeSphere(AttackRadius), Params);
+	if (bHitDetected)
+	{
+		FDamageEvent DamageEvent;
+		OutHitResult.GetActor()->TakeDamage(AttackDamage, DamageEvent, Player->GetController(), Player);
+	}
+
+#if ENABLE_DRAW_DEBUG
+	const FVector CapsuleOrigin = Start + (End - Start) * 0.5f;
+	const float CapsuleHalfHeight = AttackRange * 0.5f;
+	const FColor DrawColor = bHitDetected ? FColor::Green : FColor::Red;
+	DrawDebugCapsule(GetWorld(), CapsuleOrigin, CapsuleHalfHeight, AttackRadius, FRotationMatrix::MakeFromZ(Player->GetActorForwardVector()).ToQuat(), DrawColor, false, 5.0f);
+#endif
+}
+
+void UEQComponentAttack::DefaultAttack()
 {
 	if (Player->GetCharacterMovement()->IsFalling())
 	{
@@ -87,7 +123,7 @@ void UEQComponentAttack::DefaultAttackEnd(UAnimMontage* TargetMontage, bool bIsP
 	Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 }
 
-void UEQComponentAttack::ComboAttackCommand()
+void UEQComponentAttack::ComboAttack()
 {
 	if (CurrentCombo == 0)
 	{

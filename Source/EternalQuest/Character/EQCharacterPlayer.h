@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Character/EQCharacterBase.h"
+#include "Interface/EQInterfaceAnimationAttack.h"
 #include "EQCharacterPlayer.generated.h"
 
 class UEQComponentMenuManager;
@@ -14,6 +15,7 @@ class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
+class UAnimMontage;
 class UInputComponent;
 class UBoxComponent;
 class UEQComponentMove;
@@ -23,7 +25,7 @@ class UEQComponentInteraction;
 DECLARE_MULTICAST_DELEGATE_OneParam(FInputSignature, UInputComponent*)
 
 UCLASS()
-class ETERNALQUEST_API AEQCharacterPlayer : public AEQCharacterBase
+class ETERNALQUEST_API AEQCharacterPlayer : public AEQCharacterBase, public IEQInterfaceAnimationAttack
 {
 	GENERATED_BODY()
 	
@@ -68,13 +70,27 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
 
+// Attack Hit
+protected:
+	virtual void AttackHitCheck() override;
+
+// Take Damage
+protected:
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+
+// Dead
+protected:
+	virtual void SetDead();
+	void PlayDeadAnimation();
+
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UAnimMontage> DeadMontage;
+
 // Component
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UEQComponentMove> MoveComp;
-
-	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<UEQComponentAttack> AttackComp;
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UEQComponentInteraction> InteractionComp;
@@ -84,4 +100,7 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UEQComponentMenuManager> MenuManagerComp;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UEQComponentAttack> AttackComp;
 };

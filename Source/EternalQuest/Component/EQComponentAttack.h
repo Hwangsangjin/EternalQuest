@@ -28,6 +28,7 @@ public:
 // Attack
 public:
 	void Attack();
+	void HitCheck();
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
@@ -38,7 +39,7 @@ private:
 
 // Default Attack
 protected:
-	void DefaultAttackProcess();
+	void DefaultAttack();
 	void DefaultAttackBegin();
 	void DefaultAttackEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded);
 
@@ -47,7 +48,7 @@ private:
 
 // Combo Attack
 protected:
-	void ComboAttackCommand();
+	void ComboAttack();
 	void ComboAttackBegin();
 	void ComboAttackEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded);
 	void SetComboCheckTimer();
