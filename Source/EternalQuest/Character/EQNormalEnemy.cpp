@@ -53,6 +53,15 @@ void AEQNormalEnemy::Deactivate()
 	bIsActive = false;
 }
 
+float AEQNormalEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	AActor* DamageCauser)
+{
+	Ability->TakeDamage(this,DamageAmount,Type,EventInstigator,DamageCauser);
+
+	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	
+}
+
 void AEQNormalEnemy::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
