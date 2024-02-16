@@ -56,9 +56,12 @@ void AEQNormalEnemy::Deactivate()
 float AEQNormalEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
 	AActor* DamageCauser)
 {
+	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
 	Ability->TakeDamage(this,DamageAmount,Type,EventInstigator,DamageCauser);
 
-	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	return DamageAmount;
+	
 	
 }
 

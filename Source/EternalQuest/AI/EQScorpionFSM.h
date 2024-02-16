@@ -23,6 +23,7 @@ class ETERNALQUEST_API UEQScorpionFSM : public UEQBaseFSM
 protected:
 	virtual void TickMove() override;
 	virtual void TickAttack() override;
+	virtual void TickDie() override;
 
 public:
 	UPROPERTY(EditAnywhere,Category="Skills")

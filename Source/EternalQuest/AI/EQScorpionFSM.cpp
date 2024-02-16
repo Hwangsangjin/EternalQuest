@@ -84,6 +84,20 @@ void UEQScorpionFSM::TickAttack()
 	}
 }
 
+void UEQScorpionFSM::TickDie()
+{
+	Super::TickDie();
+	CurrentTime += GetWorld()->GetDeltaSeconds();
+	
+	Self->PlayAnimMontage(AnimMontage,1,FName("Died"));
+	
+	Self->SetActorEnableCollision(ECollisionEnabled::NoCollision);
+	if(CurrentTime>DieTime)
+	{
+		Self->Destroy();
+	}
+}
+
 
 void UEQScorpionFSM::ScorpionAttack()
 {
