@@ -14,6 +14,7 @@ class ETERNALQUEST_API AEQCharacterBase : public ACharacter
 public:
 	AEQCharacterBase();
 
+
 protected:
 	virtual void OnRep_Owner() override;
 	virtual void PossessedBy(AController* NewController) override;
