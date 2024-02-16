@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
-#include "Action/EQComponentBase.h"
+#include "Component/EQComponentBase.h"
 #include "Struct/EQStructEnumBase.h"
 #include "EQComponentInventory.generated.h"
 

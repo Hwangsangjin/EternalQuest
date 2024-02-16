@@ -10,10 +10,10 @@
 #include "InputMappingContext.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "Action/EQComponentMove.h"
-#include "Action/EQComponentInteraction.h"
-#include "Action/EQComponentInventory.h"
-#include "Action/EQComponentMenuManager.h"
+#include "Component/EQComponentMove.h"
+#include "Component/EQComponentInteraction.h"
+#include "Component/EQComponentInventory.h"
+#include "Component/EQComponentMenuManager.h"
 #include "Component/EQComponentAttack.h"
 
 AEQCharacterPlayer::AEQCharacterPlayer()

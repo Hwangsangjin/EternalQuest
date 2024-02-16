@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Action/EQComponentMove.h"
+#include "Component/EQComponentMove.h"
 
 #include "EnhancedInputComponent.h"
 #include "Character/EQCharacterPlayer.h"
@@ -12,8 +12,6 @@
 
 UEQComponentMove::UEQComponentMove()
 {
-	PrimaryComponentTick.bCanEverTick = false;
-
 	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionJumpRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/Input/Actions/IA_Jump.IA_Jump'"));
 	if (InputActionJumpRef.Object)
 	{
@@ -50,12 +48,6 @@ void UEQComponentMove::BeginPlay()
 	Super::BeginPlay();
 }
 
-void UEQComponentMove::TickComponent(float DeltaTime, ELevelTick TickType,
-	FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-}
-
 void UEQComponentMove::SetupPlayerInput(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInput(PlayerInputComponent);
@@ -69,6 +61,16 @@ void UEQComponentMove::SetupPlayerInput(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &ThisClass::Sprint);
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ThisClass::Sprint);
 	}
+}
+
+void UEQComponentMove::Jump(const FInputActionValue& Value)
+{
+	Player->Jump();
+}
+
+void UEQComponentMove::StopJumping(const FInputActionValue& Value)
+{
+	Player->StopJumping();
 }
 
 void UEQComponentMove::Move(const FInputActionValue& Value)
@@ -112,14 +114,3 @@ void UEQComponentMove::Sprint(const FInputActionValue& Value)
 	const bool bIsSprinting = Value.Get<bool>();
 	bIsSprinting ? Player->GetCharacterMovement()->MaxWalkSpeed = 600.0f : Player->GetCharacterMovement()->MaxWalkSpeed = 450.0f;
 }
-
-void UEQComponentMove::Jump(const FInputActionValue& Value)
-{
-	Player->Jump();
-}
-
-void UEQComponentMove::StopJumping(const FInputActionValue& Value)
-{
-	Player->StopJumping();
-}
-
