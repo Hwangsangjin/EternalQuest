@@ -3,6 +3,8 @@
 
 #include "Widget/EQWidgetItemSlot.h"
 
+#include "EQWidgetInventory.h"
+#include "EQWidgetItemInfo.h"
 #include "EQWidgetMainUI.h"
 #include "Components/Border.h"
 #include "Components/Button.h"
@@ -34,12 +36,14 @@ void UEQWidgetItemSlot::NativeConstruct()
 	Super::NativeConstruct();
 	Btn_Slot->OnHovered.AddDynamic(this, &UEQWidgetItemSlot::OnHoverBtnSlot);
 	Btn_Slot->OnUnhovered.AddDynamic(this, &UEQWidgetItemSlot::OnUnhoverBtnSlot);
+	EQWidgetInventory = Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetInventory;
 }
 
 void UEQWidgetItemSlot::OnHoverBtnSlot()
 {
 	Border_Item->SetBrushColor(FLinearColor(1,1,1,1));
 	Img_HoverTriangle->SetVisibility(ESlateVisibility::Visible);
+	EQWidgetInventory->WBP_EQWidgetItemInfo->UpdateItemInfo(EQSlot);
 }
 
 void UEQWidgetItemSlot::OnUnhoverBtnSlot()

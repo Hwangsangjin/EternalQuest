@@ -8,6 +8,7 @@
 #include "Components/WrapBox.h"
 #include "EQWidgetInventory.generated.h"
 
+class UEQWidgetItemInfo;
 class UEQWidgetItemSlot;
 class UEQComponentInventory;
 class UWrapBox;
@@ -74,6 +75,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(BindWidget))
 	TObjectPtr<UWrapBox> WrapBox_QuestItem;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, meta=(BindWidget))
+	TObjectPtr<UEQWidgetItemInfo> WBP_EQWidgetItemInfo;
 	
 	bool bVisibilityFlag = false;
 
