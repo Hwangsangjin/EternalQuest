@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "InputAction.h"
-#include "Action/EQComponentBase.h"
+#include "Component/EQComponentBase.h"
 #include "EQComponentInteraction.generated.h"
 
 class UEQComponentInventory;

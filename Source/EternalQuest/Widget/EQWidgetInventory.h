@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Action/EQComponentInventory.h"
+#include "Component/EQComponentInventory.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/WrapBox.h"
 #include "EQWidgetInventory.generated.h"
