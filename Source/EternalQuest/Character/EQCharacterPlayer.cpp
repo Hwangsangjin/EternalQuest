@@ -130,4 +130,12 @@ void AEQCharacterPlayer::PossessedBy(AController* NewController)
 void AEQCharacterPlayer::OnRep_Owner()
 {
 	Super::OnRep_Owner();
+
+	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+		}
+	}
 }
