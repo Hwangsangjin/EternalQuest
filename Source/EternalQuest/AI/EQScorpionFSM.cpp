@@ -146,7 +146,8 @@ void UEQScorpionFSM::ScorpionPrj()
 {
 	Super::ScorpionPrj();
 	AI->SetFocus(Target,EAIFocusPriority::Gameplay);
-	FTransform ShootPoint = Self->GetArrowComponent()->GetComponentTransform();
+	//FTransform ShootPoint = Self->GetArrowComponent()->GetComponentTransform();
+	FTransform ShootPoint = Self->GetMesh()->GetSocketTransform(FName("SkillPoint"));
 	GetWorld()->SpawnActor<AEQScorpionSkill>(SkillFactory,ShootPoint);
 	bIsUsingSkill = false;
 }

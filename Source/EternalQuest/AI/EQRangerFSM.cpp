@@ -104,6 +104,7 @@ void UEQRangerFSM::ShootWeb()
 {
 	Super::ShootWeb();
 	AI->SetFocus(Target,EAIFocusPriority::Gameplay);
-	FTransform ShootPoint = Self->GetArrowComponent()->GetComponentTransform();
+	//FTransform ShootPoint = Self->GetArrowComponent()->GetComponentTransform();
+	FTransform ShootPoint = Self->GetMesh()->GetSocketTransform(FName("WebPoint"));
 	GetWorld()->SpawnActor<AEQSpiderWeb>(WebFactory,ShootPoint);
 }
