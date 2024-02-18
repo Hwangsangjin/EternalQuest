@@ -15,6 +15,14 @@
 #include "Component/EQComponentInventory.h"
 #include "Component/EQComponentMenuManager.h"
 #include "Component/EQComponentAttack.h"
+#include "Component/EQComponentStat.h"
+#include "Component/EQComponentWidget.h"
+#include "Widget/EQWidgetUserName.h"
+#include "Widget/EQWidgetHpBar.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "GameFramework/GameStateBase.h"
+#include "GameFramework/PlayerState.h"
 
 AEQCharacterPlayer::AEQCharacterPlayer()
 {
@@ -62,6 +70,33 @@ AEQCharacterPlayer::AEQCharacterPlayer()
 	InventoryComp = CreateDefaultSubobject<UEQComponentInventory>(TEXT("Inventory Component"));
 	MenuManagerComp = CreateDefaultSubobject<UEQComponentMenuManager>(TEXT("MenuManager Component"));
 	AttackComp = CreateDefaultSubobject<UEQComponentAttack>(TEXT("Attack Component"));
+	StatComp = CreateDefaultSubobject<UEQComponentStat>(TEXT("Stat Component"));
+	UserNameComp = CreateDefaultSubobject<UEQComponentWidget>(TEXT("UserName Component"));
+	HpBarComp = CreateDefaultSubobject<UEQComponentWidget>(TEXT("HpBar Component"));
+
+	UserNameComp->SetupAttachment(GetMesh());
+	UserNameComp->SetRelativeLocation(FVector(0.0f, 0.0f, 200.0f));
+	UserNameComp->SetRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));
+	static ConstructorHelpers::FClassFinder<UUserWidget> UserNameWidgetRef(TEXT("/Game/Blueprints/Widget/WBP_UserName.WBP_UserName_C"));
+	if (UserNameWidgetRef.Class)
+	{
+		UserNameComp->SetWidgetClass(UserNameWidgetRef.Class);
+		UserNameComp->SetWidgetSpace(EWidgetSpace::Screen);
+		UserNameComp->SetDrawSize(FVector2D(150.0f, 15.0f));
+		UserNameComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+
+	HpBarComp->SetupAttachment(GetMesh());
+	HpBarComp->SetRelativeLocation(FVector(0.0f, 0.0f, 180.0f));
+	HpBarComp->SetRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));
+	static ConstructorHelpers::FClassFinder<UUserWidget> HpBarWidgetRef(TEXT("/Game/Blueprints/Widget/WBP_HpBar.WBP_HpBar_C"));
+	if (HpBarWidgetRef.Class)
+	{
+		HpBarComp->SetWidgetClass(HpBarWidgetRef.Class);
+		HpBarComp->SetWidgetSpace(EWidgetSpace::Screen);
+		HpBarComp->SetDrawSize(FVector2D(150.0f, 15.0f));
+		HpBarComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
 }
 
 void AEQCharacterPlayer::BeginPlay()
@@ -78,17 +113,17 @@ float AEQCharacterPlayer::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 {
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-	SetDead();
+	StatComp->ApplyDamage(DamageAmount);
 
 	return DamageAmount;
 }
 
 void AEQCharacterPlayer::SetDead()
 {
-	/*GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 	PlayDeadAnimation();
-	SetActorEnableCollision(false);*/
-	Jump();
+	SetActorEnableCollision(false);
+	HpBarComp->SetHiddenInGame(true);
 }
 
 void AEQCharacterPlayer::PlayDeadAnimation()
@@ -96,6 +131,33 @@ void AEQCharacterPlayer::PlayDeadAnimation()
 	UAnimInstance* Animinstance = GetMesh()->GetAnimInstance();
 	Animinstance->StopAllMontages(0.0f);
 	Animinstance->Montage_Play(DeadMontage, 1.0f);
+}
+
+void AEQCharacterPlayer::SetupCharacterWidget(UEQWidgetBase* InWidgetBase)
+{
+	/*UEQWidgetUserName* UserNameWidget = Cast<UEQWidgetUserName>(Cast<UEQWidgetBase>(UserNameComp->GetWidget()));
+	if (UserNameWidget)
+	{
+		const APlayerController* PlayerController = UserNameWidget->GetOwningPlayer();
+		const APlayerState* EQPlayerState = PlayerController->GetPlayerState<APlayerState>();
+		const FString UserName = EQPlayerState->GetPlayerName();
+		UserNameWidget->SetUserName(FText::FromString(UserName));
+	}*/
+
+	UEQWidgetHpBar* HpBarWidget = Cast<UEQWidgetHpBar>(InWidgetBase);
+	if (HpBarWidget)
+	{
+		HpBarWidget->SetMaxHp(StatComp->GetMaxHp());
+		HpBarWidget->UpdateHpBar(StatComp->GetCurrentHp());
+		StatComp->OnHpChanged.AddUObject(HpBarWidget, &UEQWidgetHpBar::UpdateHpBar);
+	}
+}
+
+void AEQCharacterPlayer::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	StatComp->OnHpZero.AddUObject(this, &ThisClass::SetDead);
 }
 
 void AEQCharacterPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
