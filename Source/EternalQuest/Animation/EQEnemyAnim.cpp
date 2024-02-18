@@ -6,6 +6,9 @@
 #include "AI/EQBaseFSM.h"
 #include "Character/EQScorpion.h"
 #include "Character/EQSpider.h"
+#include "Net/UnrealNetwork.h"
+
+
 
 void UEQEnemyAnim::AnimNotify_ShootWeb()
 {
@@ -28,4 +31,12 @@ void UEQEnemyAnim::AnimNotify_ScorSkill()
 void UEQEnemyAnim::AnimNotify_DieEnd()
 {
 	IsDieDone = true;
+}
+
+void UEQEnemyAnim::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	
+	DOREPLIFETIME(UEQEnemyAnim, State);
+	
 }

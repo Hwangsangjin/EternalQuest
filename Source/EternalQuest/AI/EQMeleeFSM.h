@@ -22,5 +22,14 @@ class ETERNALQUEST_API UEQMeleeFSM : public UEQBaseFSM
 public:
 	virtual void TickAttack() override;
 	virtual void TickMove() override;;
+
+	UFUNCTION(Server,Reliable)
+	void ServerRPC_MushMove();
+	
+	
+	UFUNCTION(Server,Reliable)
+	void ServerRPC_MushAttack();
+	UFUNCTION(NetMulticast,Unreliable)
+	void MultiRPC_MushAttack();
 	
 };

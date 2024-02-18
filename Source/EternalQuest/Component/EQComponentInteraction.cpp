@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Action/EQComponentInteraction.h"
+#include "Component/EQComponentInteraction.h"
 
 #include "EnhancedInputComponent.h"
 #include "EQComponentInventory.h"

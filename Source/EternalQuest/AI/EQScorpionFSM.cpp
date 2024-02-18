@@ -37,10 +37,14 @@ void UEQScorpionFSM::TickMove()
 	FAIMoveRequest Req;
 	Req.SetAcceptanceRadius(100);
 	Req.SetGoalLocation(Destination);
-	AI-> BuildPathfindingQuery(Req,Query);
+	if(Self->HasAuthority())
+	{
+		AI-> BuildPathfindingQuery(Req,Query);
+		
+	}
 	auto Result = NaviSys->FindPathSync(Query);
 	
-	if(Result.IsSuccessful() && Direction.Length() < DetectionRange)
+	if(Result.IsSuccessful() && Direction.Length() < DetectionRange && Self->HasAuthority())
 	{
 		ChaseSpeed = Self->GetCharacterMovement()->MaxWalkSpeed = 450.f;
 		AI->MoveToLocation(Target->GetActorLocation());
@@ -53,7 +57,7 @@ void UEQScorpionFSM::TickMove()
 		}
 	}
 	// 플레이어와거리가 탐지 범위보다 작을때  
-	else if(Result.IsSuccessful() || Direction.Length() > DetectionRange)
+	else if(Result.IsSuccessful() || Direction.Length() > DetectionRange && Self->HasAuthority())
 	{
 		
 		Self->GetCharacterMovement()->MaxWalkSpeed = BasicSpeed;
@@ -101,15 +105,16 @@ void UEQScorpionFSM::TickDie()
 
 void UEQScorpionFSM::ScorpionAttack()
 {
-	AI->MoveToLocation(Target->GetActorLocation());
-	SetFocus();
-	// 근거리 공격
-	float Dist = FVector::Dist(Target->GetActorLocation(),Self->GetActorLocation());
-	if(Dist < MeleeAttackRange)
-	{
-		Self->PlayAnimMontage(AnimMontage,1,FName("Attack"));
-		SetState(EMonsterState::Attack);
-	}
+	// AI->MoveToLocation(Target->GetActorLocation());
+	// SetFocus();
+	// // 근거리 공격
+	// float Dist = FVector::Dist(Target->GetActorLocation(),Self->GetActorLocation());
+	// if(Dist < MeleeAttackRange)
+	// {
+	// 	Self->PlayAnimMontage(AnimMontage,1,FName("Attack"));
+	// 	SetState(EMonsterState::Attack);
+	// }
+	ServerRPC_ScorpionAttack();
 }
 
 void UEQScorpionFSM::ScorpionSkill()
@@ -150,5 +155,23 @@ void UEQScorpionFSM::ScorpionPrj()
 	FTransform ShootPoint = Self->GetMesh()->GetSocketTransform(FName("SkillPoint"));
 	GetWorld()->SpawnActor<AEQScorpionSkill>(SkillFactory,ShootPoint);
 	bIsUsingSkill = false;
+}
+
+void UEQScorpionFSM::ServerRPC_ScorpionAttack_Implementation()
+{
+	AI->MoveToLocation(Target->GetActorLocation());
+	SetFocus();
+	// 근거리 공격
+	float Dist = FVector::Dist(Target->GetActorLocation(),Self->GetActorLocation());
+	if(Dist < MeleeAttackRange)
+	{
+		MultiRPC_ScorpionAttack();
+		SetState(EMonsterState::Attack);
+	}
+}
+
+void UEQScorpionFSM::MultiRPC_ScorpionAttack_Implementation()
+{
+	Self->PlayAnimMontage(AnimMontage,1,FName("Attack"));
 }
 

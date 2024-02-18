@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Action/EQComponentMenuManager.h"
+#include "Component/EQComponentMenuManager.h"
 
 #include "EnhancedInputComponent.h"
 #include "Character/EQCharacterPlayer.h"

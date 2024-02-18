@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Action/EQComponentBase.h"
+#include "Component/EQComponentBase.h"
 #include "EQComponentAttack.generated.h"
 
 class UInputAction;
@@ -23,7 +23,6 @@ protected:
 
 public:
 	virtual void SetupPlayerInput(UInputComponent* PlayerInputComponent) override;
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 // Attack
 public:

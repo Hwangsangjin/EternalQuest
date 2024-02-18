@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "InputAction.h"
-#include "Action/EQComponentBase.h"
+#include "Component/EQComponentBase.h"
 #include "EQComponentMove.generated.h"
 
 /**
@@ -17,35 +17,50 @@ class ETERNALQUEST_API UEQComponentMove : public UEQComponentBase
 public:
 	UEQComponentMove();
 
-	// ----- Override 함수 -----
+protected:
 	virtual void BeginPlay() override;
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	virtual void SetupPlayerInput(UInputComponent* PlayerInputComponent) override;
-	// ----- Override 함수 -----
 
-	// ----- 함수 -----
-	void Move(const FInputActionValue& Value);
-	void Turn(const FInputActionValue& Value);
-	void Look(const FInputActionValue& Value);
+public:
+	virtual void SetupPlayerInput(UInputComponent* PlayerInputComponent) override;
+
+// Jump
+protected:
 	void Jump(const FInputActionValue& Value);
 	void StopJumping(const FInputActionValue& Value);
-	void Sprint(const FInputActionValue& Value);
-	// ----- 함수 -----
 
-	// ----- 변수 -----
+private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UInputAction> JumpAction;
 
+// Move
+protected:
+	void Move(const FInputActionValue& Value);
+
+private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UInputAction> MoveAction;
 
+// Turn
+protected:
+	void Turn(const FInputActionValue& Value);
+
+private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UInputAction> TurnAction;
 
+// Look
+protected:
+	void Look(const FInputActionValue& Value);
+
+private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UInputAction> LookAction;
 
+// Sprint
+protected:
+	void Sprint(const FInputActionValue& Value);
+
+private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UInputAction> SprintAction;
-	// ----- 변수 -----
 };

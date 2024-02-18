@@ -6,7 +6,7 @@
 #include "Animation/AnimMontage.h"
 #include "Character/EQCharacterPlayer.h"
 #include "Character/EQCharacterComboAttackData.h"
-#include "Action/EQComponentMove.h"
+#include "Component/EQComponentMove.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Game/EQGameInstance.h"
 #include "Components/CapsuleComponent.h"
@@ -14,8 +14,6 @@
 
 UEQComponentAttack::UEQComponentAttack()
 {
-	PrimaryComponentTick.bCanEverTick = false;
-
 	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionAttackRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/Input/Actions/IA_Attack.IA_Attack'"));
 	if (InputActionAttackRef.Object)
 	{
@@ -34,11 +32,6 @@ void UEQComponentAttack::SetupPlayerInput(UInputComponent* PlayerInputComponent)
 
 	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
 	EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ThisClass::Attack);
-}
-
-void UEQComponentAttack::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
 void UEQComponentAttack::Attack()
