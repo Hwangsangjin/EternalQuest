@@ -8,6 +8,7 @@
 #include "Character/EQCharacterBase.h"
 #include "Character/EQCharacterNonPlayer.h"
 #include "Character/EQNormalEnemy.h"
+#include "Net/UnrealNetwork.h"
 
 
 UEQMonsterAbility::UEQMonsterAbility()
@@ -17,6 +18,7 @@ UEQMonsterAbility::UEQMonsterAbility()
 
 	MaxHealth = 100;
 	CurrentHealth = MaxHealth;
+	
 	
 }
 
@@ -64,7 +66,10 @@ void UEQMonsterAbility::TakeDamage(AActor* DamagedActor, float Damage, const UDa
 		auto Monster = Cast<AEQNormalEnemy>(DamagedActor);
 		if(CurrentHealth > 0)
 		{
-			Monster->BaseFsm->AI->StopMovement();
+			if(Monster->HasAuthority())
+			{
+				Monster->BaseFsm->AI->StopMovement();
+			}
 			Monster->BaseFsm->SetState(EMonsterState::Hit);
 		}
 		else
@@ -79,4 +84,12 @@ void UEQMonsterAbility::TakeDamage(AActor* DamagedActor, float Damage, const UDa
 }
 
 
+void UEQMonsterAbility::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
+	DOREPLIFETIME( UEQMonsterAbility, MaxHealth);
+	DOREPLIFETIME( UEQMonsterAbility, CurrentHealth);
+	
+	
+}

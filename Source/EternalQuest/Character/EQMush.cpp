@@ -13,7 +13,6 @@ AEQMush::AEQMush()
 		GetMesh()->SetSkeletalMesh(TempMesh.Object);
 		GetMesh()->SetRelativeLocation(FVector(0,0,-30));
 	}
-	
 }
 
 

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Iris/ReplicationSystem/RepTag.h"
 #include "EQBaseFSM.generated.h"
 class AEQEnemyPool;
 class AEQCharacterPlayer;
@@ -41,7 +42,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 public:
-	UPROPERTY(EditAnywhere,Category="Monster")
+	UPROPERTY(EditAnywhere,Replicated,Category="Monster")
 	EMonsterState State;
 
 	UPROPERTY(EditAnywhere,Category="Monster")
@@ -64,14 +65,23 @@ public:
 
 
 protected:
+	UPROPERTY(Replicated)
 	float CurrentTime = 0;
+	UPROPERTY(Replicated)
 	float AttackTime = 2.0f;
+	UPROPERTY(Replicated)
 	float AttackRange;
+	UPROPERTY(Replicated)
 	float ChaseSpeed = 800;
+	UPROPERTY(Replicated)
 	float BasicSpeed;
+	UPROPERTY(Replicated)
 	float DetectionRange = 450;
+	UPROPERTY(Replicated)
 	float DieTime = 2.0f;
+	UPROPERTY(Replicated)
 	FVector RandomLoc;
+	
 	
 	
 
@@ -89,4 +99,23 @@ public:
 	virtual void ScorpionPrj();
 	void SetState(EMonsterState Next);
 	bool UpdateRandLoc(FVector OldLoc, float Radius, FVector& NewLoc);
+
+
+public:
+	UFUNCTION(Server,Reliable)
+	void ServerRPC_TickIdle();
+	
+	UFUNCTION(Server,Reliable)
+	void ServerRPC_TickHit();
+	UFUNCTION(NetMulticast,Unreliable)
+	void MultiRPC_TickHit();
+
+	UFUNCTION(Server,Reliable)
+	void ServerRPC_TickDie();
+	UFUNCTION(NetMulticast,Unreliable)
+	void MultiRPC_TickDie();
+
+	UFUNCTION(Server,Reliable)
+	void ServerRPC_SetState(EMonsterState Next);
+	
 };

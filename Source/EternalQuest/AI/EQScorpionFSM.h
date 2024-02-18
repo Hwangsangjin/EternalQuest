@@ -45,5 +45,8 @@ public:
 
 	virtual void ScorpionPrj() override;
 
-	
+	UFUNCTION(Server,Reliable)
+	void ServerRPC_ScorpionAttack();
+	UFUNCTION(NetMulticast,Unreliable)
+	void MultiRPC_ScorpionAttack();
 };

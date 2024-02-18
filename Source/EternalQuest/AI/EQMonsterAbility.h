@@ -24,10 +24,10 @@ public:
 	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Monster")
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Monster")
 	float MaxHealth;
 
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Monster")
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Monster")
 	float CurrentHealth;
 
 	void UpdateHP(float UpdateHealth);

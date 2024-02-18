@@ -15,7 +15,8 @@ class ETERNALQUEST_API UEQEnemyAnim : public UEQAnimInstance
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category= EnemyFSM)
+	
+	UPROPERTY(EditAnywhere,Replicated,BlueprintReadWrite,Category= EnemyFSM)
 	EMonsterState State;
 	
 	//// Spider ////
@@ -30,4 +31,5 @@ public:
 
 public:
 	bool IsDieDone = false;
+	
 };

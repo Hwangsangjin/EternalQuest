@@ -30,6 +30,8 @@ AEQNormalEnemy::AEQNormalEnemy()
 
 	bIsActive = false;
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+	bReplicates = true;
+	SetReplicateMovement(true);
 }
 
 

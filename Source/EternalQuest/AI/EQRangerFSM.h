@@ -25,4 +25,14 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AEQSpiderWeb> WebFactory;
+
+
+	UFUNCTION(Server,Reliable)
+	void ServerRPC_SpiderMove();
+	UFUNCTION(NetMulticast,Unreliable)
+	void MultiRPC_SpiderMove();
+	UFUNCTION(Server,Reliable)
+	void ServerRPC_SpiderAttack();
+	UFUNCTION(NetMulticast,Unreliable)
+	void MultiRPC_SpiderAttack();
 };
