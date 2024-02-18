@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Character/EQCharacterBase.h"
 #include "Interface/EQInterfaceAnimationAttack.h"
+#include "Interface/EQInterfaceCharacterWidget.h"
 #include "EQCharacterPlayer.generated.h"
 
 class UEQComponentMenuManager;
@@ -19,13 +20,15 @@ class UAnimMontage;
 class UInputComponent;
 class UBoxComponent;
 class UEQComponentMove;
-class UEQComponentAttack;
 class UEQComponentInteraction;
+class UEQComponentAttack;
+class UEQComponentStat;
+class UEQComponentWidget;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FInputSignature, UInputComponent*)
 
 UCLASS()
-class ETERNALQUEST_API AEQCharacterPlayer : public AEQCharacterBase, public IEQInterfaceAnimationAttack
+class ETERNALQUEST_API AEQCharacterPlayer : public AEQCharacterBase, public IEQInterfaceAnimationAttack, public IEQInterfaceCharacterWidget
 {
 	GENERATED_BODY()
 	
@@ -35,6 +38,7 @@ public:
 	FInputSignature InputSignature;
 
 public:
+	virtual void PostInitializeComponents() override;
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	virtual void Jump() override;
 	virtual void StopJumping() override;
@@ -83,24 +87,36 @@ protected:
 	virtual void SetDead();
 	void PlayDeadAnimation();
 
-private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UAnimMontage> DeadMontage;
 
+// UI Widget
+protected:
+	virtual void SetupCharacterWidget(UEQWidgetBase* InWidgetBase) override;
+
 // Component
 protected:
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UEQComponentMove> MoveComp;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UEQComponentInteraction> InteractionComp;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UEQComponentInventory> InventoryComp;
 	
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UEQComponentMenuManager> MenuManagerComp;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UEQComponentAttack> AttackComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UEQComponentStat> StatComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UEQComponentWidget> UserNameComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UEQComponentWidget> HpBarComp;
 };
