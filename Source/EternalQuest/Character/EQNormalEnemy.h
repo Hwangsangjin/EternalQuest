@@ -40,16 +40,16 @@ public:
 	void ActivateEnemy(const FVector& SpawnLocation);
 	bool IsActive();
 	void Deactivate();
+	
 private:
 	bool bIsActive;
 
 protected:
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)override;
-	
+	virtual void MonsterProjectileHit(AActor* OtherActor); 
 	
 	UPROPERTY()
 	UDamageType* Type;
-	
 	void Tick(float DeltaSeconds) override;
 	
 };

@@ -67,6 +67,10 @@ float AEQNormalEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 	
 }
 
+void AEQNormalEnemy::MonsterProjectileHit(AActor* OtherActor)
+{
+}
+
 void AEQNormalEnemy::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);

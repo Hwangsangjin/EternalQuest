@@ -15,4 +15,6 @@ class ETERNALQUEST_API AEQScorpion : public AEQNormalEnemy
 	GENERATED_BODY()
 
 	AEQScorpion();
+
+	virtual void MonsterProjectileHit(AActor* OtherActor) override;
 };

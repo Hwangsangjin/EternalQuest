@@ -11,7 +11,6 @@
 AEQEnemyPool::AEQEnemyPool()
 {
 	PrimaryActorTick.bCanEverTick = false;
-	
 }
 
 
@@ -41,30 +40,20 @@ void AEQEnemyPool::SpawnEnemy(const FVector& SpawnLocation)
 void AEQEnemyPool::InitPool()
 {
 	if(!HasAuthority()) return;
-
-	for(int32 i = 0; i < 1; i++)
+	for (auto& Pair : EnemyMap)
 	{
-		FActorSpawnParameters params;
-		auto NewEnemy = GetWorld()->SpawnActor<AEQNormalEnemy>(EnemyFactory,FVector(0,0,100),FRotator::ZeroRotator);
-		NewEnemy->Deactivate();
-		EnemyPool.Add(NewEnemy);
-		UE_LOG(LogTemp,Warning,TEXT("Added Object to the Pool"));
-	}
+		EnemyFactory= Pair.Key;
+		PoolSize = Pair.Value;
 	
-	// for (auto& Pair : EnemyMap)
-	// {
-	// 	EnemyFactory= Pair.Key;
-	// 	PoolSize = Pair.Value;
-	//
-	// 	for(int i = 0; i< PoolSize; i++)
-	// 	{
-	// 		FActorSpawnParameters params;
-	// 		auto NewEnemy = GetWorld()->SpawnActor<AEQNormalEnemy>(EnemyFactory,FVector(0,0,100),FRotator::ZeroRotator);
-	// 		NewEnemy->Deactivate();
-	// 		EnemyPool.Add(NewEnemy);
-	// 		UE_LOG(LogTemp,Warning,TEXT("Added Object to the Pool"));
-	// 	}
-	// }
+		for(int i = 0; i< PoolSize; i++)
+		{
+			FActorSpawnParameters params;
+			auto NewEnemy = GetWorld()->SpawnActor<AEQNormalEnemy>(EnemyFactory,FVector(0,0,100),FRotator::ZeroRotator);
+			NewEnemy->Deactivate();
+			EnemyPool.Add(NewEnemy);
+			UE_LOG(LogTemp,Warning,TEXT("Added Object to the Pool"));
+		}
+	}
 	
 }
 

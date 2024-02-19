@@ -93,5 +93,7 @@ void UEQMonsterAbility::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 	DOREPLIFETIME( UEQMonsterAbility, MaxHealth);
 	DOREPLIFETIME( UEQMonsterAbility, CurrentHealth);
 	DOREPLIFETIME(UEQMonsterAbility, SpiderWebDamage);
+	DOREPLIFETIME(UEQMonsterAbility,MushAttackDamage);
+	DOREPLIFETIME(UEQMonsterAbility,ScorpionAttackDamage);
 	
 }

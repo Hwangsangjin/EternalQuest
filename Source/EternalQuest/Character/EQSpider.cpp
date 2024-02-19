@@ -25,16 +25,19 @@ AEQSpider::AEQSpider()
 	
 }
 
-void AEQSpider::SpiderWebAttackHit(AActor* OtherActor)
+void AEQSpider::MonsterProjectileHit(AActor* OtherActor)
 {
+	Super::MonsterProjectileHit(OtherActor);
 	AEQSpiderWeb* SpiderWeb = Cast<AEQSpiderWeb>(GetMesh());
 	FDamageEvent DamageEvent;
-	if(OtherActor != this)
+	auto Player = Cast<AEQCharacterPlayer>(OtherActor);
+	if(OtherActor == Player)
 	{
-		UE_LOG(LogTemp,Warning,TEXT("%f"),Ability->SpiderWebDamage);
-		OtherActor -> TakeDamage(Ability->SpiderWebDamage,DamageEvent,nullptr,SpiderWeb);
+		OtherActor -> TakeDamage(Ability->ScorpionAttackDamage,DamageEvent,nullptr,SpiderWeb);
 	}
 }
+
+
 
 
 
