@@ -20,7 +20,7 @@ UEQBaseFSM::UEQBaseFSM()
 
 	PrimaryComponentTick.bCanEverTick = true;
 	bWantsInitializeComponent = true;
-	
+	SetIsReplicated(true);
 	
 }
 
@@ -29,11 +29,11 @@ UEQBaseFSM::UEQBaseFSM()
 void UEQBaseFSM::BeginPlay()
 {
 	Super::BeginPlay();
+	Target = Cast<AEQCharacterPlayer>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	Self = Cast<AEQNormalEnemy>(GetOwner());
 	AI = Cast<AAIController>(Self->GetController());
 	BasicSpeed = Self->GetCharacterMovement()->MaxWalkSpeed = 100;
 	AnimInst = Cast<UEQEnemyAnim>(Self->GetMesh()->GetAnimInstance());
-	
 }
 
 

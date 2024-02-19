@@ -32,7 +32,7 @@ public:
 	void SpawnEnemy(const FVector& SpawnLocation);
 
 public:
-	UPROPERTY(EditDefaultsOnly,Category="Pool")
+	UPROPERTY(EditAnywhere,Category="Pool")
 	TSubclassOf<AEQNormalEnemy> EnemyFactory;
 
 	UPROPERTY(EditAnywhere,Category="pool")

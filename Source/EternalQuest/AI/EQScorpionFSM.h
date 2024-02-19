@@ -49,4 +49,9 @@ public:
 	void ServerRPC_ScorpionAttack();
 	UFUNCTION(NetMulticast,Unreliable)
 	void MultiRPC_ScorpionAttack();
+
+	UFUNCTION(Server,Reliable)
+	void ServerRPC_ScorpionDie();
+	UFUNCTION(NetMulticast,Unreliable)
+	void MultiRPC_ScopionDie();
 };

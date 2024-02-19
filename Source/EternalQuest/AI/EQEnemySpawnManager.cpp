@@ -12,6 +12,7 @@ AEQEnemySpawnManager::AEQEnemySpawnManager()
 {
  	
 	PrimaryActorTick.bCanEverTick = false;
+	bReplicates = true;
 
 }
 
@@ -19,7 +20,10 @@ AEQEnemySpawnManager::AEQEnemySpawnManager()
 void AEQEnemySpawnManager::BeginPlay()
 {
 	Super::BeginPlay();
-	GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle,this,&AEQEnemySpawnManager::Spawn,SpawnTime,false);
+	if(HasAuthority())
+	{
+		GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle,this,&AEQEnemySpawnManager::Spawn,SpawnTime,false);
+	}
 }
 
 
@@ -29,10 +33,8 @@ void AEQEnemySpawnManager::Tick(float DeltaTime)
 
 }
 
-void AEQEnemySpawnManager::Spawn()
+void AEQEnemySpawnManager::SeverRPC_Spawn_Implementation()
 {
-	UE_LOG(LogTemp,Warning,TEXT("InitSpawn"));
-	//ACharacter* Monster = UGameplayStatics::GetPlayerCharacter(GetWorld(),0);
 	if(Pool)
 	{
 		AEQNormalEnemy* PoolActor = Pool->GetInActiveEnemy();	
@@ -49,6 +51,12 @@ void AEQEnemySpawnManager::Spawn()
 		UE_LOG(LogTemp,Warning,TEXT("Spawning"));
 	}
 	else UE_LOG(LogTemp,Warning,TEXT("NoPool!!!!!!!!!!!"));
+}
+
+void AEQEnemySpawnManager::Spawn()
+{
+	UE_LOG(LogTemp,Warning,TEXT("InitSpawn"));
+	SeverRPC_Spawn();
 }
 
 

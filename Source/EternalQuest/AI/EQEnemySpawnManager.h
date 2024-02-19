@@ -39,6 +39,8 @@ private:
 	
 
 public:
+	UFUNCTION(Server,Reliable)
+	void SeverRPC_Spawn();
 	void Spawn();
 	
 

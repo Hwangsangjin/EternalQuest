@@ -15,5 +15,7 @@ class ETERNALQUEST_API AEQSpider : public AEQNormalEnemy
 	GENERATED_BODY()
 
 	AEQSpider();
-	
+public:
+	void SpiderWebAttackHit(AActor* OtherActor);
+
 };
