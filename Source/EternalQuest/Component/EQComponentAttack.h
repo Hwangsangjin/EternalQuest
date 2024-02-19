@@ -33,9 +33,6 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UInputAction> AttackAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = true))
-	TObjectPtr<UAnimMontage> AttackMontage;
-
 // Default Attack
 protected:
 	void DefaultAttack();
@@ -43,6 +40,9 @@ protected:
 	void DefaultAttackEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded);
 
 private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UAnimMontage> DefaultAttackMontage;
+
 	bool bIsDefaultAttacking = false;
 
 // Combo Attack
@@ -54,6 +54,9 @@ protected:
 	void ComboCheck();
 
 private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UAnimMontage> ComboAttackMontage;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Data, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UEQCharacterComboAttackData> ComboAttackData;
 

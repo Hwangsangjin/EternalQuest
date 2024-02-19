@@ -97,20 +97,34 @@ void UEQComponentMove::Turn(const FInputActionValue& Value)
 
 void UEQComponentMove::Look(const FInputActionValue& Value)
 {
-	
 	const float LookAxis = Value.Get<float>();
 	
-	if (Player->GetCameraBoom()->TargetArmLength >= 800 && LookAxis < 0) return;
-	if (Player->GetCameraBoom()->TargetArmLength <= 200 && LookAxis > 0) return;
+	constexpr float MinLength = 200.0f;
+	constexpr float MaxLength = 800.0f;
+	if (Player->GetCameraBoom()->TargetArmLength <= MinLength && LookAxis > 0) return;
+	if (Player->GetCameraBoom()->TargetArmLength >= MaxLength && LookAxis < 0) return;
 
 	if (LookAxis > 0)
+	{
 		Player->GetCameraBoom()->TargetArmLength = FMath::FInterpTo(Player->GetCameraBoom()->TargetArmLength, Player->GetCameraBoom()->TargetArmLength - 30.0f, GetWorld()->GetDeltaSeconds(), 150);
+	}
 	else
+	{
 		Player->GetCameraBoom()->TargetArmLength = FMath::FInterpTo(Player->GetCameraBoom()->TargetArmLength, Player->GetCameraBoom()->TargetArmLength + 30.0f, GetWorld()->GetDeltaSeconds(), 150);
+	}
 }
 
 void UEQComponentMove::Sprint(const FInputActionValue& Value)
 {
 	const bool bIsSprinting = Value.Get<bool>();
-	bIsSprinting ? Player->GetCharacterMovement()->MaxWalkSpeed = 600.0f : Player->GetCharacterMovement()->MaxWalkSpeed = 450.0f;
+	if (bIsSprinting)
+	{
+		constexpr float MaxSpeed = 600.0f;
+		Player->GetCharacterMovement()->MaxWalkSpeed = MaxSpeed;
+	}
+	else
+	{
+		constexpr float DefaultSpeed = 450.0f;
+		Player->GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
+	}
 }
