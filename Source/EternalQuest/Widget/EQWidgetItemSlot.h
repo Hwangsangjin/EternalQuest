@@ -7,6 +7,7 @@
 #include "Struct/EQStructEnumBase.h"
 #include "EQWidgetItemSlot.generated.h"
 
+class UEQWidgetItemActionMenu;
 class UTextBlock;
 class USizeBox;
 class UImage;
@@ -22,8 +23,12 @@ class ETERNALQUEST_API UEQWidgetItemSlot : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	UEQWidgetItemSlot(const FObjectInitializer &ObjectInitializer);
+	
 	virtual void NativePreConstruct() override;
 	virtual void NativeConstruct() override;
+	
+	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
 
 	UPROPERTY(EditAnywhere,BlueprintReadOnly, meta=(BindWidget))
 	TObjectPtr<UButton> Btn_Slot;
@@ -45,6 +50,9 @@ public:
 
 	UPROPERTY()
 	TObjectPtr<UEQWidgetInventory> EQWidgetInventory;
+
+	UPROPERTY()
+	TSubclassOf<UUserWidget> EQWidgetActionMenu;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FEQSlot EQSlot;

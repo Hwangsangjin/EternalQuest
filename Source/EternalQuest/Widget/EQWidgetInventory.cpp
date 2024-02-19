@@ -13,7 +13,7 @@
 UEQWidgetInventory::UEQWidgetInventory(const FObjectInitializer& ObjectInitializer)
 : Super(ObjectInitializer)
 {
-	static ConstructorHelpers::FClassFinder<UUserWidget> ItemSlotRef(TEXT("/Game/LDJ/UI/WBP_Slot.WBP_Slot_C"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> ItemSlotRef(TEXT("/Game/Blueprints/UI/WBP_Slot.WBP_Slot_C"));
 	if (ItemSlotRef.Succeeded())
 	{
 		ItemSlotFactory = ItemSlotRef.Class;
