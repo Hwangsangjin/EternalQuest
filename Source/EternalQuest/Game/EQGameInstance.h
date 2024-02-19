@@ -7,6 +7,12 @@
 #include "Interfaces/OnlineSessionInterface.h"
 #include "EQGameInstance.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMultiplayerOnCreateSessionComplete, bool, bWasSuccessful);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FMultiplayerOnFindSessionsComplete, const TArray<FOnlineSessionSearchResult>& SessionResults, bool bWasSuccessful);
+DECLARE_MULTICAST_DELEGATE_OneParam(FMultiplayerOnJoinSessionComplete, EOnJoinSessionCompleteResult::Type Result);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMultiplayerOnDestroySessionComplete, bool, bWasSuccessful);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMultiplayerOnStartSessionComplete, bool, bWasSuccessful);
+
 UENUM(BlueprintType)
 enum class EClassType : uint8
 {
@@ -19,12 +25,6 @@ enum class EClassType : uint8
 
 	MAX
 };
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMultiplayerOnCreateSessionComplete, bool, bWasSuccessful);
-DECLARE_MULTICAST_DELEGATE_TwoParams(FMultiplayerOnFindSessionsComplete, const TArray<FOnlineSessionSearchResult>& SessionResults, bool bWasSuccessful);
-DECLARE_MULTICAST_DELEGATE_OneParam(FMultiplayerOnJoinSessionComplete, EOnJoinSessionCompleteResult::Type Result);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMultiplayerOnDestroySessionComplete, bool, bWasSuccessful);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMultiplayerOnStartSessionComplete, bool, bWasSuccessful);
 
 UCLASS()
 class ETERNALQUEST_API UEQGameInstance : public UGameInstance
@@ -83,9 +83,10 @@ public:
 	FORCEINLINE EClassType GetClassType() { return ClassType; }
 
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE void SetClassType(EClassType NewClassType) { ClassType = NewClassType; }
+	//FORCEINLINE void SetClassType(EClassType NewClassType) { ClassType = NewClassType; }
+	void SetClassType(EClassType NewClassType);
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character, Meta = (AllowPrivateAccess = true))
-	EClassType ClassType = EClassType::ECT_None;
+	EClassType ClassType = EClassType::ECT_Warrior;
 };

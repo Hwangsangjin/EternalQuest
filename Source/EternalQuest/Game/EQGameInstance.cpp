@@ -6,6 +6,7 @@
 #include "OnlineSessionSettings.h"
 #include "Online/OnlineSessionNames.h"
 #include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
 
 UEQGameInstance::UEQGameInstance()
 	: CreateSessionCompleteDelegate(FOnCreateSessionCompleteDelegate::CreateUObject(this, &ThisClass::OnCreateSessionComplete))
@@ -197,4 +198,16 @@ void UEQGameInstance::OnStartSessionComplete(FName SessionName, bool bWasSuccess
 	}
 
 	MultiplayerOnStartSessionComplete.Broadcast(bWasSuccessful);
+}
+
+void UEQGameInstance::SetClassType(EClassType NewClassType)
+{
+	if (GetWorld()->GetFirstPlayerController()->HasAuthority())
+	{
+		ClassType = NewClassType;
+	}
+	else
+	{
+		ClassType = NewClassType;
+	}
 }
