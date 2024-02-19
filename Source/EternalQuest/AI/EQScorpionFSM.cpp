@@ -117,7 +117,7 @@ void UEQScorpionFSM::MeleeAttackCheck()
 	FCollisionQueryParams Params(SCENE_QUERY_STAT(Attack),false,Self);
 	float MeleeRange = 100.f;
 	float MeleeAttackRad = 50.f;
-	float Damage = Ability->ScorpionAttackDamage;
+	float Damage = 10;
 	FVector StartLoc = Self->GetActorLocation() + Self->GetActorForwardVector() * Self->GetCapsuleComponent()->GetScaledCapsuleRadius();
 	FVector EndLoc = StartLoc + Self->GetActorForwardVector() * MeleeRange;
 

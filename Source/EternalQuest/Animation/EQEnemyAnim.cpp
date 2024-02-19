@@ -4,6 +4,7 @@
 #include "Animation/EQEnemyAnim.h"
 
 #include "AI/EQBaseFSM.h"
+#include "Character/EQMush.h"
 #include "Character/EQScorpion.h"
 #include "Character/EQSpider.h"
 #include "Net/UnrealNetwork.h"
@@ -28,9 +29,27 @@ void UEQEnemyAnim::AnimNotify_ScorSkill()
 	}
 }
 
+void UEQEnemyAnim::AnimNotify_ScorAttack()
+{
+	AEQScorpion* Scorpion = Cast<AEQScorpion>(TryGetPawnOwner());
+	if(Scorpion != nullptr)
+	{
+		Scorpion->BaseFsm->MeleeAttackCheck();
+	}
+}
+
 void UEQEnemyAnim::AnimNotify_DieEnd()
 {
 	IsDieDone = true;
+}
+
+void UEQEnemyAnim::AnimNotify_MushAttack()
+{
+	AEQMush* Mush = Cast<AEQMush>(TryGetPawnOwner());
+	if(Mush != nullptr)
+	{
+		Mush->BaseFsm->MeleeAttackCheck();
+	}
 }
 
 void UEQEnemyAnim::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

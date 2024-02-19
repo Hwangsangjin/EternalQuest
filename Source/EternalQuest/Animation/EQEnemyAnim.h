@@ -27,7 +27,13 @@ public:
 	UFUNCTION()
 	void AnimNotify_ScorSkill();
 	UFUNCTION()
+	void AnimNotify_ScorAttack();
+	UFUNCTION()
 	void AnimNotify_DieEnd();
+
+	// Mush //
+	UFUNCTION()
+	void AnimNotify_MushAttack();
 
 public:
 	bool IsDieDone = false;
