@@ -10,6 +10,8 @@
 #include "Character/EQCharacterBase.h"
 #include "Character/EQCharacterPlayer.h"
 #include "Character/EQNormalEnemy.h"
+#include "Components/CapsuleComponent.h"
+#include "Engine/DamageEvents.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
@@ -141,7 +143,23 @@ bool UEQBaseFSM::UpdateRandLoc(FVector OldLoc, float Radius, FVector& NewLoc)
 	
 }
 
+void UEQBaseFSM::MeleeAttackCheck()
+{
+	FHitResult HitResult;
+	FCollisionQueryParams Params(SCENE_QUERY_STAT(Attack),false,Self);
+	float MeleeAttackRange = 100.f;
+	float MeleeAttackRad = 50.f;
+	float Damage = 0;
+	FVector StartLoc = Self->GetActorLocation() + Self->GetActorForwardVector() * Self->GetCapsuleComponent()->GetScaledCapsuleRadius();
+	FVector EndLoc = StartLoc + Self->GetActorForwardVector() * MeleeAttackRange;
 
+	bool bHit = GetWorld()->SweepSingleByChannel(HitResult,StartLoc,EndLoc,FQuat::Identity,ECC_GameTraceChannel1,FCollisionShape::MakeSphere(MeleeAttackRad),Params);
+	if(bHit)
+	{
+		FDamageEvent DamageEvent;
+		HitResult.GetActor()->TakeDamage(Damage,DamageEvent,nullptr,Self);
+	}
+}
 
 
 void UEQBaseFSM::ServerRPC_SetState_Implementation(EMonsterState Next)

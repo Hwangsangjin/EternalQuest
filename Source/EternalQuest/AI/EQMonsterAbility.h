@@ -29,10 +29,15 @@ public:
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Monster")
 	float CurrentHealth;
-
 	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Spider")
-	float SpiderWebDamage = 20;
+	float SpiderWebDamage = 20.f;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Spider")
+	float MushAttackDamage = 10.f;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Spider")
+	float ScorpionAttackDamage = 25.f;
 
 public:
 	void UpdateHP(float UpdateHealth);

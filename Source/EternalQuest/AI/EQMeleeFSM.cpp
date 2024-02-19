@@ -4,9 +4,12 @@
 #include "AI/EQMeleeFSM.h"
 
 #include "AIController.h"
+#include "EQMonsterAbility.h"
 #include "NavigationSystem.h"
 #include "Character/EQCharacterPlayer.h"
 #include "Character/EQNormalEnemy.h"
+#include "Components/CapsuleComponent.h"
+#include "Engine/DamageEvents.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Navigation/PathFollowingComponent.h"
@@ -15,7 +18,8 @@ void UEQMeleeFSM::BeginPlay()
 {
 	Super::BeginPlay();
 
-	AttackRange = 100;
+	AttackRange = 100.f;
+	DetectionRange = 500.f;
 }
 
 void UEQMeleeFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -43,15 +47,7 @@ void UEQMeleeFSM::TickAttack()
 			else
 			{
 				UE_LOG(LogTemp,Warning,TEXT("Attack!!!!!!!!!!!"));
-				if(Self->HasAuthority())
-				{
-					if(Self->HasAuthority())
-					{
-						AI->SetFocus(Target,EAIFocusPriority::Gameplay);
-						
-					}
-				}
-				//Self->PlayAnimMontage(AnimMontage,1,FName("Attack"));
+				AI->SetFocus(Target,EAIFocusPriority::Gameplay);
 				MultiRPC_MushAttack();
 			}
 		}
@@ -62,7 +58,6 @@ void UEQMeleeFSM::TickMove()
 {
 	Super::TickMove();
 	if(!Self->HasAuthority()) return;
-
 	TArray<AActor*> allPlayer;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEQCharacterPlayer::StaticClass(), allPlayer);
 	float dist = 100000;
@@ -76,9 +71,6 @@ void UEQMeleeFSM::TickMove()
 			Target = Cast<AEQCharacterPlayer>(allPlayer[i]);
 		}
 	}
-		
-	
-	//ServerRPC_MushMove();
 	FVector Direction = Target->GetActorLocation() - Self->GetActorLocation();
 	FVector Destination = Target->GetActorLocation();
 	UNavigationSystemV1* NaviSys = UNavigationSystemV1::GetNavigationSystem(GetWorld());
@@ -133,6 +125,25 @@ void UEQMeleeFSM::TickMove()
 	
 }
 
+void UEQMeleeFSM::MeleeAttackCheck()
+{
+	Super::MeleeAttackCheck();
+	FHitResult HitResult;
+	FCollisionQueryParams Params(SCENE_QUERY_STAT(Attack),false,Self);
+	float MeleeRange = 100.f;
+	float MeleeAttackRad = 50.f;
+	float Damage = Ability->MushAttackDamage;
+	FVector StartLoc = Self->GetActorLocation() + Self->GetActorForwardVector() * Self->GetCapsuleComponent()->GetScaledCapsuleRadius();
+	FVector EndLoc = StartLoc + Self->GetActorForwardVector() * MeleeRange;
+
+	bool bHit = GetWorld()->SweepSingleByChannel(HitResult,StartLoc,EndLoc,FQuat::Identity,ECC_GameTraceChannel1,FCollisionShape::MakeSphere(MeleeAttackRad),Params);
+	if(bHit)
+	{
+		FDamageEvent DamageEvent;
+		HitResult.GetActor()->TakeDamage(Damage,DamageEvent,nullptr,Self);
+	}
+}
+
 void UEQMeleeFSM::ServerRPC_MushMove_Implementation()
 {
 	FVector Direction = Target->GetActorLocation() - Self->GetActorLocation();
@@ -151,7 +162,7 @@ void UEQMeleeFSM::ServerRPC_MushMove_Implementation()
 		if(Result.IsSuccessful() && Direction.Length() < DetectionRange)
 		{
 			
-			// 속도를 추적속도로 바꾸고
+			
 			ChaseSpeed = Self->GetCharacterMovement()->MaxWalkSpeed  = 450.f;
 			Self->GetCharacterMovement()->MaxWalkSpeed = ChaseSpeed;
 			if(Self->HasAuthority())
@@ -164,7 +175,6 @@ void UEQMeleeFSM::ServerRPC_MushMove_Implementation()
 		{
 			Self->GetCharacterMovement()->MaxWalkSpeed = BasicSpeed;
 			FPathFollowingRequestResult R;
-			// Ai는 Controller가 Server에만 있기 떄문에 Has Authority 를 사용하여 서버임을 알린다.
 			if(Self->HasAuthority())
 			{
 				R.Code = AI -> MoveToLocation(RandomLoc);

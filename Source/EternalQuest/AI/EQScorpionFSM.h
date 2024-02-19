@@ -24,6 +24,7 @@ protected:
 	virtual void TickMove() override;
 	virtual void TickAttack() override;
 	virtual void TickDie() override;
+	virtual void MeleeAttackCheck() override;
 
 public:
 	UPROPERTY(EditAnywhere,Category="Skills")

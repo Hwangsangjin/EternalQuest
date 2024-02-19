@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "Iris/ReplicationSystem/RepTag.h"
 #include "EQBaseFSM.generated.h"
+class UEQMonsterAbility;
 class AEQEnemyPool;
 class AEQCharacterPlayer;
 class UEQEnemyAnim;
@@ -63,6 +64,9 @@ public:
 	UPROPERTY(EditAnywhere,Category="Pool")
 	AEQEnemyPool* Pool;
 
+	UPROPERTY(EditAnywhere,Category="Ability")
+	UEQMonsterAbility* Ability;
+
 
 protected:
 	UPROPERTY(Replicated)
@@ -91,6 +95,7 @@ protected:
 	virtual void TickAttack();
 	virtual void TickHit();
 	virtual void TickDie();
+	virtual void MeleeAttackCheck();
 	
 
 
@@ -99,6 +104,7 @@ public:
 	virtual void ScorpionPrj();
 	void SetState(EMonsterState Next);
 	bool UpdateRandLoc(FVector OldLoc, float Radius, FVector& NewLoc);
+	
 
 
 public:

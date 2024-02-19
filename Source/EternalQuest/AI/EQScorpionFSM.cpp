@@ -5,11 +5,15 @@
 
 #include "AIController.h"
 #include "AITypes.h"
+#include "EQMonsterAbility.h"
 #include "NavigationSystem.h"
 #include "Character/EQCharacterPlayer.h"
 #include "Character/EQNormalEnemy.h"
 #include "Components/ArrowComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "Engine/DamageEvents.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Navigation/PathFollowingComponent.h"
 #include "Projectile/EQScorpionSkill.h"
 
@@ -29,6 +33,20 @@ void UEQScorpionFSM::TickMove()
 	Super::TickMove();
 	
 	//DrawDebugSphere(GetWorld(),Self->GetActorLocation(),DetectionRange,100,FColor::Blue);
+	if(!Self->HasAuthority()) return;
+	TArray<AActor*> allPlayer;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEQCharacterPlayer::StaticClass(), allPlayer);
+	float dist = 100000;
+	
+	for(int32 i = 0; i < allPlayer.Num(); i++)
+	{
+		float tempDist = FVector::Distance(allPlayer[i]->GetActorLocation(), Self->GetActorLocation());
+		if(dist > tempDist)
+		{
+			dist = tempDist;
+			Target = Cast<AEQCharacterPlayer>(allPlayer[i]);
+		}
+	}
 	FVector Direction = Target->GetActorLocation() - Self->GetActorLocation();
 	FVector Destination = Target->GetActorLocation();
 	UNavigationSystemV1* NaviSys = UNavigationSystemV1::GetNavigationSystem(GetWorld());
@@ -39,35 +57,20 @@ void UEQScorpionFSM::TickMove()
 	if(Self->HasAuthority())
 	{
 		AI-> BuildPathfindingQuery(Req,Query);
-		
 	}
 	auto Result = NaviSys->FindPathSync(Query);
 	
-	if(Result.IsSuccessful() && Direction.Length() < DetectionRange && Self->HasAuthority())
-	{
-		ChaseSpeed = Self->GetCharacterMovement()->MaxWalkSpeed = 450.f;
-		AI->MoveToLocation(Target->GetActorLocation());
-		//UE_LOG(LogTemp,Warning,TEXT("%f"),ChaseSpeed);
-		Self->GetCharacterMovement()->MaxWalkSpeed = ChaseSpeed;
-		if(Direction.Length() < MinRangeAttackRange)
-		{
-			SetState(EMonsterState::Attack);
-			CurrentTime = AttackTime;
-		}
-	}
-	// 플레이어와거리가 탐지 범위보다 작을때  
-	else if(Result.IsSuccessful() || Direction.Length() > DetectionRange && Self->HasAuthority())
+	//UE_LOG(LogTemp,Warning,TEXT("%d,%f,%f"),Result.IsSuccessful(),Direction.Length(),DetectionRange);
+	if(Result.IsSuccessful() && Direction.Length() < DetectionRange)
 	{
 		
-		Self->GetCharacterMovement()->MaxWalkSpeed = BasicSpeed;
-		FPathFollowingRequestResult R;
-		// Ai는 Controller가 Server에만 있기 떄문에 Has Authority 를 사용하여 서버임을 알린다.
-		R.Code = AI -> MoveToLocation(RandomLoc);
-		if(R != EPathFollowingRequestResult::RequestSuccessful)
+		// 속도를 추적속도로 바꾸고
+		ChaseSpeed = Self->GetCharacterMovement()->MaxWalkSpeed  = 450.f;
+		Self->GetCharacterMovement()->MaxWalkSpeed = ChaseSpeed;
+		if(Self->HasAuthority())
 		{
-			UpdateRandLoc(Self->GetActorLocation(),500,RandomLoc);
-			ChaseSpeed = BasicSpeed;
-		//	UE_LOG(LogTemp,Warning,TEXT("%f"),ChaseSpeed);
+			AI->MoveToLocation(Destination);
+		
 		}
 	}
 	
@@ -76,9 +79,9 @@ void UEQScorpionFSM::TickMove()
 void UEQScorpionFSM::TickAttack()
 {
 	Super::TickAttack();
-	DrawDebugSphere(GetWorld(),Self->GetActorLocation(),MeleeAttackRange,100,FColor::Green);
-	DrawDebugSphere(GetWorld(),Self->GetActorLocation(),MinRangeAttackRange,100,FColor::Red);
-	DrawDebugSphere(GetWorld(),Self->GetActorLocation(),MaxRangeAttackRange,100,FColor::White);
+	// DrawDebugSphere(GetWorld(),Self->GetActorLocation(),MeleeAttackRange,100,FColor::Green);
+	// DrawDebugSphere(GetWorld(),Self->GetActorLocation(),MinRangeAttackRange,100,FColor::Red);
+	// DrawDebugSphere(GetWorld(),Self->GetActorLocation(),MaxRangeAttackRange,100,FColor::White);
 
 	CurrentTime += GetWorld()->GetDeltaSeconds();
 	if(CurrentTime > AttackTime && Target != nullptr)
@@ -91,6 +94,25 @@ void UEQScorpionFSM::TickDie()
 {
 	Super::TickDie();
 	ServerRPC_ScorpionDie();
+}
+
+void UEQScorpionFSM::MeleeAttackCheck()
+{
+	Super::MeleeAttackCheck();
+	FHitResult HitResult;
+	FCollisionQueryParams Params(SCENE_QUERY_STAT(Attack),false,Self);
+	float MeleeRange = 100.f;
+	float MeleeAttackRad = 50.f;
+	float Damage = Ability->ScorpionAttackDamage;
+	FVector StartLoc = Self->GetActorLocation() + Self->GetActorForwardVector() * Self->GetCapsuleComponent()->GetScaledCapsuleRadius();
+	FVector EndLoc = StartLoc + Self->GetActorForwardVector() * MeleeRange;
+
+	bool bHit = GetWorld()->SweepSingleByChannel(HitResult,StartLoc,EndLoc,FQuat::Identity,ECC_GameTraceChannel1,FCollisionShape::MakeSphere(MeleeAttackRad),Params);
+	if(bHit)
+	{
+		FDamageEvent DamageEvent;
+		HitResult.GetActor()->TakeDamage(Damage,DamageEvent,nullptr,Self);
+	}
 }
 
 

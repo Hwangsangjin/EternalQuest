@@ -2,8 +2,12 @@
 
 
 #include "Character/EQScorpion.h"
-
+#include "Projectile/EQScorpionSkill.h"
+#include "EQCharacterPlayer.h"
+#include "AI/EQMonsterAbility.h"
+#include "AI/EQScorpionFSM.h"
 #include "Components/CapsuleComponent.h"
+#include "Engine/DamageEvents.h"
 
 AEQScorpion::AEQScorpion()
 {
@@ -14,5 +18,18 @@ AEQScorpion::AEQScorpion()
 		GetMesh()->SetRelativeScale3D(FVector(2.5f));
 		GetCapsuleComponent()->SetCapsuleHalfHeight(120.f);
 		GetCapsuleComponent()->SetCapsuleRadius(100.f);
+	}
+}
+
+void AEQScorpion::MonsterProjectileHit(AActor* OtherActor)
+{
+	Super::MonsterProjectileHit(OtherActor);
+	AEQScorpionSkill* Skill = Cast<AEQScorpionSkill>(GetMesh());
+	FDamageEvent DamageEvent;
+	auto Player = Cast<AEQCharacterPlayer>(OtherActor);
+	if(OtherActor == Player)
+	{
+		UE_LOG(LogTemp,Warning,TEXT("%f"),Ability->SpiderWebDamage);
+		OtherActor -> TakeDamage(Ability->SpiderWebDamage,DamageEvent,nullptr,Skill);
 	}
 }
