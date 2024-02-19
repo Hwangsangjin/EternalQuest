@@ -7,6 +7,8 @@
 #include "NiagaraComponent.h"
 #include "EQSpiderWeb.generated.h"
 
+class UEQMonsterAbility;
+class AEQCharacterNonPlayer;
 class AEQSpider;
 class AEQCharacterPlayer;
 class UProjectileMovementComponent;
@@ -39,15 +41,15 @@ public:
 
 	UPROPERTY()
 	AEQCharacterPlayer* Target;
-
+	
 	UPROPERTY()
 	AEQSpider* Self;
+	UPROPERTY()
+	UEQMonsterAbility* MonsterAbility;
 
 	UPROPERTY(Replicated)
 	float Speed = 600;
-	UPROPERTY(Replicated)
-	float Damage = 10;
-
+public:
 
 	UFUNCTION()
 	void OverLapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);

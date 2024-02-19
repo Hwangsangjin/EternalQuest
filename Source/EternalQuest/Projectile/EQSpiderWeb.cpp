@@ -2,6 +2,7 @@
 
 #include "Projectile/EQSpiderWeb.h"
 
+#include "AI/EQMonsterAbility.h"
 #include "Character/EQCharacterPlayer.h"
 #include "Character/EQSpider.h"
 #include "Components/SphereComponent.h"
@@ -52,8 +53,10 @@ void AEQSpiderWeb::Tick(float DeltaTime)
 	}
 }
 
+
+
 void AEQSpiderWeb::OverLapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                                UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	// auto Player = Cast<AEQCharacterPlayer>(OtherActor);
 	// FDamageEvent DamageEvent;
@@ -62,9 +65,8 @@ void AEQSpiderWeb::OverLapBegin(UPrimitiveComponent* OverlappedComponent, AActor
 	// 	Player->TakeDamage(Damage,DamageEvent,nullptr,this);
 	// 	this -> Destroy();
 	// }
-
-	FDamageEvent DamageEvent;
-	OtherActor->TakeDamage(Damage, DamageEvent, nullptr, this);
+	
+	Self->SpiderWebAttackHit(OtherActor);
 	this->Destroy();
 }
 
@@ -73,7 +75,4 @@ void AEQSpiderWeb::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME( AEQSpiderWeb, Speed);
-	DOREPLIFETIME( AEQSpiderWeb, Damage);
-	
-	
 }

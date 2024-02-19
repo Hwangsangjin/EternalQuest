@@ -18,7 +18,7 @@ UEQMonsterAbility::UEQMonsterAbility()
 
 	MaxHealth = 100;
 	CurrentHealth = MaxHealth;
-	
+	SetIsReplicated(true);
 	
 }
 
@@ -39,7 +39,8 @@ void UEQMonsterAbility::BeginPlay()
 void UEQMonsterAbility::UpdateHP(float UpdateHealth)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Current Health222: %f"), CurrentHealth);
-	CurrentHealth = FMath::Max(0,CurrentHealth+UpdateHealth);
+	//CurrentHealth = FMath::Max(0,CurrentHealth+UpdateHealth);
+	ServerRPC_UpdateHP(UpdateHealth);
 	UE_LOG(LogTemp,Warning,TEXT("damage: %.1f, curent Health: %.1f"), UpdateHealth, CurrentHealth);
 }
 
@@ -77,10 +78,11 @@ void UEQMonsterAbility::TakeDamage(AActor* DamagedActor, float Damage, const UDa
 			Monster->BaseFsm->SetState(EMonsterState::Die);
 		}
 	}
-	//else if()
-	{
-		
-	}
+}
+
+void UEQMonsterAbility::ServerRPC_UpdateHP_Implementation(float UpdateHealth)
+{
+	CurrentHealth = FMath::Max(0,CurrentHealth+UpdateHealth);
 }
 
 
@@ -90,6 +92,6 @@ void UEQMonsterAbility::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 
 	DOREPLIFETIME( UEQMonsterAbility, MaxHealth);
 	DOREPLIFETIME( UEQMonsterAbility, CurrentHealth);
-	
+	DOREPLIFETIME(UEQMonsterAbility, SpiderWebDamage);
 	
 }

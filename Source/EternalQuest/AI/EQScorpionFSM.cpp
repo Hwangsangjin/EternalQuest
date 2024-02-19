@@ -29,7 +29,6 @@ void UEQScorpionFSM::TickMove()
 	Super::TickMove();
 	
 	//DrawDebugSphere(GetWorld(),Self->GetActorLocation(),DetectionRange,100,FColor::Blue);
-	
 	FVector Direction = Target->GetActorLocation() - Self->GetActorLocation();
 	FVector Destination = Target->GetActorLocation();
 	UNavigationSystemV1* NaviSys = UNavigationSystemV1::GetNavigationSystem(GetWorld());
@@ -91,15 +90,7 @@ void UEQScorpionFSM::TickAttack()
 void UEQScorpionFSM::TickDie()
 {
 	Super::TickDie();
-	CurrentTime += GetWorld()->GetDeltaSeconds();
-	
-	Self->PlayAnimMontage(AnimMontage,1,FName("Died"));
-	
-	Self->SetActorEnableCollision(ECollisionEnabled::NoCollision);
-	if(CurrentTime>DieTime)
-	{
-		Self->Destroy();
-	}
+	ServerRPC_ScorpionDie();
 }
 
 
@@ -150,11 +141,27 @@ void UEQScorpionFSM::SetFocus()
 void UEQScorpionFSM::ScorpionPrj()
 {
 	Super::ScorpionPrj();
-	AI->SetFocus(Target,EAIFocusPriority::Gameplay);
+	//AI->SetFocus(Target,EAIFocusPriority::Gameplay);
 	//FTransform ShootPoint = Self->GetArrowComponent()->GetComponentTransform();
 	FTransform ShootPoint = Self->GetMesh()->GetSocketTransform(FName("SkillPoint"));
 	GetWorld()->SpawnActor<AEQScorpionSkill>(SkillFactory,ShootPoint);
 	bIsUsingSkill = false;
+}
+
+void UEQScorpionFSM::MultiRPC_ScopionDie_Implementation()
+{
+	Self->PlayAnimMontage(AnimMontage,1,FName("Died"));
+}
+
+void UEQScorpionFSM::ServerRPC_ScorpionDie_Implementation()
+{
+	CurrentTime += GetWorld()->GetDeltaSeconds();
+	MultiRPC_ScopionDie();
+	Self->SetActorEnableCollision(ECollisionEnabled::NoCollision);
+	if(CurrentTime>DieTime)
+	{
+		Self->Destroy();
+	}
 }
 
 void UEQScorpionFSM::ServerRPC_ScorpionAttack_Implementation()
@@ -173,5 +180,7 @@ void UEQScorpionFSM::ServerRPC_ScorpionAttack_Implementation()
 void UEQScorpionFSM::MultiRPC_ScorpionAttack_Implementation()
 {
 	Self->PlayAnimMontage(AnimMontage,1,FName("Attack"));
+	UE_LOG(LogTemp,Warning,TEXT("ScorAttack!!!!!!!!!!!!!"));
+
 }
 

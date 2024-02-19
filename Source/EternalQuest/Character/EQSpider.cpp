@@ -3,8 +3,12 @@
 
 #include "Character/EQSpider.h"
 
+#include "EQCharacterPlayer.h"
+#include "AI/EQMonsterAbility.h"
 #include "Components/ArrowComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Engine/DamageEvents.h"
+#include "Projectile/EQSpiderWeb.h"
 
 AEQSpider::AEQSpider()
 {
@@ -20,3 +24,18 @@ AEQSpider::AEQSpider()
 
 	
 }
+
+void AEQSpider::SpiderWebAttackHit(AActor* OtherActor)
+{
+	AEQSpiderWeb* SpiderWeb = Cast<AEQSpiderWeb>(GetMesh());
+	FDamageEvent DamageEvent;
+	if(OtherActor != this)
+	{
+		UE_LOG(LogTemp,Warning,TEXT("%f"),Ability->SpiderWebDamage);
+		OtherActor -> TakeDamage(Ability->SpiderWebDamage,DamageEvent,nullptr,SpiderWeb);
+	}
+}
+
+
+
+

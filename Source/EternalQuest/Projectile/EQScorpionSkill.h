@@ -26,6 +26,7 @@ private:
 private:
 	float CurrentTime;
 	float FixedTime = 2.0f;
+
 	
 	
 };

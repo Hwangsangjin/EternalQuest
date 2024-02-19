@@ -8,6 +8,7 @@
 #include "Character/EQCharacterPlayer.h"
 #include "Character/EQNormalEnemy.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Navigation/PathFollowingComponent.h"
 
 void UEQMeleeFSM::BeginPlay()
@@ -25,98 +26,59 @@ void UEQMeleeFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorComp
 void UEQMeleeFSM::TickAttack()
 {
 	Super::TickAttack();
-	ServerRPC_MushAttack();
-	// CurrentTime += GetWorld()->GetDeltaSeconds();
-	// if(CurrentTime>AttackTime)
-	// {
-	// 	float Dist = FVector::Dist(Target->GetActorLocation(),Self->GetActorLocation());
-	// 	{
-	// 		if(Dist > AttackRange)
-	// 		{
-	// 			SetState(EMonsterState::Move);
-	// 			
-	// 		}
-	// 		else
-	// 		{
-	// 			UE_LOG(LogTemp,Warning,TEXT("Attack!!!!!!!!!!!"));
-	// 			if(Self->HasAuthority())
-	// 			{
-	// 				if(Self->HasAuthority())
-	// 				{
-	// 					AI->SetFocus(Target,EAIFocusPriority::Gameplay);
-	// 					
-	// 				}
-	// 			}
-	// 			Self->PlayAnimMontage(AnimMontage,1,FName("Attack"));
-	// 		}
-	// 	}
-	// 	
-	// 	
-	// }
+	//ServerRPC_MushAttack();
+
+	if(!Self->HasAuthority()) return;
 	
+	CurrentTime += GetWorld()->GetDeltaSeconds();
+	if(CurrentTime>AttackTime)
+	{
+		float Dist = FVector::Dist(Target->GetActorLocation(),Self->GetActorLocation());
+		{
+			if(Dist > AttackRange)
+			{
+				SetState(EMonsterState::Move);
+				
+			}
+			else
+			{
+				UE_LOG(LogTemp,Warning,TEXT("Attack!!!!!!!!!!!"));
+				if(Self->HasAuthority())
+				{
+					if(Self->HasAuthority())
+					{
+						AI->SetFocus(Target,EAIFocusPriority::Gameplay);
+						
+					}
+				}
+				//Self->PlayAnimMontage(AnimMontage,1,FName("Attack"));
+				MultiRPC_MushAttack();
+			}
+		}
+	}
 }
 
 void UEQMeleeFSM::TickMove()
 {
 	Super::TickMove();
+	if(!Self->HasAuthority()) return;
 
-	ServerRPC_MushMove();
-	// FVector Direction = Target->GetActorLocation() - Self->GetActorLocation();
-	// FVector Destination = Target->GetActorLocation();
-	// UNavigationSystemV1* NaviSys = UNavigationSystemV1::GetNavigationSystem(GetWorld());
-	// FPathFindingQuery Query;
-	// FAIMoveRequest Req;
-	// Req.SetAcceptanceRadius(100);
-	// Req.SetGoalLocation(Destination);
-	// if(Self->HasAuthority())
-	// {
-	// 	AI-> BuildPathfindingQuery(Req,Query);
-	// }
-	// auto Result = NaviSys->FindPathSync(Query);
-	//
-	// //UE_LOG(LogTemp,Warning,TEXT("%d,%f,%f"),Result.IsSuccessful(),Direction.Length(),DetectionRange);
-	// if(Result.IsSuccessful() && Direction.Length() < DetectionRange)
-	// {
-	// 	
-	// 	// 속도를 추적속도로 바꾸고
-	// 	ChaseSpeed = Self->GetCharacterMovement()->MaxWalkSpeed  = 450.f;
-	// 	Self->GetCharacterMovement()->MaxWalkSpeed = ChaseSpeed;
-	// 	if(Self->HasAuthority())
-	// 	{
-	// 		AI->MoveToLocation(Destination);
-	// 	
-	// 	}
-	// }
-	// else if(Result.IsSuccessful() && Direction.Length() > DetectionRange)
-	// {
-	// 	Self->GetCharacterMovement()->MaxWalkSpeed = BasicSpeed;
-	// 	FPathFollowingRequestResult R;
-	// 	// Ai는 Controller가 Server에만 있기 떄문에 Has Authority 를 사용하여 서버임을 알린다.
-	// 	if(Self->HasAuthority())
-	// 	{
-	// 		R.Code = AI -> MoveToLocation(RandomLoc);
-	// 	}
-	// 	if(R != EPathFollowingRequestResult::RequestSuccessful)
-	// 	{
-	// 		UpdateRandLoc(Self->GetActorLocation(),500,RandomLoc);
-	// 		ChaseSpeed = BasicSpeed;
-	// 	}
-	// }
-	// if(Direction.Length()<=AttackRange)
-	// {
-	// 	SetState(EMonsterState::Attack);
-	// 	CurrentTime = AttackTime;
-	// 	if(Self->HasAuthority())
-	// 	{
-	// 		AI->StopMovement();
-	// 		
-	// 	}
-	// }
+	TArray<AActor*> allPlayer;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEQCharacterPlayer::StaticClass(), allPlayer);
+	float dist = 100000;
 	
-}
-
-void UEQMeleeFSM::ServerRPC_MushMove_Implementation()
-{
+	for(int32 i = 0; i < allPlayer.Num(); i++)
+	{
+		float tempDist = FVector::Distance(allPlayer[i]->GetActorLocation(), Self->GetActorLocation());
+		if(dist > tempDist)
+		{
+			dist = tempDist;
+			Target = Cast<AEQCharacterPlayer>(allPlayer[i]);
+		}
+	}
+		
+	
+	//ServerRPC_MushMove();
 	FVector Direction = Target->GetActorLocation() - Self->GetActorLocation();
 	FVector Destination = Target->GetActorLocation();
 	UNavigationSystemV1* NaviSys = UNavigationSystemV1::GetNavigationSystem(GetWorld());
@@ -129,7 +91,7 @@ void UEQMeleeFSM::ServerRPC_MushMove_Implementation()
 		AI-> BuildPathfindingQuery(Req,Query);
 	}
 	auto Result = NaviSys->FindPathSync(Query);
-
+	
 	//UE_LOG(LogTemp,Warning,TEXT("%d,%f,%f"),Result.IsSuccessful(),Direction.Length(),DetectionRange);
 	if(Result.IsSuccessful() && Direction.Length() < DetectionRange)
 	{
@@ -157,6 +119,62 @@ void UEQMeleeFSM::ServerRPC_MushMove_Implementation()
 			UpdateRandLoc(Self->GetActorLocation(),500,RandomLoc);
 			ChaseSpeed = BasicSpeed;
 		}
+	}
+	if(Direction.Length()<=AttackRange)
+	{
+		SetState(EMonsterState::Attack);
+		CurrentTime = AttackTime;
+		if(Self->HasAuthority())
+		{
+			AI->StopMovement();
+			
+		}
+	}
+	
+}
+
+void UEQMeleeFSM::ServerRPC_MushMove_Implementation()
+{
+	FVector Direction = Target->GetActorLocation() - Self->GetActorLocation();
+	FVector Destination = Target->GetActorLocation();
+	
+	if(Self->HasAuthority())
+	{
+		UNavigationSystemV1* NaviSys = UNavigationSystemV1::GetNavigationSystem(GetWorld());
+		FPathFindingQuery Query;
+		FAIMoveRequest Req;
+		Req.SetAcceptanceRadius(100);
+		Req.SetGoalLocation(Destination);
+		AI-> BuildPathfindingQuery(Req,Query);
+		auto Result = NaviSys->FindPathSync(Query);
+		UE_LOG(LogTemp,Warning,TEXT("%d,%f,%f"),Result.IsSuccessful(),Direction.Length(),DetectionRange);
+		if(Result.IsSuccessful() && Direction.Length() < DetectionRange)
+		{
+			
+			// 속도를 추적속도로 바꾸고
+			ChaseSpeed = Self->GetCharacterMovement()->MaxWalkSpeed  = 450.f;
+			Self->GetCharacterMovement()->MaxWalkSpeed = ChaseSpeed;
+			if(Self->HasAuthority())
+			{
+				AI->MoveToLocation(Destination);
+			
+			}
+		}
+		else if(Result.IsSuccessful() && Direction.Length() > DetectionRange)
+		{
+			Self->GetCharacterMovement()->MaxWalkSpeed = BasicSpeed;
+			FPathFollowingRequestResult R;
+			// Ai는 Controller가 Server에만 있기 떄문에 Has Authority 를 사용하여 서버임을 알린다.
+			if(Self->HasAuthority())
+			{
+				R.Code = AI -> MoveToLocation(RandomLoc);
+			}
+			if(R != EPathFollowingRequestResult::RequestSuccessful)
+			{
+				UpdateRandLoc(Self->GetActorLocation(),500,RandomLoc);
+				ChaseSpeed = BasicSpeed;
+			}
+		}		
 	}
 	if(Direction.Length()<=AttackRange)
 	{

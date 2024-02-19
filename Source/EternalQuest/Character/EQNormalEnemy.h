@@ -7,6 +7,7 @@
 #include "EQNormalEnemy.generated.h"
 
 
+class AEQCharacterPlayer;
 class UWidgetComponent;
 class UEQMonsterAbility;
 class UEQBaseFSM;
@@ -23,6 +24,9 @@ public:
 	UPROPERTY(EditAnywhere,Category="FSM")
 	UEQBaseFSM* BaseFsm;
 
+	UPROPERTY(EditAnywhere,Category="NPC")
+	AEQCharacterNonPlayer* NPC;
+	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Ability")
 	UEQMonsterAbility* Ability;
 
@@ -41,8 +45,7 @@ private:
 
 protected:
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)override;
-
-
+	
 	
 	UPROPERTY()
 	UDamageType* Type;

@@ -30,8 +30,18 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Monster")
 	float CurrentHealth;
 
+	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Spider")
+	float SpiderWebDamage = 20;
+
+public:
 	void UpdateHP(float UpdateHealth);
+	
 	
 	UFUNCTION()
 	void TakeDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser);
+
+	UFUNCTION(Server,Reliable)
+	void ServerRPC_UpdateHP(float UpdateHealth);
+
 };
