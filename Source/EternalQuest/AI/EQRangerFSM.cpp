@@ -64,7 +64,7 @@ void UEQRangerFSM::TickMove()
 		}
 		
 	}
-	else if(Result.IsSuccessful() == false && Direction.Length() > DetectionRange && Self->HasAuthority())
+	else if(Result.IsSuccessful() == false || Direction.Length() > DetectionRange && Self->HasAuthority())
 	{
 		Self->GetCharacterMovement()->MaxWalkSpeed = BasicSpeed;
 		FPathFollowingRequestResult R;
