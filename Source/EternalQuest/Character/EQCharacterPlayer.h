@@ -8,9 +8,7 @@
 #include "Interface/EQInterfaceCharacterWidget.h"
 #include "EQCharacterPlayer.generated.h"
 
-class UEQComponentMenuManager;
-class UEQComponentInventory;
-class UEQComponentBase;
+struct FStreamableHandle;
 class USpringArmComponent;
 class UCameraComponent;
 class UInputMappingContext;
@@ -19,23 +17,33 @@ struct FInputActionValue;
 class UAnimMontage;
 class UInputComponent;
 class UBoxComponent;
+class UEQComponentBase;
 class UEQComponentMove;
 class UEQComponentInteraction;
+class UEQComponentMenuManager;
+class UEQComponentInventory;
 class UEQComponentAttack;
 class UEQComponentStat;
 class UEQComponentWidget;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FInputSignature, UInputComponent*)
 
-UCLASS()
+UCLASS(config = EternalQuest)
 class ETERNALQUEST_API AEQCharacterPlayer : public AEQCharacterBase, public IEQInterfaceAnimationAttack, public IEQInterfaceCharacterWidget
 {
 	GENERATED_BODY()
-	
+
 public:
 	AEQCharacterPlayer();
 
 	FInputSignature InputSignature;
+
+protected:
+	virtual void PossessedBy(AController* NewController) override;
+	virtual void OnRep_Owner() override;
+	virtual void OnRep_PlayerState() override;
+	virtual void PostNetInit() override;
+	virtual void BeginPlay() override;
 
 public:
 	virtual void PostInitializeComponents() override;
@@ -43,10 +51,19 @@ public:
 	virtual void Jump() override;
 	virtual void StopJumping() override;
 
+// Controller
 protected:
-	virtual void PossessedBy(AController* NewController) override;
-	virtual void OnRep_Owner() override;
-	virtual void BeginPlay() override;
+	void SetPlayerController();
+
+// Mesh
+protected:
+	void UpdatePlayerMesh();
+	void PlayerMeshLoadCompleted();
+
+	UPROPERTY(config)
+	TArray<FSoftObjectPath> PlayerMeshes;
+
+	TSharedPtr<FStreamableHandle> PlayerMeshHandle;
 
 // Camera
 public:
@@ -104,7 +121,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UEQComponentInventory> InventoryComp;
-	
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UEQComponentMenuManager> MenuManagerComp;
 
