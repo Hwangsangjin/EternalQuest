@@ -25,19 +25,19 @@ UEQComponentInteraction::UEQComponentInteraction()
 	PrimaryComponentTick.bCanEverTick = true;
 	bWantsInitializeComponent = true;
 	
-	static ConstructorHelpers::FObjectFinder<UInputAction> InteractionActionRef(TEXT("/Game/LDJ/Inputs/IA_Interaction.IA_Interaction"));
+	static ConstructorHelpers::FObjectFinder<UInputAction> InteractionActionRef(TEXT("/Game/Blueprints/Input/Actions/IA_Interaction.IA_Interaction"));
 	if (InteractionActionRef.Object)
 	{
 		InteractionAction = InteractionActionRef.Object;
 	}
 
-	static ConstructorHelpers::FClassFinder<UUserWidget> PromptWidgetFactoryRef(TEXT("/Game/LDJ/UI/WBP_EQWidgetNpcPrompt.WBP_EQWidgetNpcPrompt_C"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> PromptWidgetFactoryRef(TEXT("/Game/Blueprints/UI/WBP_EQWidgetNpcPrompt.WBP_EQWidgetNpcPrompt_C"));
 	if (PromptWidgetFactoryRef.Succeeded())
 	{
 		PromptWidgetFactory = PromptWidgetFactoryRef.Class;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UInputAction> EatItemRef(TEXT("/Game/LDJ/Inputs/IA_EatItem.IA_EatItem"));
+	static ConstructorHelpers::FObjectFinder<UInputAction> EatItemRef(TEXT("/Game/Blueprints/Input/Actions/IA_EatItem.IA_EatItem"));
 	if (EatItemRef.Succeeded())
 	{
 		EatItemAction = EatItemRef.Object;

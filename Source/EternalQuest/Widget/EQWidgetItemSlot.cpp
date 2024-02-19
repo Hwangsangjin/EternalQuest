@@ -4,6 +4,7 @@
 #include "Widget/EQWidgetItemSlot.h"
 
 #include "EQWidgetInventory.h"
+#include "EQWidgetItemActionMenu.h"
 #include "EQWidgetItemInfo.h"
 #include "EQWidgetMainUI.h"
 #include "Components/Border.h"
@@ -12,6 +13,16 @@
 #include "Components/SizeBox.h"
 #include "Components/TextBlock.h"
 #include "Player/EQPlayerController.h"
+
+UEQWidgetItemSlot::UEQWidgetItemSlot(const FObjectInitializer& ObjectInitializer)
+: Super(ObjectInitializer)
+{
+	static ConstructorHelpers::FObjectFinder<UDataTable> DT_ItemRef(TEXT("/Game/Blueprints/Data/DT_Item.DT_Item"));
+	if (DT_ItemRef.Succeeded())
+	{
+		EQSlot.ItemID.DataTable = DT_ItemRef.Object;
+	}
+}
 
 void UEQWidgetItemSlot::NativePreConstruct()
 {
@@ -34,9 +45,23 @@ void UEQWidgetItemSlot::NativePreConstruct()
 void UEQWidgetItemSlot::NativeConstruct()
 {
 	Super::NativeConstruct();
+	EQWidgetInventory = Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetInventory;
+	EQWidgetActionMenu = UEQWidgetItemActionMenu::StaticClass();
 	Btn_Slot->OnHovered.AddDynamic(this, &UEQWidgetItemSlot::OnHoverBtnSlot);
 	Btn_Slot->OnUnhovered.AddDynamic(this, &UEQWidgetItemSlot::OnUnhoverBtnSlot);
-	EQWidgetInventory = Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetInventory;
+}
+
+FReply UEQWidgetItemSlot::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+{
+	Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
+	if(InMouseEvent.IsMouseButtonDown(EKeys::RightMouseButton))
+	{
+		auto temp = CreateWidget<UEQWidgetItemActionMenu>(GetWorld(),EQWidgetActionMenu);
+		temp->AddToViewport();
+		GEngine->AddOnScreenDebugMessage(-1,3,FColor::Red, TEXT("Right Button"));
+		return FReply::Handled();
+	}
+	return FReply::Unhandled();
 }
 
 void UEQWidgetItemSlot::OnHoverBtnSlot()

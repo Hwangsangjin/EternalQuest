@@ -12,7 +12,7 @@
 UEQComponentInventory::UEQComponentInventory()
 {
 	PrimaryComponentTick.bCanEverTick = true;
-	static ConstructorHelpers::FObjectFinder<UDataTable> DTItemRef(TEXT("/Game/LDJ/DataTable/DT_Item.DT_Item"));
+	static ConstructorHelpers::FObjectFinder<UDataTable> DTItemRef(TEXT("/Game/Blueprints/Data/DT_Item.DT_Item"));
 	if (DTItemRef.Succeeded())
 	{
 		ItemID = DTItemRef.Object;

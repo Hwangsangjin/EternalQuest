@@ -8,7 +8,7 @@
 
 AEQPlayerController::AEQPlayerController()
 {
-	static ConstructorHelpers::FClassFinder<UEQWidgetMainUI> MainUIRef(TEXT("/Game/LDJ/UI/WBP_WidgetMain.WBP_WidgetMain_C"));
+	static ConstructorHelpers::FClassFinder<UEQWidgetMainUI> MainUIRef(TEXT("/Game/Blueprints/UI/WBP_WidgetMain.WBP_WidgetMain_C"));
 	if (MainUIRef.Succeeded())
 	{
 		MainUIFactory = MainUIRef.Class;

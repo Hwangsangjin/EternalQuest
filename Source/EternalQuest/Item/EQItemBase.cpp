@@ -11,7 +11,7 @@ AEQItemBase::AEQItemBase()
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 	SetRootComponent(MeshComp);
 
-	static ConstructorHelpers::FObjectFinder<UDataTable> DT_Ref(TEXT("/Game/LDJ/DataTable/DT_Item.DT_Item"));
+	static ConstructorHelpers::FObjectFinder<UDataTable> DT_Ref(TEXT("/Game/Blueprints/Data/DT_Item.DT_Item"));
 	if (DT_Ref.Succeeded())
 	{
 		ItemDataTable = DT_Ref.Object;

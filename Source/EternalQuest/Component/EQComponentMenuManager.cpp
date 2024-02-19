@@ -12,13 +12,13 @@
 
 UEQComponentMenuManager::UEQComponentMenuManager()
 {
-	static ConstructorHelpers::FObjectFinder<UInputAction> CallInventoryRef(TEXT("/Game/LDJ/Inputs/IA_CallInventory.IA_CallInventory"));
+	static ConstructorHelpers::FObjectFinder<UInputAction> CallInventoryRef(TEXT("/Game/Blueprints/Input/Actions/IA_CallInventory.IA_CallInventory"));
 	if (CallInventoryRef.Object)
 	{
 		CallInventoryAction = CallInventoryRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UInputAction> MouseModeRef(TEXT("/Game/LDJ/Inputs/IA_MouseMode.Ia_MouseMode"));
+	static ConstructorHelpers::FObjectFinder<UInputAction> MouseModeRef(TEXT("/Game/Blueprints/Input/Actions/IA_MouseMode.Ia_MouseMode"));
 	if (MouseModeRef.Object)
 	{
 		MouseModeAction = MouseModeRef.Object;
