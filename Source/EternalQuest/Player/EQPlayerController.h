@@ -8,18 +8,20 @@
 
 class UEQWidgetInventory;
 class UEQWidgetMainUI;
-/**
- * 
- */
+
 UCLASS()
 class ETERNALQUEST_API AEQPlayerController : public APlayerController
 {
 	GENERATED_BODY()
+
 public:
 	AEQPlayerController();
+
 protected:
-	virtual void BeginPlay() override;
+	virtual void PostInitializeComponents() override;
+	virtual void PostNetInit() override;
 	virtual void OnPossess(APawn* InPawn) override;
+	virtual void BeginPlay() override;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=MySettings)
@@ -27,5 +29,4 @@ public:
 
 	UPROPERTY()
 	TObjectPtr<UEQWidgetMainUI> EQWidgetMainUI;
-	
 };
