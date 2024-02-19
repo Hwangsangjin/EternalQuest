@@ -37,21 +37,43 @@ void UEQComponentAttack::SetupPlayerInput(UInputComponent* PlayerInputComponent)
 void UEQComponentAttack::Attack()
 {
 	UEQGameInstance* GameInstance = Cast<UEQGameInstance>(Player->GetGameInstance());
-	EClassType ClassType = GameInstance->GetClassType();
-	switch (ClassType)
+	if (Player->HasAuthority())
 	{
-	case EClassType::ECT_Mage:
-		DefaultAttack();
-		break;
-	case EClassType::ECT_Paladin:
-		break;
-	case EClassType::ECT_Priest:
-		break;
-	case EClassType::ECT_Rogue:
-		break;
-	case EClassType::ECT_Warrior:
-		ComboAttack();
-		break;
+		EClassType ClassType = GameInstance->GetClassType();
+		switch (ClassType)
+		{
+		case EClassType::ECT_Mage:
+			DefaultAttack();
+			break;
+		case EClassType::ECT_Paladin:
+			break;
+		case EClassType::ECT_Priest:
+			break;
+		case EClassType::ECT_Rogue:
+			break;
+		case EClassType::ECT_Warrior:
+			ComboAttack();
+			break;
+		}
+	}
+	else
+	{
+		EClassType ClassType = GameInstance->GetClassType();
+		switch (ClassType)
+		{
+		case EClassType::ECT_Mage:
+			DefaultAttack();
+			break;
+		case EClassType::ECT_Paladin:
+			break;
+		case EClassType::ECT_Priest:
+			break;
+		case EClassType::ECT_Rogue:
+			break;
+		case EClassType::ECT_Warrior:
+			ComboAttack();
+			break;
+		}
 	}
 }
 
@@ -62,7 +84,7 @@ void UEQComponentAttack::HitCheck()
 
 	const float AttackRange = 100.0f;
 	const float AttackRadius = 50.0f;
-	const float AttackDamage = 30.0f;
+	const float AttackDamage = 20.0f;
 	const FVector Start = Player->GetActorLocation() + Player->GetActorForwardVector() * Player->GetCapsuleComponent()->GetScaledCapsuleRadius();
 	const FVector End = Start + Player->GetActorForwardVector() * AttackRange;
 
@@ -103,11 +125,11 @@ void UEQComponentAttack::DefaultAttackBegin()
 
 	const float AttackSpeedRate = 1.0f;
 	UAnimInstance* AnimInstance = Player->GetMesh()->GetAnimInstance();
-	AnimInstance->Montage_Play(AttackMontage, AttackSpeedRate);
+	AnimInstance->Montage_Play(DefaultAttackMontage, AttackSpeedRate);
 
 	FOnMontageEnded EndDelegate;
 	EndDelegate.BindUObject(this, &ThisClass::DefaultAttackEnd);
-	AnimInstance->Montage_SetEndDelegate(EndDelegate, AttackMontage);
+	AnimInstance->Montage_SetEndDelegate(EndDelegate, DefaultAttackMontage);
 }
 
 void UEQComponentAttack::DefaultAttackEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded)
@@ -141,11 +163,11 @@ void UEQComponentAttack::ComboAttackBegin()
 
 	const float AttackSpeedRate = 1.0f;
 	UAnimInstance* AnimInstance = Player->GetMesh()->GetAnimInstance();
-	AnimInstance->Montage_Play(AttackMontage, AttackSpeedRate);
+	AnimInstance->Montage_Play(ComboAttackMontage, AttackSpeedRate);
 
 	FOnMontageEnded EndDelegate;
 	EndDelegate.BindUObject(this, &ThisClass::ComboAttackEnd);
-	AnimInstance->Montage_SetEndDelegate(EndDelegate, AttackMontage);
+	AnimInstance->Montage_SetEndDelegate(EndDelegate, ComboAttackMontage);
 
 	ComboTimerHandle.Invalidate();
 	SetComboCheckTimer();
@@ -181,7 +203,7 @@ void UEQComponentAttack::ComboCheck()
 		const FName NextSection = *FString::Printf(TEXT("%s%d"), *ComboAttackData->GetMontageSectionNamePrefix(), CurrentCombo);
 
 		UAnimInstance* AnimInstance = Player->GetMesh()->GetAnimInstance();
-		AnimInstance->Montage_JumpToSection(NextSection, AttackMontage);
+		AnimInstance->Montage_JumpToSection(NextSection, ComboAttackMontage);
 
 		SetComboCheckTimer();
 
