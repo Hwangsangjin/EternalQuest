@@ -56,7 +56,6 @@ void UEQScorpionFSM::TickMove()
 	if(Self->HasAuthority())
 	{
 		AI-> BuildPathfindingQuery(Req,Query);
-      
 	}
 	auto Result = NaviSys->FindPathSync(Query);
    
