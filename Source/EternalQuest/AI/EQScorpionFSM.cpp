@@ -32,7 +32,6 @@ void UEQScorpionFSM::TickMove()
 {
 	Super::TickMove();
 	
-	//DrawDebugSphere(GetWorld(),Self->GetActorLocation(),DetectionRange,100,FColor::Blue);
 	if(!Self->HasAuthority()) return;
 	TArray<AActor*> allPlayer;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEQCharacterPlayer::StaticClass(), allPlayer);
@@ -57,23 +56,38 @@ void UEQScorpionFSM::TickMove()
 	if(Self->HasAuthority())
 	{
 		AI-> BuildPathfindingQuery(Req,Query);
+      
 	}
 	auto Result = NaviSys->FindPathSync(Query);
-	
-	//UE_LOG(LogTemp,Warning,TEXT("%d,%f,%f"),Result.IsSuccessful(),Direction.Length(),DetectionRange);
-	if(Result.IsSuccessful() && Direction.Length() < DetectionRange)
+   
+	if(Result.IsSuccessful() && Direction.Length() < DetectionRange && Self->HasAuthority())
 	{
-		
-		// 속도를 추적속도로 바꾸고
-		ChaseSpeed = Self->GetCharacterMovement()->MaxWalkSpeed  = 450.f;
+		ChaseSpeed = Self->GetCharacterMovement()->MaxWalkSpeed = 400.f;
+		AI->MoveToLocation(Target->GetActorLocation());
+		//UE_LOG(LogTemp,Warning,TEXT("%f"),ChaseSpeed);
 		Self->GetCharacterMovement()->MaxWalkSpeed = ChaseSpeed;
-		if(Self->HasAuthority())
+		if(Direction.Length() < MinRangeAttackRange)
 		{
-			AI->MoveToLocation(Destination);
-		
+			SetState(EMonsterState::Attack);
+			CurrentTime = AttackTime;
 		}
 	}
-	
+	// 플레이어와거리가 탐지 범위보다 작을때  
+	else if(Result.IsSuccessful() || Direction.Length() > DetectionRange && Self->HasAuthority())
+	{
+      
+		Self->GetCharacterMovement()->MaxWalkSpeed = BasicSpeed;
+		FPathFollowingRequestResult R;
+		// Ai는 Controller가 Server에만 있기 떄문에 Has Authority 를 사용하여 서버임을 알린다.
+		R.Code = AI -> MoveToLocation(RandomLoc);
+		if(R != EPathFollowingRequestResult::RequestSuccessful)
+		{
+			UpdateRandLoc(Self->GetActorLocation(),500,RandomLoc);
+			ChaseSpeed = BasicSpeed;
+			//   UE_LOG(LogTemp,Warning,TEXT("%f"),ChaseSpeed);
+		}
+	}
+
 }
 
 void UEQScorpionFSM::TickAttack()

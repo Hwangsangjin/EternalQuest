@@ -37,7 +37,8 @@ void AEQEnemySpawnManager::SeverRPC_Spawn_Implementation()
 {
 	if(Pool)
 	{
-		AEQNormalEnemy* PoolActor = Pool->GetInActiveEnemy();	
+		AEQNormalEnemy* PoolActor = Pool->GetInActiveEnemy();
+		FVector SpawnPoint = this->GetActorLocation();
 		FVector RandomLoc = FVector(FMath::RandRange(-1000,1000),FMath::RandRange(-1000,1000),0.f);
 		if(PoolActor == nullptr)
 		{
@@ -46,7 +47,7 @@ void AEQEnemySpawnManager::SeverRPC_Spawn_Implementation()
 			return;
 		}
 		// 월드 안에 랜덤한 위치에 스폰한다.
-		PoolActor->ActivateEnemy(RandomLoc);
+		PoolActor->ActivateEnemy(RandomLoc+SpawnPoint);
 		GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle,this,&AEQEnemySpawnManager::Spawn,SpawnTime,false);
 		UE_LOG(LogTemp,Warning,TEXT("Spawning"));
 	}

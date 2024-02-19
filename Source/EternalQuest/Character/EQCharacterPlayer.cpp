@@ -207,10 +207,11 @@ float AEQCharacterPlayer::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 void AEQCharacterPlayer::SetDead()
 {
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+	GetWorld()->GetFirstPlayerController()->SetInputMode(FInputModeUIOnly());
 	PlayDeadAnimation();
 	SetActorEnableCollision(false);
 	HpBarComp->SetHiddenInGame(true);
-
+	
 	//APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	//if (PlayerController)
 	//{
