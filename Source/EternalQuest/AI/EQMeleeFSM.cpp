@@ -132,7 +132,7 @@ void UEQMeleeFSM::MeleeAttackCheck()
 	FCollisionQueryParams Params(SCENE_QUERY_STAT(Attack),false,Self);
 	float MeleeRange = 100.f;
 	float MeleeAttackRad = 50.f;
-	float Damage = Ability->MushAttackDamage;
+	float Damage = 5;
 	FVector StartLoc = Self->GetActorLocation() + Self->GetActorForwardVector() * Self->GetCapsuleComponent()->GetScaledCapsuleRadius();
 	FVector EndLoc = StartLoc + Self->GetActorForwardVector() * MeleeRange;
 

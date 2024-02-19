@@ -95,7 +95,6 @@ protected:
 	virtual void TickAttack();
 	virtual void TickHit();
 	virtual void TickDie();
-	virtual void MeleeAttackCheck();
 	
 
 
@@ -104,7 +103,7 @@ public:
 	virtual void ScorpionPrj();
 	void SetState(EMonsterState Next);
 	bool UpdateRandLoc(FVector OldLoc, float Radius, FVector& NewLoc);
-	
+	virtual void MeleeAttackCheck();
 
 
 public:
