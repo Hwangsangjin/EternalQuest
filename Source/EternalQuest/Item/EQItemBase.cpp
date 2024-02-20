@@ -3,11 +3,11 @@
 
 #include "Item/EQItemBase.h"
 
-
 // Sets default values
 AEQItemBase::AEQItemBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 	SetRootComponent(MeshComp);
 

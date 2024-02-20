@@ -3,34 +3,50 @@
 
 #include "Widget/EQWidgetItemSlot.h"
 
+#include "EQWidgetDragItem.h"
 #include "EQWidgetInventory.h"
 #include "EQWidgetItemActionMenu.h"
 #include "EQWidgetItemInfo.h"
 #include "EQWidgetMainUI.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
+#include "Blueprint/WidgetLayoutLibrary.h"
 #include "Components/Border.h"
 #include "Components/Button.h"
 #include "Components/Image.h"
 #include "Components/SizeBox.h"
 #include "Components/TextBlock.h"
+#include "Item/EQItemDragDropOperation.h"
 #include "Player/EQPlayerController.h"
 
+
 UEQWidgetItemSlot::UEQWidgetItemSlot(const FObjectInitializer& ObjectInitializer)
-: Super(ObjectInitializer)
+	:Super(ObjectInitializer)
 {
-	static ConstructorHelpers::FObjectFinder<UDataTable> DT_ItemRef(TEXT("/Game/Blueprints/Data/DT_Item.DT_Item"));
-	if (DT_ItemRef.Succeeded())
+	static ConstructorHelpers::FClassFinder<UUserWidget> EQWidgetDragItemRef(TEXT("/Game/Blueprints/UI/WBP_EQWidgetDragItem.WBP_EQWidgetDragItem_C"));
+	if (EQWidgetDragItemRef.Succeeded())
 	{
-		EQSlot.ItemID.DataTable = DT_ItemRef.Object;
+		EQWidgetDragItem = EQWidgetDragItemRef.Class;
 	}
+	
+	DragDropOperation = UEQItemDragDropOperation::StaticClass();
+
+	
 }
 
 void UEQWidgetItemSlot::NativePreConstruct()
 {
 	Super::NativePreConstruct();
-	if (EQSlot.Quantity)
+	
+}
+
+void UEQWidgetItemSlot::NativeConstruct()
+{
+	Super::NativeConstruct();
+	
+	if (EQSlot && EQSlot->Quantity)
 	{
-		Txt_Quantity->SetText(FText::FromString(FString::Printf(TEXT("%d"), EQSlot.Quantity)));
-		auto temp = EQSlot.ItemID.DataTable->FindRow<FEQItem>(EQSlot.ItemID.RowName, "");
+		Txt_Quantity->SetText(FText::FromString(FString::Printf(TEXT("%d"), EQSlot->Quantity)));
+		auto temp = EQSlot->ItemID.DataTable->FindRow<FEQItem>(EQSlot->ItemID.RowName, "");
 		Img_Item->SetBrushFromTexture(temp->Thumbnail);
 		Img_Item->SetVisibility(ESlateVisibility::Visible);
 		SizeBox_Quantity->SetVisibility(ESlateVisibility::Visible);
@@ -40,39 +56,91 @@ void UEQWidgetItemSlot::NativePreConstruct()
 		Img_Item->SetVisibility(ESlateVisibility::Hidden);
 		SizeBox_Quantity->SetVisibility(ESlateVisibility::Hidden);
 	}
-}
-
-void UEQWidgetItemSlot::NativeConstruct()
-{
-	Super::NativeConstruct();
+	
 	EQWidgetInventory = Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetInventory;
-	EQWidgetActionMenu = UEQWidgetItemActionMenu::StaticClass();
+	EQWidgetItemActionMenu = Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetItemActionMenu;
 	Btn_Slot->OnHovered.AddDynamic(this, &UEQWidgetItemSlot::OnHoverBtnSlot);
 	Btn_Slot->OnUnhovered.AddDynamic(this, &UEQWidgetItemSlot::OnUnhoverBtnSlot);
+	Btn_Slot->OnClicked.AddDynamic(this, &UEQWidgetItemSlot::OnClickedBtnSlot);
 }
 
-FReply UEQWidgetItemSlot::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+bool UEQWidgetItemSlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
+	UDragDropOperation* InOperation)
 {
-	Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
+	auto HangItem = Cast<UEQItemDragDropOperation>(InOperation);
+	if (HangItem->EQSlot->ItemID.RowName == EQSlot->ItemID.RowName)
+	{
+		Swap(HangItem->EQSlot->Quantity, EQSlot->Quantity);
+		GEngine->AddOnScreenDebugMessage(-1,3,FColor::Green, TEXT("Same Item"));
+		EQWidgetInventory->UpdateItemInInventoryUI();
+	}
+	else
+	{
+		Swap(HangItem->EQWidgetItemSlot->EQSlot->Quantity, EQSlot->Quantity);
+		Swap(HangItem->EQWidgetItemSlot->EQSlot->ItemID.RowName, EQSlot->ItemID.RowName);
+		GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Green, TEXT("Other Item"));
+		EQWidgetInventory->UpdateItemInInventoryUI();
+	}
+	return true;
+}
+
+FReply UEQWidgetItemSlot::NativeOnPreviewMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+{
+	Super::NativeOnPreviewMouseButtonDown(InGeometry, InMouseEvent);
+	
+	if (EQSlot->Quantity == 0)
+	{
+		return FReply::Unhandled();
+	}
+	
 	if(InMouseEvent.IsMouseButtonDown(EKeys::RightMouseButton))
 	{
-		auto temp = CreateWidget<UEQWidgetItemActionMenu>(GetWorld(),EQWidgetActionMenu);
-		temp->AddToViewport();
-		GEngine->AddOnScreenDebugMessage(-1,3,FColor::Red, TEXT("Right Button"));
+		auto MousePos = UWidgetLayoutLibrary::GetMousePositionOnViewport(GetWorld());
+		EQWidgetItemActionMenu->EQSlot = EQSlot;
+		EQWidgetItemActionMenu->SizeBox_Base->SetRenderTransform(FWidgetTransform(MousePos, FVector2D(1,1), FVector2D(0), 0));
+		EQWidgetItemActionMenu->SetVisibility(ESlateVisibility::Visible);
 		return FReply::Handled();
 	}
+
+	if (InMouseEvent.IsMouseButtonDown(EKeys::LeftMouseButton))
+	{
+		auto Reply = UWidgetBlueprintLibrary::DetectDragIfPressed(InMouseEvent, this, EKeys::LeftMouseButton);
+		EQWidgetItemActionMenu->EQSlot = EQSlot;
+		return Reply.NativeReply;
+	}
 	return FReply::Unhandled();
+}
+
+void UEQWidgetItemSlot::NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent,
+	UDragDropOperation*& OutOperation)
+{
+	Super::NativeOnDragDetected(InGeometry, InMouseEvent, OutOperation);
+	auto temp = EQSlot->Quantity;
+	EQSlot->Quantity = 0;
+	EQWidgetInventory->UpdateItemInInventoryUI();
+	EQSlot->Quantity = temp;
+	auto DragItem = CreateWidget<UEQWidgetDragItem>(GetWorld(), EQWidgetDragItem);
+	DragItem->EQSlot = EQSlot;
+	auto DragOperator = Cast<UEQItemDragDropOperation>(UWidgetBlueprintLibrary::CreateDragDropOperation(DragDropOperation));
+	DragOperator->EQSlot = EQSlot;
+	DragOperator->EQWidgetItemSlot = this;
+	DragOperator->DefaultDragVisual = DragItem;
+	OutOperation = DragOperator;
 }
 
 void UEQWidgetItemSlot::OnHoverBtnSlot()
 {
 	Border_Item->SetBrushColor(FLinearColor(1,1,1,1));
 	Img_HoverTriangle->SetVisibility(ESlateVisibility::Visible);
-	EQWidgetInventory->WBP_EQWidgetItemInfo->UpdateItemInfo(EQSlot);
+	EQWidgetInventory->WBP_EQWidgetItemInfo->UpdateItemInfo(*EQSlot);
 }
 
 void UEQWidgetItemSlot::OnUnhoverBtnSlot()
 {
 	Border_Item->SetBrushColor(FLinearColor(1,1,1,0.3));
 	Img_HoverTriangle->SetVisibility(ESlateVisibility::Hidden);
+}
+
+void UEQWidgetItemSlot::OnClickedBtnSlot()
+{
 }

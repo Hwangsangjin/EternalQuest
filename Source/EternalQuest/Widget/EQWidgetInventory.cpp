@@ -9,6 +9,7 @@
 #include "Components/SizeBox.h"
 #include "Components/WidgetSwitcher.h"
 #include "Components/WrapBox.h"
+#include "Item/EQItemDragDropOperation.h"
 
 UEQWidgetInventory::UEQWidgetInventory(const FObjectInitializer& ObjectInitializer)
 : Super(ObjectInitializer)
@@ -30,6 +31,13 @@ void UEQWidgetInventory::NativeConstruct()
 
 	Player = Cast<AEQCharacterPlayer>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	EQComponentInventory = Player->FindComponentByClass<UEQComponentInventory>();
+}
+
+bool UEQWidgetInventory::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
+	UDragDropOperation* InOperation)
+{
+	UpdateItemInInventoryUI();
+	return true;
 }
 
 void UEQWidgetInventory::OpenCloseInventoryWidget()
@@ -63,28 +71,28 @@ void UEQWidgetInventory::ClearItemInventory()
 
 void UEQWidgetInventory::AddItemInventory()
 {
-	for (const auto& e : EQComponentInventory->EQAllItem.Equipment)
+	for (auto& e : EQComponentInventory->EQAllItem.Equipment)
 	{
 		auto temp = CreateWidget(GetWorld(), ItemSlotFactory);
-		Cast<UEQWidgetItemSlot>(temp)->EQSlot = e;
+		Cast<UEQWidgetItemSlot>(temp)->EQSlot = &e;
 		WrapBox_Equip->AddChildToWrapBox(temp);
 	}
-	for (const auto& e : EQComponentInventory->EQAllItem.Consumtion)
+	for (auto& e : EQComponentInventory->EQAllItem.Consumtion)
 	{
 		auto temp = CreateWidget(GetWorld(), ItemSlotFactory);
-		Cast<UEQWidgetItemSlot>(temp)->EQSlot = e;
+		Cast<UEQWidgetItemSlot>(temp)->EQSlot = &e;
 		WrapBox_Consume->AddChildToWrapBox(temp);
 	}
-	for (const auto& e : EQComponentInventory->EQAllItem.Material)
+	for (auto& e : EQComponentInventory->EQAllItem.Material)
 	{
 		auto temp = CreateWidget(GetWorld(), ItemSlotFactory);
-		Cast<UEQWidgetItemSlot>(temp)->EQSlot = e;
+		Cast<UEQWidgetItemSlot>(temp)->EQSlot = &e;
 		WrapBox_Material->AddChildToWrapBox(temp);
 	}
-	for (const auto& e : EQComponentInventory->EQAllItem.QuestItem)
+	for (auto& e : EQComponentInventory->EQAllItem.QuestItem)
 	{
 		auto temp = CreateWidget(GetWorld(), ItemSlotFactory);
-		Cast<UEQWidgetItemSlot>(temp)->EQSlot = e;
+		Cast<UEQWidgetItemSlot>(temp)->EQSlot = &e;
 		WrapBox_QuestItem->AddChildToWrapBox(temp);
 	}
 }

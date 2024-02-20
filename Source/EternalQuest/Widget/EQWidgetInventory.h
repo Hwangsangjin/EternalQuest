@@ -8,6 +8,7 @@
 #include "Components/WrapBox.h"
 #include "EQWidgetInventory.generated.h"
 
+class UEQWidgetItemDropArea;
 class UEQWidgetItemInfo;
 class UEQWidgetItemSlot;
 class UEQComponentInventory;
@@ -26,6 +27,8 @@ class ETERNALQUEST_API UEQWidgetInventory : public UUserWidget
 	UEQWidgetInventory(const FObjectInitializer &ObjectInitializer);
 public:
 	virtual void NativeConstruct() override;
+	virtual bool NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
+	
 	// ----- 함수 -----
 	void OpenCloseInventoryWidget();
 	void UpdateItemInInventoryUI();
