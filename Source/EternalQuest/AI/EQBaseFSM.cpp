@@ -145,6 +145,7 @@ bool UEQBaseFSM::UpdateRandLoc(FVector OldLoc, float Radius, FVector& NewLoc)
 
 void UEQBaseFSM::MeleeAttackCheck()
 {
+	
 }
 
 

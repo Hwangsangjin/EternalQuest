@@ -39,14 +39,18 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Spider")
 	float ScorpionAttackDamage = 25.f;
 
+	FTimerHandle TimerHandle;
+	float RecoveryInterval = 1.5f;
 public:
 	void UpdateHP(float UpdateHealth);
-	
+	void StaminaRecovery();
 	
 	UFUNCTION()
 	void TakeDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser);
 
 	UFUNCTION(Server,Reliable)
 	void ServerRPC_UpdateHP(float UpdateHealth);
+
+	
 
 };
