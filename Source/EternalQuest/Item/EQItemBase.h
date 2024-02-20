@@ -15,7 +15,7 @@ class ETERNALQUEST_API AEQItemBase : public AActor
 {
 	GENERATED_BODY()
 	
-public:	
+public:
 	AEQItemBase();
 
 protected:

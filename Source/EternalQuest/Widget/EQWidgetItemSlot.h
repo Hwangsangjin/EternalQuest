@@ -7,6 +7,7 @@
 #include "Struct/EQStructEnumBase.h"
 #include "EQWidgetItemSlot.generated.h"
 
+class UEQWidgetDragItem;
 class UEQWidgetItemActionMenu;
 class UTextBlock;
 class USizeBox;
@@ -24,11 +25,12 @@ class ETERNALQUEST_API UEQWidgetItemSlot : public UUserWidget
 
 public:
 	UEQWidgetItemSlot(const FObjectInitializer &ObjectInitializer);
-	
 	virtual void NativePreConstruct() override;
 	virtual void NativeConstruct() override;
+	virtual bool NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
 	
-	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+	virtual FReply NativeOnPreviewMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+	virtual void NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation) override;
 
 	UPROPERTY(EditAnywhere,BlueprintReadOnly, meta=(BindWidget))
 	TObjectPtr<UButton> Btn_Slot;
@@ -52,13 +54,21 @@ public:
 	TObjectPtr<UEQWidgetInventory> EQWidgetInventory;
 
 	UPROPERTY()
-	TSubclassOf<UUserWidget> EQWidgetActionMenu;
-	
+	TObjectPtr<UEQWidgetItemActionMenu> EQWidgetItemActionMenu;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FEQSlot EQSlot;
+	TSubclassOf<UUserWidget> EQWidgetDragItem;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UDragDropOperation> DragDropOperation;
+	
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite)o
+	FEQSlot* EQSlot;
 
 	UFUNCTION()
 	void OnHoverBtnSlot();
 	UFUNCTION()
 	void OnUnhoverBtnSlot();
+	UFUNCTION()
+	void OnClickedBtnSlot();
 };

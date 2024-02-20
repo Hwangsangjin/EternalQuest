@@ -95,7 +95,6 @@ void UEQWidgetIconBar::OnClickInventory()
 		ClearIconFlag();
 		OnHoverInventory();
 		bOpenInventory = true;
-		GEngine->AddOnScreenDebugMessage(-1,3,FColor::Green, TEXT("OpenInventory"));
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetInventory->OpenCloseInventoryWidget();
 	}
 }
