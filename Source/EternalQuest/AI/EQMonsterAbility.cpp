@@ -13,7 +13,7 @@ UEQMonsterAbility::UEQMonsterAbility()
 {
 	
 	PrimaryComponentTick.bCanEverTick = true;
-	SetIsReplicated(true);
+	//SetIsReplicated(true);
 	
 }
 
