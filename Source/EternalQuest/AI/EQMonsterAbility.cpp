@@ -12,10 +12,7 @@
 UEQMonsterAbility::UEQMonsterAbility()
 {
 	
-	PrimaryComponentTick.bCanEverTick = false;
-
-	MaxHealth = 100;
-	CurrentHealth = MaxHealth;
+	PrimaryComponentTick.bCanEverTick = true;
 	SetIsReplicated(true);
 	
 }
@@ -25,7 +22,7 @@ UEQMonsterAbility::UEQMonsterAbility()
 void UEQMonsterAbility::BeginPlay()
 {
 	Super::BeginPlay();
-
+	CurrentHealth = MaxHealth;
 	AActor* Owner = GetOwner();
 	if(Owner)
 	{
@@ -44,8 +41,11 @@ void UEQMonsterAbility::UpdateHP(float UpdateHealth)
 
 void UEQMonsterAbility::StaminaRecovery()
 {
+	// 체력증가
 	
 }
+
+
 
 
 void UEQMonsterAbility::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -85,6 +85,7 @@ void UEQMonsterAbility::TakeDamage(AActor* DamagedActor, float Damage, const UDa
 void UEQMonsterAbility::ServerRPC_UpdateHP_Implementation(float UpdateHealth)
 {
 	CurrentHealth = FMath::Max(0,CurrentHealth+UpdateHealth);
+	bIsHit = true;
 }
 
 
@@ -97,5 +98,6 @@ void UEQMonsterAbility::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 	DOREPLIFETIME(UEQMonsterAbility, SpiderWebDamage);
 	DOREPLIFETIME(UEQMonsterAbility,MushAttackDamage);
 	DOREPLIFETIME(UEQMonsterAbility,ScorpionAttackDamage);
+	DOREPLIFETIME(UEQMonsterAbility,bIsHit);
 	
 }

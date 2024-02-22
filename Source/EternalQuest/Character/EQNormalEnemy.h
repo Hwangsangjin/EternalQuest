@@ -50,6 +50,6 @@ protected:
 	
 	UPROPERTY()
 	UDamageType* Type;
-	void Tick(float DeltaSeconds) override;
+	virtual void Tick(float DeltaSeconds) override;
 	
 };
