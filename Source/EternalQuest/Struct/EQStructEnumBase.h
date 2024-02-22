@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "IDetailTreeNode.h"
 #include "GameFramework/Actor.h"
 #include "Engine/DataTable.h"
 #include "EQStructEnumBase.generated.h"
