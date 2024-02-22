@@ -30,6 +30,8 @@ void UEQWidgetItemActionMenu::NativeConstruct()
 	Btn_Cancel->OnUnhovered.AddDynamic(this, &UEQWidgetItemActionMenu::OnUnhoverBtnCancel);
 	Btn_Cancel->OnClicked.AddDynamic(this, &UEQWidgetItemActionMenu::OnClickBtnCancel);
 
+	auto PC_CastTemp = Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController());
+	EQComponentInventory = PC_CastTemp->GetCharacter()->FindComponentByClass<UEQComponentInventory>();
 }
 
 void UEQWidgetItemActionMenu::BringItemSlotRef(UEQWidgetItemSlot*& InItemSlot)
@@ -64,17 +66,13 @@ void UEQWidgetItemActionMenu::OnClickBtnUse()
 	{
 		// 재료와 퀘스트 아이템은 사용할 수 없음
 	}
-
-
 	
-	Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetInventory->
-																	   UpdateItemInInventoryUI();
+	Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetInventory->UpdateItemInInventoryUI();
 }
 
 void UEQWidgetItemActionMenu::OnHoverBtnDrop()
 {
 	Txt_Drop->SetColorAndOpacity(FSlateColor(FColor::Yellow));
-	GEngine->AddOnScreenDebugMessage(-1,3,FColor::Red, FString::Printf(TEXT("%p"), &EQWidgetItemSlot));
 }
 
 void UEQWidgetItemActionMenu::OnUnhoverBtnDrop()
@@ -84,29 +82,22 @@ void UEQWidgetItemActionMenu::OnUnhoverBtnDrop()
 
 void UEQWidgetItemActionMenu::OnClickBtnDrop()
 {
-	auto Player = GetWorld()->GetFirstPlayerController()->GetCharacter();
-	FTransform SpawnTransform(FRotator(0), FVector(Player->GetActorLocation() + Player->GetActorForwardVector()*100));
-	auto Item = Cast<AEQItemBase>(UGameplayStatics::BeginDeferredActorSpawnFromClass(this, AEQItemBase::StaticClass(), SpawnTransform));
-	if (Item)
-	{
-		Item->ItemName.RowName = EQSlot->ItemID.RowName;
-		Item->ItemQuantity = EQSlot->Quantity;
-		Item->ItemType = EQSlot->ItemType;
-		UGameplayStatics::FinishSpawningActor(Item, SpawnTransform);
-	}
-	
-	// EQSlot->Quantity--;
-	int temp = EQSlot->Quantity;
-	for (int i = temp; i > 0 ; i--)
-	{
-		EQSlot->Quantity--;
-		GEngine->AddOnScreenDebugMessage(-1,3,FColor::Red, TEXT("ext"));
-	}
-	EQSlot->ItemID.RowName = TEXT("");
+	// auto Player = GetWorld()->GetFirstPlayerController()->GetCharacter();
+	// FTransform SpawnTransform(FRotator(0), FVector(Player->GetActorLocation() + Player->GetActorForwardVector()*100));
+	// auto SpawnItem = GetWorld()->SpawnActor<AEQItemBase>(AEQItemBase::StaticClass(), SpawnTransform);
+	// SpawnItem->SetItemName(EQSlot->ItemID.RowName, EQSlot->ItemType, EQSlot->Quantity);
+	// // ServerRPC_DropItem();
+	//
+	// int temp = EQSlot->Quantity;
+	// for (int i = temp; i > 0 ; i--)
+	// {
+	// 	EQSlot->Quantity--;
+	// }
+	// EQSlot->ItemID.RowName = TEXT("");
+	EQComponentInventory->DropItem(EQSlot);
 	Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetInventory->
 	                                                                   UpdateItemInInventoryUI();
 	this->SetVisibility(ESlateVisibility::Hidden);
-
 }
 
 void UEQWidgetItemActionMenu::OnHoverBtnCancel()

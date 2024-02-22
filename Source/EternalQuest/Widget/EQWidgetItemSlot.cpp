@@ -36,7 +36,6 @@ UEQWidgetItemSlot::UEQWidgetItemSlot(const FObjectInitializer& ObjectInitializer
 void UEQWidgetItemSlot::NativePreConstruct()
 {
 	Super::NativePreConstruct();
-	
 }
 
 void UEQWidgetItemSlot::NativeConstruct()
@@ -71,14 +70,12 @@ bool UEQWidgetItemSlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDro
 	if (HangItem->EQSlot->ItemID.RowName == EQSlot->ItemID.RowName)
 	{
 		Swap(HangItem->EQSlot->Quantity, EQSlot->Quantity);
-		GEngine->AddOnScreenDebugMessage(-1,3,FColor::Green, TEXT("Same Item"));
 		EQWidgetInventory->UpdateItemInInventoryUI();
 	}
 	else
 	{
 		Swap(HangItem->EQWidgetItemSlot->EQSlot->Quantity, EQSlot->Quantity);
 		Swap(HangItem->EQWidgetItemSlot->EQSlot->ItemID.RowName, EQSlot->ItemID.RowName);
-		GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Green, TEXT("Other Item"));
 		EQWidgetInventory->UpdateItemInInventoryUI();
 	}
 	return true;
@@ -93,7 +90,7 @@ FReply UEQWidgetItemSlot::NativeOnPreviewMouseButtonDown(const FGeometry& InGeom
 		return FReply::Unhandled();
 	}
 	
-	if(InMouseEvent.IsMouseButtonDown(EKeys::RightMouseButton))
+	if(InMouseEvent.IsMouseButtonDown(EKeys::RightMouseButton)) // 우클릭
 	{
 		auto MousePos = UWidgetLayoutLibrary::GetMousePositionOnViewport(GetWorld());
 		EQWidgetItemActionMenu->EQSlot = EQSlot;

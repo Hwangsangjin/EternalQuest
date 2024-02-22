@@ -15,6 +15,7 @@ UEQComponentBase::UEQComponentBase()
 	PrimaryComponentTick.bCanEverTick = false;
 	bWantsInitializeComponent = true;
 	// ...
+	SetIsReplicated(true);
 }
 
 
@@ -44,8 +45,8 @@ void UEQComponentBase::InitializeComponent()
 	FTimerHandle Handle;
 	GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
 	{
-		EQPlayerController = Cast<AEQPlayerController>(Player->Controller);
-	}), 0.2, false, 0.2);
+		EQPlayerController = Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController());
+	}), 0.1, false, 0.1);
 }
 
 void UEQComponentBase::SetupPlayerInput(UInputComponent* PlayerInputComponent)

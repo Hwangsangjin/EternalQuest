@@ -19,12 +19,14 @@ public:
 	AEQItemBase();
 
 protected:
+	virtual void PostNetInit() override;
 	virtual void BeginPlay() override;
 
 public:	
 	virtual void Tick(float DeltaTime) override;
 
 	// ----- 함수 -----
+	UFUNCTION()
 	void SetItemName(const FName& InName, EEQItemType InType, const int32& InQuantity = 1);
 	// ----- 함수 -----
 
@@ -32,18 +34,24 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=MySettings)
 	UStaticMeshComponent* MeshComp;
 
+	UPROPERTY()
+	UStaticMesh* StaticMesh;
+
+	UPROPERTY(Replicated)
 	FEQSlot Slot;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=MySettings)
 	TObjectPtr<UDataTable> ItemDataTable;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Item")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Item", Replicated)
 	FDataTableRowHandle ItemName;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Item")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Item", Replicated)
 	TEnumAsByte<EEQItemType> ItemType;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Item")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MySettings|Item", Replicated)
 	int32 ItemQuantity;
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	// ----- 변수 -----
 };

@@ -340,7 +340,6 @@ void AEQCharacterPlayer::PlayerMeshLoadCompleted()
 		{
 			GetMesh()->SetSkeletalMesh(SkeletalMesh);
 			GetMesh()->SetHiddenInGame(false);
-			GEngine->AddOnScreenDebugMessage(-1, 60.0f, FColor::Cyan, (TEXT("Mesh Load")));
 		}
 	}
 

@@ -53,12 +53,7 @@ void AEQPlayerController::OnPossess(APawn* InPawn)
 	Super::OnPossess(InPawn);
 
 	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), TEXT("End"));
-
-	EQWidgetMainUI = Cast<UEQWidgetMainUI>(CreateWidget(GetWorld(), MainUIFactory));
-	if (EQWidgetMainUI && IsLocalController())
-	{
-		EQWidgetMainUI->AddToViewport();
-	}
+	
 }
 
 void AEQPlayerController::BeginPlay()
@@ -71,4 +66,10 @@ void AEQPlayerController::BeginPlay()
 
 	FInputModeGameOnly InputModeGameOnly;
 	SetInputMode(InputModeGameOnly);
+
+	EQWidgetMainUI = Cast<UEQWidgetMainUI>(CreateWidget(GetWorld(), MainUIFactory));
+	if (EQWidgetMainUI && IsLocalController())
+	{
+		EQWidgetMainUI->AddToViewport();
+	}
 }

@@ -16,6 +16,5 @@ bool UEQWidgetItemDropArea::NativeOnDrop(const FGeometry& InGeometry, const FDra
 	// auto MainUI = Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI;
 	// MainUI->WBP_EQWidgetItemActionMenu->OnClickBtnDrop();
 	// MainUI->WBP_EQWidgetInventory->UpdateItemInInventoryUI();
-	GEngine->AddOnScreenDebugMessage(-1,3,FColor::Red, TEXT("123"));
 	return true;
 }

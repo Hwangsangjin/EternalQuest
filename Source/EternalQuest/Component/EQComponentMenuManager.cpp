@@ -60,7 +60,6 @@ void UEQComponentMenuManager::FlipFlopMouseMode(const FInputActionValue& Value)
 		EQPlayerController->SetShowMouseCursor(false);
 		const FInputModeGameOnly GameOnly;
 		EQPlayerController->SetInputMode(GameOnly);
-		GEngine->AddOnScreenDebugMessage(-1,3,FColor::Red, TEXT("Closed"));
 	}
 	else
 	{
@@ -68,6 +67,5 @@ void UEQComponentMenuManager::FlipFlopMouseMode(const FInputActionValue& Value)
 		EQPlayerController->SetShowMouseCursor(true);
 		const FInputModeGameAndUI GameAndUI;
 		EQPlayerController->SetInputMode(GameAndUI);
-		GEngine->AddOnScreenDebugMessage(-1,3,FColor::Red, TEXT("Open"));
 	}
 }
