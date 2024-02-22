@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Character/EQCharacterBase.h"
+#include "Game/EQGameInstance.h"
 #include "Interface/EQInterfaceAnimationAttack.h"
 #include "Interface/EQInterfaceCharacterWidget.h"
 #include "EQCharacterPlayer.generated.h"
@@ -39,6 +40,8 @@ public:
 	FInputSignature InputSignature;
 
 protected:
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void PostInitializeComponents() override;
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_Owner() override;
 	virtual void OnRep_PlayerState() override;
@@ -46,7 +49,6 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	virtual void PostInitializeComponents() override;
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	virtual void Jump() override;
 	virtual void StopJumping() override;
@@ -55,8 +57,22 @@ public:
 protected:
 	void SetPlayerController();
 
+// Class Type
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, /*Replicated,*/ Category = Character, Meta = (AllowPrivateAccess = true))
+	EClassType ClassType = EClassType::ECT_None;
+
 // Mesh
 protected:
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticast_UpdatePlayerMesh(EClassType InClassType);
+
+	UFUNCTION(Server, Reliable)
+	void Server_UpdatePlayerMesh(EClassType InClassType);
+
+	UFUNCTION(Client, Reliable)
+	void Client_UpdatePlayerMesh(EClassType InClassType);
+
 	void UpdatePlayerMesh();
 	void PlayerMeshLoadCompleted();
 

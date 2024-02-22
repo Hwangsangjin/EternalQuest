@@ -3,9 +3,7 @@
 
 #include "Widget/EQWidgetLogin.h"
 #include "Components/Button.h"
-#include "Kismet/GameplayStatics.h"
 #include "Game/EQGameInstance.h"
-#include "Game/EQGameMode.h"
 #include "OnlineSessionSettings.h"
 #include "OnlineSubsystem.h"
 
@@ -97,14 +95,7 @@ void UEQWidgetLogin::LoginSetoff()
 
 void UEQWidgetLogin::MageButtonClicked()
 {
-	if (GameInstance->GetWorld()->GetFirstPlayerController()->HasAuthority())
-	{
-		GameInstance->SetClassType(EClassType::ECT_Mage);
-	}
-	else
-	{
-		GameInstance->SetClassType(EClassType::ECT_Mage);
-	}
+	GameInstance->SetClassType(EClassType::ECT_Mage);
 
 	Button_Mage->SetBackgroundColor(FLinearColor(0.411765f, 0.8f, 0.941177f, 1.0f));
 	Button_Warrior->SetBackgroundColor(FLinearColor(1.0f, 1.0f, 1.0f, 0.8f));
@@ -112,14 +103,7 @@ void UEQWidgetLogin::MageButtonClicked()
 
 void UEQWidgetLogin::WarriorButtonClicked()
 {
-	if (GameInstance->GetWorld()->GetFirstPlayerController()->HasAuthority())
-	{
-		GameInstance->SetClassType(EClassType::ECT_Warrior);
-	}
-	else
-	{
-		GameInstance->SetClassType(EClassType::ECT_Warrior);
-	}
+	GameInstance->SetClassType(EClassType::ECT_Warrior);
 
 	Button_Warrior->SetBackgroundColor(FLinearColor(0.780392f, 0.611765f, 0.431373f, 1.0f));
 	Button_Mage->SetBackgroundColor(FLinearColor(1.0f, 1.0f, 1.0f, 0.8f));
@@ -141,10 +125,10 @@ void UEQWidgetLogin::OnCreateSession(bool bWasSuccessful)
 {
 	if (bWasSuccessful)
 	{
-		if (GEngine)
+		/*if (GEngine)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, FString(TEXT("Session created successfully")));
-		}
+		}*/
 
 		UWorld* World = GetWorld();
 		if (World)
@@ -154,10 +138,10 @@ void UEQWidgetLogin::OnCreateSession(bool bWasSuccessful)
 	}
 	else
 	{
-		if (GEngine)
+		/*if (GEngine)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString(TEXT("Failed to create session")));
-		}
+		}*/
 
 		Button_Host->SetIsEnabled(true);
 	}
@@ -179,10 +163,10 @@ void UEQWidgetLogin::OnFindSessions(const TArray<FOnlineSessionSearchResult>& Se
 
 		if (SettingsValue == MatchType)
 		{
-			if (GEngine)
+			/*if (GEngine)
 			{
 				GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Cyan, FString::Printf(TEXT("Id: %s, User: %s"), *Id, *User));
-			}
+			}*/
 
 			GameInstance->JoinSession(Result);
 			return;
@@ -206,10 +190,10 @@ void UEQWidgetLogin::OnJoinSession(EOnJoinSessionCompleteResult::Type Result)
 			FString Address;
 			SessionInterface->GetResolvedConnectString(NAME_GameSession, Address);
 
-			if (GEngine)
+			/*if (GEngine)
 			{
 				GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, FString::Printf(TEXT("Connect String: %s"), *Address));
-			}
+			}*/
 
 			APlayerController* PlayerController = GetGameInstance()->GetFirstLocalPlayerController();
 			if (PlayerController)

@@ -3,8 +3,11 @@
 
 #include "Character/EQCharacterPlayer.h"
 #include "EternalQuest.h"
+#include "EngineUtils.h"
+#include "Net/UnrealNetwork.h"
 #include "Engine/AssetManager.h"
-#include "Game/EQGameInstance.h"
+#include "Player/EQPlayerController.h"
+#include "Player/EQPlayerState.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
@@ -22,14 +25,12 @@
 #include "Component/EQComponentWidget.h"
 #include "Widget/EQWidgetUserName.h"
 #include "Widget/EQWidgetHpBar.h"
-#include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetMathLibrary.h"
-#include "GameFramework/GameStateBase.h"
-#include "GameFramework/PlayerState.h"
 
 AEQCharacterPlayer::AEQCharacterPlayer()
 {
+	// Replication
 	bReplicates = true;
+	SetReplicateMovement(true);
 
 	// Mesh
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -100.0f), FRotator(0.0f, -90.0f, 0.0f));
@@ -106,31 +107,33 @@ AEQCharacterPlayer::AEQCharacterPlayer()
 	}
 }
 
+void AEQCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), *GetName(), TEXT("Begin"));
+
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	//DOREPLIFETIME(ThisClass, ClassType);
+
+	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), *GetName(), TEXT("End"));
+}
+
+void AEQCharacterPlayer::PostInitializeComponents()
+{
+	EQ_LOG(LogEternalQuest, Log, TEXT("%s %s"), *GetName(), TEXT("Begin"));
+
+	Super::PostInitializeComponents();
+
+	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), TEXT("End"));
+
+	StatComp->OnHpZero.AddUObject(this, &ThisClass::SetDead);
+}
+
 void AEQCharacterPlayer::PossessedBy(AController* NewController)
 {
-	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), TEXT("Begin"));
-
-	AActor* OwnerActor = GetOwner();
-	if (OwnerActor)
-	{
-		EQ_LOG(LogEternalQuest, Log, TEXT("Owner : %s"), *Owner->GetName());
-	}
-	else
-	{
-		EQ_LOG(LogEternalQuest, Log, TEXT("%s"), TEXT("No Owner"));
-	}
+	EQ_LOG(LogEternalQuest, Log, TEXT("%s %s"), *GetName(), TEXT("Begin"));
 
 	Super::PossessedBy(NewController);
-
-	OwnerActor = GetOwner();
-	if (OwnerActor)
-	{
-		EQ_LOG(LogEternalQuest, Log, TEXT("Owner : %s"), *Owner->GetName());
-	}
-	else
-	{
-		EQ_LOG(LogEternalQuest, Log, TEXT("%s"), TEXT("No Owner"));
-	}
 
 	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), TEXT("End"));
 
@@ -139,7 +142,7 @@ void AEQCharacterPlayer::PossessedBy(AController* NewController)
 
 void AEQCharacterPlayer::OnRep_Owner()
 {
-	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), TEXT("Begin"));
+	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), *GetName(), TEXT("Begin"));
 
 	Super::OnRep_Owner();
 
@@ -158,14 +161,18 @@ void AEQCharacterPlayer::OnRep_Owner()
 
 void AEQCharacterPlayer::OnRep_PlayerState()
 {
+	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), *GetName(), TEXT("Begin"));
+
 	Super::OnRep_PlayerState();
 
-	//UpdatePlayerMesh();
+	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), *GetName(), TEXT("End"));
+
+	UpdatePlayerMesh();
 }
 
 void AEQCharacterPlayer::PostNetInit()
 {
-	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), TEXT("Begin"));
+	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), *GetName(), TEXT("Begin"));
 
 	Super::PostNetInit();
 
@@ -174,6 +181,8 @@ void AEQCharacterPlayer::PostNetInit()
 
 void AEQCharacterPlayer::BeginPlay()
 {
+	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), TEXT("Begin"));
+
 	Super::BeginPlay();
 
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
@@ -183,11 +192,6 @@ void AEQCharacterPlayer::BeginPlay()
 	}
 
 	SetPlayerController();
-
-	if (!HasAuthority())
-	{
-		UpdatePlayerMesh();
-	}
 }
 
 void AEQCharacterPlayer::AttackHitCheck()
@@ -246,13 +250,6 @@ void AEQCharacterPlayer::SetupCharacterWidget(UEQWidgetBase* InWidgetBase)
 	}
 }
 
-void AEQCharacterPlayer::PostInitializeComponents()
-{
-	Super::PostInitializeComponents();
-
-	StatComp->OnHpZero.AddUObject(this, &ThisClass::SetDead);
-}
-
 void AEQCharacterPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -276,13 +273,11 @@ void AEQCharacterPlayer::SetPlayerController()
 		return;
 	}
 
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	APlayerController* PlayerController = CastChecked<APlayerController>(GetController());
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->ClearAllMappings();
-			Subsystem->AddMappingContext(DefaultMappingContext, 0);
-		}
+		Subsystem->ClearAllMappings();
+		Subsystem->AddMappingContext(DefaultMappingContext, 0);
 	}
 }
 
@@ -290,10 +285,9 @@ void AEQCharacterPlayer::UpdatePlayerMesh()
 {
 	ensure(PlayerMeshes.Num() > 0);
 
-	UEQGameInstance* GameInstance = Cast<UEQGameInstance>(GetGameInstance());
-	if (HasAuthority())
+	if (IsLocallyControlled())
 	{
-		EClassType ClassType = GameInstance->GetClassType();
+		ClassType = GetWorld()->GetFirstPlayerController()->GetPlayerState<AEQPlayerState>()->GetClassType();
 		switch (ClassType)
 		{
 		case EClassType::ECT_Mage:
@@ -310,29 +304,114 @@ void AEQCharacterPlayer::UpdatePlayerMesh()
 			break;
 		}
 	}
-	else
+
+	if (!HasAuthority())
 	{
-		EClassType ClassType = GameInstance->GetClassType();
-		switch (ClassType)
+		ClassType = Cast<UEQGameInstance>(GetGameInstance())->GetClassType();
+		Server_UpdatePlayerMesh(ClassType);
+	}
+}
+
+void AEQCharacterPlayer::Server_UpdatePlayerMesh_Implementation(EClassType InClassType)
+{
+	for (AEQCharacterPlayer* CharacterPlayer : TActorRange<AEQCharacterPlayer>(GetWorld()))
+	{
+		if (CharacterPlayer->IsLocallyControlled())
 		{
-		case EClassType::ECT_Mage:
-			PlayerMeshHandle = UAssetManager::Get().GetStreamableManager().RequestAsyncLoad(PlayerMeshes[9], FStreamableDelegate::CreateUObject(this, &ThisClass::PlayerMeshLoadCompleted));
-			break;
-		case EClassType::ECT_Paladin:
-			break;
-		case EClassType::ECT_Priest:
-			break;
-		case EClassType::ECT_Rogue:
-			break;
-		case EClassType::ECT_Warrior:
-			PlayerMeshHandle = UAssetManager::Get().GetStreamableManager().RequestAsyncLoad(PlayerMeshes[4], FStreamableDelegate::CreateUObject(this, &ThisClass::PlayerMeshLoadCompleted));
-			break;
+			continue;
+		}
+		else
+		{
+			switch (InClassType)
+			{
+			case EClassType::ECT_Mage:
+				CharacterPlayer->PlayerMeshHandle = UAssetManager::Get().GetStreamableManager().RequestAsyncLoad(PlayerMeshes[9], FStreamableDelegate::CreateUObject(CharacterPlayer, &ThisClass::PlayerMeshLoadCompleted));
+				break;
+			case EClassType::ECT_Paladin:
+				break;
+			case EClassType::ECT_Priest:
+				break;
+			case EClassType::ECT_Rogue:
+				break;
+			case EClassType::ECT_Warrior:
+				CharacterPlayer->PlayerMeshHandle = UAssetManager::Get().GetStreamableManager().RequestAsyncLoad(PlayerMeshes[4], FStreamableDelegate::CreateUObject(CharacterPlayer, &ThisClass::PlayerMeshLoadCompleted));
+				break;
+			}
+		}
+	}
+
+	EClassType CClassType = GetWorld()->GetFirstPlayerController()->GetPlayerState<AEQPlayerState>()->GetClassType();
+	Client_UpdatePlayerMesh(CClassType);
+}
+
+void AEQCharacterPlayer::NetMulticast_UpdatePlayerMesh_Implementation(EClassType InClassType)
+{
+	for (AEQPlayerController* PlayerController : TActorRange<AEQPlayerController>(GetWorld()))
+	{
+		if (PlayerController == Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController()))
+		{
+			continue;
+		}
+		else
+		{
+			for (AEQCharacterPlayer* CharacterPlayer : TActorRange<AEQCharacterPlayer>(GetWorld()))
+			{
+				if (!CharacterPlayer->IsLocallyControlled())
+				{
+					switch (InClassType)
+					{
+					case EClassType::ECT_Mage:
+						CharacterPlayer->PlayerMeshHandle = UAssetManager::Get().GetStreamableManager().RequestAsyncLoad(PlayerMeshes[9], FStreamableDelegate::CreateUObject(this, &ThisClass::PlayerMeshLoadCompleted));
+						break;
+					case EClassType::ECT_Paladin:
+						break;
+					case EClassType::ECT_Priest:
+						break;
+					case EClassType::ECT_Rogue:
+						break;
+					case EClassType::ECT_Warrior:
+						CharacterPlayer->PlayerMeshHandle = UAssetManager::Get().GetStreamableManager().RequestAsyncLoad(PlayerMeshes[4], FStreamableDelegate::CreateUObject(this, &ThisClass::PlayerMeshLoadCompleted));
+						break;
+					}
+				}
+			}
+		}
+	}
+}
+
+void AEQCharacterPlayer::Client_UpdatePlayerMesh_Implementation(EClassType InClassType)
+{
+	for (AEQCharacterPlayer* CharacterPlayer : TActorRange<AEQCharacterPlayer>(GetWorld()))
+	{
+		if (CharacterPlayer->IsLocallyControlled())
+		{
+			continue;
+		}
+		else
+		{
+			switch (InClassType)
+			{
+			case EClassType::ECT_Mage:
+				CharacterPlayer->PlayerMeshHandle = UAssetManager::Get().GetStreamableManager().RequestAsyncLoad(PlayerMeshes[9], FStreamableDelegate::CreateUObject(CharacterPlayer, &ThisClass::PlayerMeshLoadCompleted));
+				break;
+			case EClassType::ECT_Paladin:
+				break;
+			case EClassType::ECT_Priest:
+				break;
+			case EClassType::ECT_Rogue:
+				break;
+			case EClassType::ECT_Warrior:
+				CharacterPlayer->PlayerMeshHandle = UAssetManager::Get().GetStreamableManager().RequestAsyncLoad(PlayerMeshes[4], FStreamableDelegate::CreateUObject(CharacterPlayer, &ThisClass::PlayerMeshLoadCompleted));
+				break;
+			}
 		}
 	}
 }
 
 void AEQCharacterPlayer::PlayerMeshLoadCompleted()
 {
+	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), TEXT("Begin"));
+
 	if (PlayerMeshHandle.IsValid())
 	{
 		USkeletalMesh* SkeletalMesh = Cast<USkeletalMesh>(PlayerMeshHandle->GetLoadedAsset());
@@ -344,4 +423,6 @@ void AEQCharacterPlayer::PlayerMeshLoadCompleted()
 	}
 
 	PlayerMeshHandle->ReleaseHandle();
+
+	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), TEXT("End"));
 }
