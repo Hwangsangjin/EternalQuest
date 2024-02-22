@@ -10,6 +10,7 @@
 #include "Character/EQCharacterBase.h"
 #include "Character/EQCharacterPlayer.h"
 #include "Character/EQNormalEnemy.h"
+#include "Component/EQComponentInventory.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/DamageEvents.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -178,6 +179,16 @@ void UEQBaseFSM::ServerRPC_TickDie_Implementation()
 {
 	CurrentTime += GetWorld()->GetDeltaSeconds();
 	Self->SetActorEnableCollision(ECollisionEnabled::NoCollision);
+
+	// 아이템 드롭
+	// 이름
+	// Self->EQSlot.ItemID.RowName = TEXT("Apple")
+	// // 갯수
+	// Self->EQSlot.Quantity = 1;
+	// // 타입
+	// Self->EQSlot.ItemType = EEQItemType::Consumtion;
+	// // 드랍 아이템 매개변수 안데 EQSLot을 
+	//Target->FindComponentByClass<UEQComponentInventory>()->;
 	if(CurrentTime>DieTime)
 	{
 		Pool->ReturnEnemyToPool(Self);
