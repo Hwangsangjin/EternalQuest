@@ -322,7 +322,8 @@ void AEQCharacterPlayer::Server_UpdatePlayerMesh_Implementation(EClassType InCla
 		}
 		else
 		{
-			switch (InClassType)
+			CharacterPlayer->ClassType = InClassType;
+			switch (CharacterPlayer->ClassType)
 			{
 			case EClassType::ECT_Mage:
 				CharacterPlayer->PlayerMeshHandle = UAssetManager::Get().GetStreamableManager().RequestAsyncLoad(PlayerMeshes[9], FStreamableDelegate::CreateUObject(CharacterPlayer, &ThisClass::PlayerMeshLoadCompleted));
@@ -344,41 +345,6 @@ void AEQCharacterPlayer::Server_UpdatePlayerMesh_Implementation(EClassType InCla
 	Client_UpdatePlayerMesh(CClassType);
 }
 
-void AEQCharacterPlayer::NetMulticast_UpdatePlayerMesh_Implementation(EClassType InClassType)
-{
-	for (AEQPlayerController* PlayerController : TActorRange<AEQPlayerController>(GetWorld()))
-	{
-		if (PlayerController == Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController()))
-		{
-			continue;
-		}
-		else
-		{
-			for (AEQCharacterPlayer* CharacterPlayer : TActorRange<AEQCharacterPlayer>(GetWorld()))
-			{
-				if (!CharacterPlayer->IsLocallyControlled())
-				{
-					switch (InClassType)
-					{
-					case EClassType::ECT_Mage:
-						CharacterPlayer->PlayerMeshHandle = UAssetManager::Get().GetStreamableManager().RequestAsyncLoad(PlayerMeshes[9], FStreamableDelegate::CreateUObject(this, &ThisClass::PlayerMeshLoadCompleted));
-						break;
-					case EClassType::ECT_Paladin:
-						break;
-					case EClassType::ECT_Priest:
-						break;
-					case EClassType::ECT_Rogue:
-						break;
-					case EClassType::ECT_Warrior:
-						CharacterPlayer->PlayerMeshHandle = UAssetManager::Get().GetStreamableManager().RequestAsyncLoad(PlayerMeshes[4], FStreamableDelegate::CreateUObject(this, &ThisClass::PlayerMeshLoadCompleted));
-						break;
-					}
-				}
-			}
-		}
-	}
-}
-
 void AEQCharacterPlayer::Client_UpdatePlayerMesh_Implementation(EClassType InClassType)
 {
 	for (AEQCharacterPlayer* CharacterPlayer : TActorRange<AEQCharacterPlayer>(GetWorld()))
@@ -389,7 +355,8 @@ void AEQCharacterPlayer::Client_UpdatePlayerMesh_Implementation(EClassType InCla
 		}
 		else
 		{
-			switch (InClassType)
+			CharacterPlayer->ClassType = InClassType;
+			switch (CharacterPlayer->ClassType)
 			{
 			case EClassType::ECT_Mage:
 				CharacterPlayer->PlayerMeshHandle = UAssetManager::Get().GetStreamableManager().RequestAsyncLoad(PlayerMeshes[9], FStreamableDelegate::CreateUObject(CharacterPlayer, &ThisClass::PlayerMeshLoadCompleted));

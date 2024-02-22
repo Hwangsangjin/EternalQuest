@@ -64,9 +64,6 @@ protected:
 
 // Mesh
 protected:
-	UFUNCTION(NetMulticast, Reliable)
-	void NetMulticast_UpdatePlayerMesh(EClassType InClassType);
-
 	UFUNCTION(Server, Reliable)
 	void Server_UpdatePlayerMesh(EClassType InClassType);
 
