@@ -41,9 +41,10 @@ APlayerController* AEQGameMode::Login(UPlayer* NewPlayer, ENetRole InRemoteRole,
 	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), TEXT("Begin"));
 
 	APlayerController* NewPlayerController = Super::Login(NewPlayer, InRemoteRole, Portal, Options, UniqueId, ErrorMessage);
-	return NewPlayerController;
-
+	
 	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), TEXT("End"));
+
+	return NewPlayerController;
 }
 
 void AEQGameMode::PostLogin(APlayerController* NewPlayer)
@@ -74,7 +75,7 @@ void AEQGameMode::PostLogin(APlayerController* NewPlayer)
 
 	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), TEXT("End"));
 
-	if (GameState)
+	/*if (GameState)
 	{
 		if (GEngine)
 		{
@@ -88,7 +89,7 @@ void AEQGameMode::PostLogin(APlayerController* NewPlayer)
 				GEngine->AddOnScreenDebugMessage(-1, 60.0f, FColor::Cyan, FString::Printf(TEXT("%s has joined the game"), *PlayerName));
 			}
 		}
-	}
+	}*/
 }
 
 void AEQGameMode::StartPlay()
@@ -108,7 +109,7 @@ void AEQGameMode::Logout(AController* Exiting)
 
 	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), TEXT("End"));
 
-	const APlayerState* PlayerState = Exiting->GetPlayerState<APlayerState>();
+	/*const APlayerState* PlayerState = Exiting->GetPlayerState<APlayerState>();
 	if (PlayerState)
 	{
 		if (GEngine)
@@ -119,5 +120,5 @@ void AEQGameMode::Logout(AController* Exiting)
 			const FString PlayerName = PlayerState->GetPlayerName();
 			GEngine->AddOnScreenDebugMessage(-1, 60.0f, FColor::Cyan, FString::Printf(TEXT("%s has exited the game"), *PlayerName));
 		}
-	}
+	}*/
 }
