@@ -39,7 +39,7 @@ enum EEQItemType
 };
 
 
-USTRUCT(BlueprintType)
+USTRUCT(BlueprintType, Atomic)
 struct FEQItem : public FTableRowBase
 {
 	GENERATED_BODY()
@@ -81,7 +81,7 @@ struct FEQItem : public FTableRowBase
 	float LUK;
 };
 
-USTRUCT(BlueprintType)
+USTRUCT(BlueprintType, Atomic)
 struct FEQSlot : public FTableRowBase
 {
 	GENERATED_BODY()
@@ -96,7 +96,7 @@ struct FEQSlot : public FTableRowBase
 	TEnumAsByte<EEQItemType> ItemType;
 };
 
-USTRUCT(BlueprintType)
+USTRUCT(BlueprintType, Atomic)
 struct FEQAllItem : public FTableRowBase
 {
 	GENERATED_BODY()

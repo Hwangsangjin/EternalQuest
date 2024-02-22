@@ -62,7 +62,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<UDragDropOperation> DragDropOperation;
 	
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite)o
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FEQSlot* EQSlot;
 
 	UFUNCTION()

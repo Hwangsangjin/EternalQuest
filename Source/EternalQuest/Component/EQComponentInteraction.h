@@ -33,7 +33,6 @@ public:
 	// ----- 함수 -----
 	void Interaction();
 	void EatItem();
-	bool AddToInventory(const FEQSlot& InSlot);
 	
 	UFUNCTION()
 	void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent,
@@ -47,6 +46,13 @@ public:
 		AActor* OtherActor,
 		UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex);
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_EatItem();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MultiRPC_EatItem();
+	
 	// ----- 함수 -----
 
 	// ----- 변수 -----
@@ -59,8 +65,8 @@ public:
 	UPROPERTY()
 	TObjectPtr<AEQCharacterNeutralPlayer> NPC;
 	
-	UPROPERTY()
-	TObjectPtr<AEQItemBase> Item;
+	UPROPERTY(Replicated)
+	AEQItemBase* Item;
 
 	UPROPERTY()
 	TSubclassOf<UUserWidget> PromptWidgetFactory;
@@ -71,4 +77,6 @@ public:
 	UPROPERTY()
 	TObjectPtr<UEQComponentInventory> EQComponentInventory;
 	// ----- 변수 -----
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

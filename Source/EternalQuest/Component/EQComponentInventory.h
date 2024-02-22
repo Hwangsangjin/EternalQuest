@@ -27,6 +27,15 @@ public:
 	virtual void SetupPlayerInput(UInputComponent* PlayerInputComponent) override;
 
 	// ----- 함수 -----
+	bool AddToInventory(const FEQSlot& InSlot);
+	void DropItem(FEQSlot* InSlot);
+
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_DropItem(const FName& RowName,const EEQItemType& ItemType,const int32& Quantity, AEQCharacterPlayer* InPlayer);
+
+	UFUNCTION(Client, Reliable)
+	void ClientRPC_DropItem(const FName& RowName,const EEQItemType& ItemType,const int32& Quantity, const FTransform& InTransform);
+	
 	// ----- 함수 -----
 
 	// ----- 구충돌 변수 -----
@@ -36,8 +45,14 @@ public:
 	UPROPERTY()
 	TArray<AActor*> ArrActor;
 	
-	UPROPERTY()
-	TObjectPtr<AEQItemBase> CurrItem;
+	UPROPERTY(ReplicatedUsing="OnRep_SetItem")
+	AEQItemBase* CurrItem;
+
+	UFUNCTION()
+	void OnRep_SetItem();
+	
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 	// ----- 구충돌 변수 -----
 
 	// ----- 변수 -----
@@ -46,8 +61,23 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FEQAllItem EQAllItem;
-
+	
 	UPROPERTY()
 	FEQSlot EmptySlot;
+
+	UPROPERTY()
+	AEQCharacterPlayer* MyPlayer;
+
+	UPROPERTY()
+	TSubclassOf<AEQItemBase> ItemFactory;
+	
+	UPROPERTY(Replicated)
+	FName DropRowName;
+
+	UPROPERTY(Replicated)
+	TEnumAsByte<EEQItemType> DropItemType;
+
+	UPROPERTY(Replicated)
+	int32 DropQuantity;
 	// ----- 변수 -----
 };

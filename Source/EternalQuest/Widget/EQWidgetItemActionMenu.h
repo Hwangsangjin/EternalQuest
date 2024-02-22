@@ -8,6 +8,7 @@
 #include "Struct/EQStructEnumBase.h"
 #include "EQWidgetItemActionMenu.generated.h"
 
+class UEQComponentInventory;
 class UEQWidgetItemSlot;
 struct FEQSlot;
 class UTextBlock;
@@ -68,9 +69,13 @@ public:
 
 	UPROPERTY()
 	TObjectPtr<UEQWidgetInventory> EQWidgetInventory;
+
+	UPROPERTY()
+	TObjectPtr<UEQComponentInventory> EQComponentInventory;
 	
 	FEQSlot* EQSlot;
 
 	UPROPERTY()
 	TObjectPtr<UEQWidgetItemSlot> EQWidgetItemSlot;
+	
 };

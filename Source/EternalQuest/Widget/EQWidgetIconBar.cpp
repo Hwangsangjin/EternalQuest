@@ -55,14 +55,12 @@ void UEQWidgetIconBar::OnClickStatus()
 	if (bOpenStatus)
 	{
 		bOpenStatus = false;
-		GEngine->AddOnScreenDebugMessage(-1,3,FColor::Green, TEXT("CloseStatus"));
 	}
 	else
 	{
 		ClearIconFlag();
 		OnHoverStatus();
 		bOpenStatus = true;
-		GEngine->AddOnScreenDebugMessage(-1,3,FColor::Green, TEXT("OpenStatus"));
 	}
 }
 
@@ -120,14 +118,12 @@ void UEQWidgetIconBar::OnClickSkill()
 	if (bOpenSkill)
 	{
 		bOpenSkill = false;
-		GEngine->AddOnScreenDebugMessage(-1,3,FColor::Green, TEXT("CloseSkill"));
 	}
 	else
 	{
 		ClearIconFlag();
 		OnHoverSkill();
 		bOpenSkill = true;
-		GEngine->AddOnScreenDebugMessage(-1,3,FColor::Green, TEXT("OpenSkill"));
 	}
 }
 
@@ -152,14 +148,12 @@ void UEQWidgetIconBar::OnClickQuest()
 	if (bOpenQuest)
 	{
 		bOpenQuest = false;
-		GEngine->AddOnScreenDebugMessage(-1,3,FColor::Green, TEXT("CloseQuest"));
 	}
 	else
 	{
 		ClearIconFlag();
 		OnHoverQuest();
 		bOpenQuest = true;
-		GEngine->AddOnScreenDebugMessage(-1,3,FColor::Green, TEXT("OpenQuest"));
 	}
 }
 
@@ -184,14 +178,12 @@ void UEQWidgetIconBar::OnClickSettings()
 	if (bOpenSettings)
 	{
 		bOpenSettings = false;
-		GEngine->AddOnScreenDebugMessage(-1,3,FColor::Green, TEXT("CloseSettings"));
 	}
 	else
 	{
 		ClearIconFlag();
 		OnHoverSettings();
 		bOpenSettings = true;
-		GEngine->AddOnScreenDebugMessage(-1,3,FColor::Green, TEXT("OpenSettings"));
 	}
 }
 
