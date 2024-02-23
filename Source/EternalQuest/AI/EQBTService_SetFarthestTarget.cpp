@@ -1,43 +1,38 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "AI/EQBTService_SetTarget.h"
+#include "AI/EQBTService_SetFarthestTarget.h"
 
-#include "AIController.h"
 #include "EQAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Character/EQCharacterPlayer.h"
 #include "Kismet/GameplayStatics.h"
 
-
-UEQBTService_SetTarget::UEQBTService_SetTarget()
+UEQBTService_SetFarthestTarget::UEQBTService_SetFarthestTarget()
 {
 	bNotifyBecomeRelevant = true;
-	NodeName = TEXT("Set Target");
+	NodeName = TEXT("Set Farthest Target");
 }
 
-void UEQBTService_SetTarget::OnBecomeRelevant(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+void UEQBTService_SetFarthestTarget::OnBecomeRelevant(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	Super::OnBecomeRelevant(OwnerComp, NodeMemory);
 	auto* const Controller = Cast<AEQAIController>(OwnerComp.GetAIOwner());
 	auto const * const Self = Controller->GetPawn();
 	auto Target =  Cast<AEQCharacterPlayer>(GetWorld()->GetFirstPlayerController()->GetPawn());
-	//FVector TargetLocation = Target->GetActorLocation();
+	FVector TargetLoc = Target->GetActorLocation();
 	TArray<AActor*> AllPlayers;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(),AEQCharacterPlayer::StaticClass(),AllPlayers);
-	float Dist = 10000;
+	float Dist = Self->GetActorLocation().Length();
 	for(int32 i = 0; i< AllPlayers.Num(); i++)
 	{
 		float TempDist = FVector::Dist(AllPlayers[i]->GetActorLocation(),Self->GetActorLocation());
-		if(Dist > TempDist)
+		if(TempDist > Dist)
 		{
 			Dist = TempDist;
 			Target = Cast<AEQCharacterPlayer>(AllPlayers[i]);
-			//TargetLocation = Target->GetActorLocation();
-			
+			TargetLoc = Target->GetActorLocation();
 		}
 	}
-	//OwnerComp.GetBlackboardComponent()->SetValueAsVector(FName("TargetLocation"),TargetLocation);
-	OwnerComp.GetBlackboardComponent()->SetValueAsObject(FName("Target"),Target);
-	//OwnerComp.GetBlackboardComponent()->SetValueAsFloat(FName("CurrentTime"),0);
+	OwnerComp.GetBlackboardComponent()->SetValueAsVector(FName("FarthestTargetLocation"),TargetLoc);
 }

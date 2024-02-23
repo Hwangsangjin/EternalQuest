@@ -17,17 +17,12 @@ EBTNodeResult::Type UEQBTTask_ChaseTarget::ExecuteTask(UBehaviorTreeComponent& O
 {
 	if(auto* const Controller = Cast<AEQAIController>(OwnerComp.GetAIOwner()))
 	{
-		// 그위치로 이동시킨다.
-		// auto const PlayerLocation = OwnerComp.GetBlackboardComponent()->GetValueAsVector(GetSelectedBlackboardKey());
-		// UAIBlueprintHelperLibrary::SimpleMoveToLocation(Controller,PlayerLocation);
-		// FinishLatentTask(OwnerComp,EBTNodeResult::Succeeded);
-
 		//선택된 키값의 위치를 가져와서
 		auto const Target = OwnerComp.GetBlackboardComponent()->GetValueAsObject(GetSelectedBlackboardKey());
 		auto Player = Cast<AEQCharacterPlayer>(Target);
 		if(Player)
 		{
-			FVector TargetLoc = Player->GetActorLocation();
+			FVector TargetLoc = Player->GetActorLocation() - 100.f;
 			// 그위치로 이동시킨다.
 			UAIBlueprintHelperLibrary::SimpleMoveToLocation(Controller,TargetLoc);
 			FinishLatentTask(OwnerComp,EBTNodeResult::Succeeded);
