@@ -15,7 +15,7 @@ UEQComponentBase::UEQComponentBase()
 	PrimaryComponentTick.bCanEverTick = false;
 	bWantsInitializeComponent = true;
 	// ...
-	SetIsReplicated(true);
+	//SetIsReplicated(true);
 }
 
 

@@ -83,10 +83,9 @@ public:
 	FORCEINLINE EClassType GetClassType() { return ClassType; }
 
 	UFUNCTION(BlueprintCallable)
-	//FORCEINLINE void SetClassType(EClassType NewClassType) { ClassType = NewClassType; }
-	void SetClassType(EClassType NewClassType);
+	FORCEINLINE void SetClassType(EClassType NewClassType) { ClassType = NewClassType; }
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character, Meta = (AllowPrivateAccess = true))
-	EClassType ClassType = EClassType::ECT_Warrior;
+	EClassType ClassType = EClassType::ECT_None;
 };
