@@ -63,4 +63,16 @@ protected:
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UInputAction> SprintAction;
+
+	float CurrentFieldOfView = 90.0f;
+	FTimerHandle SprintTimerHandle;
+
+
+// Enter
+protected:
+	void Enter(const FInputActionValue& Value);
+
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UInputAction> EnterAction;
 };
