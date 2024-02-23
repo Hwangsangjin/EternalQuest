@@ -22,12 +22,19 @@ void UEQWidgetNpcPrompt::PullNPCInfomation(AEQCharacterNeutralPlayer* InNPC)
 	NPC = InNPC;
 	PromptLast = NPC->NPCPrompt.Num()-1;
 	PromptCurrent = 0;
+
+	// NPC 대본 읽기 시작
 	Txt_NPCName->SetText(FText::FromString(FString::Printf(TEXT("%s"), *NPC->NPCName)));
 	Txt_NPCPrompt->SetText(FText::FromString(FString::Printf(TEXT("%s"), *NPC->NPCPrompt[PromptCurrent])));
 }
 
 void UEQWidgetNpcPrompt::NextPrompt()
 {
+	if (bQuestPromptCond)
+	{
+		return;
+	}
+	
 	if (PromptLast == PromptCurrent)
 	{
 		RemoveFromParent();
@@ -42,14 +49,19 @@ void UEQWidgetNpcPrompt::NextPrompt()
 	// 퀘스트 로직
 	if (NPC->NPCPrompt[PromptCurrent].Contains(TEXT("QuestTag")))
 	{
-		auto temp = NPC->NPCPrompt[PromptCurrent].Find(TEXT("QuestTag"));
+		QuestTagIdx = NPC->NPCPrompt[PromptCurrent].Find(TEXT("QuestTag"));
 		HorizonBox_Quest->SetVisibility(ESlateVisibility::Visible);
-		NPC->NPCPrompt[PromptCurrent].RemoveAt(temp, 8);
+		NPC->NPCPrompt[PromptCurrent].RemoveAt(QuestTagIdx, 8);
+		Txt_NPCPrompt->SetText(FText::FromString(FString::Printf(TEXT("%s"), *NPC->NPCPrompt[PromptCurrent])));
+		bQuestPromptCond = true;
+		return;
+	}
+	else
+	{
 		Txt_NPCPrompt->SetText(FText::FromString(FString::Printf(TEXT("%s"), *NPC->NPCPrompt[PromptCurrent])));
 		return;
 	}
-	
-	Txt_NPCPrompt->SetText(FText::FromString(FString::Printf(TEXT("%s"), *NPC->NPCPrompt[PromptCurrent])));
+
 }
 
 void UEQWidgetNpcPrompt::AcceptQuest()
@@ -60,6 +72,7 @@ void UEQWidgetNpcPrompt::AcceptQuest()
 	GetWorld()->GetFirstPlayerController()->SetInputMode(InData);
 	GetWorld()->GetFirstPlayerController()->SetShowMouseCursor(false);
 	NPC->QuestAccepted();
+	bQuestPromptCond = false;
 }
 
 void UEQWidgetNpcPrompt::DenyQuest()
@@ -70,4 +83,6 @@ void UEQWidgetNpcPrompt::DenyQuest()
 	GetWorld()->GetFirstPlayerController()->SetInputMode(InData);
 	GetWorld()->GetFirstPlayerController()->SetShowMouseCursor(false);
 	NPC->QuestDenied();
+	NPC->NPCPrompt[PromptCurrent].Append(TEXT("QuestTag"), QuestTagIdx);
+	bQuestPromptCond = false;
 }
