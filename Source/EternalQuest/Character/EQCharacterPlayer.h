@@ -9,6 +9,7 @@
 #include "Interface/EQInterfaceCharacterWidget.h"
 #include "EQCharacterPlayer.generated.h"
 
+class UEQComponentQuest;
 struct FStreamableHandle;
 class USpringArmComponent;
 class UCameraComponent;
@@ -149,4 +150,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UEQComponentWidget> HpBarComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UEQComponentQuest> QuestComp;
 };

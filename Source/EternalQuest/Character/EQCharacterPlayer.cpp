@@ -21,6 +21,7 @@
 #include "Component/EQComponentInventory.h"
 #include "Component/EQComponentMenuManager.h"
 #include "Component/EQComponentAttack.h"
+#include "Component/EQComponentQuest.h"
 #include "Component/EQComponentStat.h"
 #include "Component/EQComponentWidget.h"
 #include "Widget/EQWidgetUserName.h"
@@ -81,6 +82,7 @@ AEQCharacterPlayer::AEQCharacterPlayer()
 	StatComp = CreateDefaultSubobject<UEQComponentStat>(TEXT("Stat Component"));
 	UserNameComp = CreateDefaultSubobject<UEQComponentWidget>(TEXT("UserName Component"));
 	HpBarComp = CreateDefaultSubobject<UEQComponentWidget>(TEXT("HpBar Component"));
+	QuestComp = CreateDefaultSubobject<UEQComponentQuest>(TEXT("Quest Component"));
 
 	UserNameComp->SetupAttachment(GetMesh());
 	UserNameComp->SetRelativeLocation(FVector(0.0f, 0.0f, 200.0f));

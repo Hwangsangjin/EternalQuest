@@ -4,6 +4,7 @@
 #include "Character/EQCharacterNeutralPlayerSeungTae.h"
 
 #include "Blueprint/UserWidget.h"
+#include "Component/EQComponentQuest.h"
 
 AEQCharacterNeutralPlayerSeungTae::AEQCharacterNeutralPlayerSeungTae()
 {
@@ -25,8 +26,11 @@ void AEQCharacterNeutralPlayerSeungTae::BeginPlay()
 
 void AEQCharacterNeutralPlayerSeungTae::QuestAccepted()
 {
-	GEngine->AddOnScreenDebugMessage(-1,3,FColor::Green, TEXT("퀘스트를 수락하였습니다."));
 	NPCPrompt.Reset();
+	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[0] == 0)
+	{
+		GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[0] = 1;
+	}
 	NPCPrompt.PushLast(TEXT("이미 퀘스트를 받았잖아!"));
 }
 
