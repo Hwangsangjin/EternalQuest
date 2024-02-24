@@ -23,11 +23,11 @@ AEQCharacterNeutralPlayerKHO::AEQCharacterNeutralPlayerKHO()
 void AEQCharacterNeutralPlayerKHO::BeginPlay()
 {
 	Super::BeginPlay();
-	NPCName = TEXT("김현오");
-	NPCPrompt.PushLast(TEXT("안녕? 나는 새싹 길드를 운영하고 있는 언리얼 클라이언트 프로그래머 김현오라고해."));
+	NPCName = TEXT("새싹 매니저");
+	NPCPrompt.PushLast(TEXT("안녕? 나는 새싹 길드를 운영하고 있는 매니저라고해."));
 	NPCPrompt.PushLast(TEXT("실은 내가 소중하게 여기던 새싹 수료증을 오크무리들한테 뺏겨버렸지 뭐야?"));
 	NPCPrompt.PushLast(TEXT("오크무리들은 깊은 던전속으로 들어가서 나혼자서는 도저히 들어갈수가 없었어..."));
-	NPCPrompt.PushLast(TEXT("혹시, 던전에서 내 수료증을 가져와 줄 수 있을까? \n\n (수락 시, 던전으로 이동됩니다.) QuestTag"));
+	NPCPrompt.PushLast(TEXT("혹시, 던전에서 수료증을 가져와 줄 수 있을까? \n\n\n (수락 시, 던전으로 이동됩니다.) QuestTag"));
 }
 
 void AEQCharacterNeutralPlayerKHO::QuestAccepted()

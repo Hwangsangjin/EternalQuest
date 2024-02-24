@@ -3,6 +3,7 @@
 
 #include "Component/EQComponentMove.h"
 
+#include "EngineUtils.h"
 #include "EnhancedInputComponent.h"
 #include "Character/EQCharacterPlayer.h"
 #include "GameFramework/Character.h"
@@ -10,6 +11,13 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Player/EQPlayerController.h"
 #include "Camera/CameraComponent.h"
+#include "Components/EditableText.h"
+#include "Components/ScrollBox.h"
+#include "GameFramework/GameStateBase.h"
+#include "GameFramework/PlayerState.h"
+#include "Widget/EQWidgetChatMessage.h"
+#include "Widget/EQWidgetChattingSystem.h"
+#include "Widget/EQWidgetMainUI.h"
 
 UEQComponentMove::UEQComponentMove()
 {
@@ -182,13 +190,39 @@ void UEQComponentMove::Sprint(const FInputActionValue& Value)
 
 void UEQComponentMove::Enter(const FInputActionValue& Value)
 {
-	if (Player->HasAuthority())
+	auto MyEQChatWidget = Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetChattingSystem;
+	if (MyEQChatWidget->EditText_ChatInput->GetText().IsEmpty())
 	{
-		UWorld* World = GetWorld();
-		if (World)
-		{
-			FString PathToLevel = FString(TEXT("/Game/Maps/DungeonMap?listen"));
-			World->ServerTravel(PathToLevel);
-		}
+		MyEQChatWidget->EditText_ChatInput->SetKeyboardFocus();
 	}
+
+	/* 기존 서버 트래블 테스트용으로 만든 것 */
+	// if (Player->HasAuthority())
+	// {
+	// 	UWorld* World = GetWorld();
+	// 	if (World)
+	// 	{
+	// 		FString PathToLevel = FString(TEXT("/Game/Maps/DungeonMap?listen"));
+	// 		World->ServerTravel(PathToLevel);
+	// 	}
+	// }
+}
+
+void UEQComponentMove::ServerRPC_SendChat_Implementation(const FText& InText, const FText& InPlayerName)
+{
+	// for (auto e : GetWorld()->GetGameState()->PlayerArray)
+	// {
+	// 	auto Cast_e = Cast<AEQPlayerController>(e->GetPlayerController());
+	// 	Cast_e->GetCharacter()->FindComponentByClass<UEQComponentMove>()->ClientRPC_SendChat(InText, InPlayerName);
+	// }
+
+	for (auto e : TActorRange<AEQPlayerController>(GetWorld()))
+	{
+		e->GetCharacter()->FindComponentByClass<UEQComponentMove>()->ClientRPC_SendChat(InText, InPlayerName);
+		// ClientRPC_SendChat(InText, InPlayerName);
+	}
+}
+void UEQComponentMove::ClientRPC_SendChat_Implementation(const FText& InText, const FText& InPlayerName)
+{
+	Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetChattingSystem->UpdateChat(InText, InPlayerName);
 }
