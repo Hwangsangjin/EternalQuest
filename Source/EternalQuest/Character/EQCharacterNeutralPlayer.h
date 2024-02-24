@@ -20,13 +20,15 @@ public:
 	AEQCharacterNeutralPlayer();
 	// ----- 오버라이드 함수 -----
 	virtual void BeginPlay() override;
+	virtual void QuestAccepted() override;
+	virtual void QuestDenied() override;
 	// ----- 오버라이드 함수 -----
 
 	// ----- 변수 -----
 	FString NPCName;
 	TDeque<FString> NPCPrompt;
-
-	virtual void QuestAccepted() override;
-	virtual void QuestDenied() override;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<USkeletalMeshComponent> ClothComp;
 	// ----- 변수 -----
 };
