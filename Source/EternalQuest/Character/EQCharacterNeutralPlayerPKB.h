@@ -4,23 +4,22 @@
 
 #include "CoreMinimal.h"
 #include "Character/EQCharacterNeutralPlayer.h"
-#include "EQCharacterNeutralPlayerSeungTae.generated.h"
+#include "EQCharacterNeutralPlayerPKB.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ETERNALQUEST_API AEQCharacterNeutralPlayerSeungTae : public AEQCharacterNeutralPlayer
+class ETERNALQUEST_API AEQCharacterNeutralPlayerPKB : public AEQCharacterNeutralPlayer
 {
 	GENERATED_BODY()
+
 public:
-	AEQCharacterNeutralPlayerSeungTae();
+	AEQCharacterNeutralPlayerPKB();
 	
 	// ----- 오버라이드 함수 -----
 	virtual void BeginPlay() override;
 	virtual void QuestAccepted() override;
 	virtual void QuestDenied() override;
 	// ----- 오버라이드 함수 -----
-
-	
 };
