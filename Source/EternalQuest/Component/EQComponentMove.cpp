@@ -60,13 +60,13 @@ void UEQComponentMove::SetupPlayerInput(UInputComponent* PlayerInputComponent)
 	Super::SetupPlayerInput(PlayerInputComponent);
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &UEQComponentMove::Jump);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &UEQComponentMove::StopJumping);
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &UEQComponentMove::Move);
-		EnhancedInputComponent->BindAction(TurnAction, ETriggerEvent::Triggered, this, &UEQComponentMove::Turn);
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &UEQComponentMove::Look);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ThisClass::Jump);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ThisClass::StopJumping);
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ThisClass::Move);
+		EnhancedInputComponent->BindAction(TurnAction, ETriggerEvent::Triggered, this, &ThisClass::Turn);
+		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ThisClass::Look);
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &ThisClass::Sprint);
-		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ThisClass::Sprint);
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ThisClass::StopSprinting);
 		EnhancedInputComponent->BindAction(EnterAction, ETriggerEvent::Completed, this, &ThisClass::Enter);
 	}
 }
@@ -108,18 +108,16 @@ void UEQComponentMove::Look(const FInputActionValue& Value)
 	const float LookAxis = Value.Get<float>();
 
 	constexpr float MinLength = 200.0f;
-	constexpr float MaxLength = 800.0f;
-
 	if (Player->GetCameraBoom()->TargetArmLength <= MinLength && LookAxis > 0)
 	{
 		return;
 	}
 
+	constexpr float MaxLength = 800.0f;
 	if (Player->GetCameraBoom()->TargetArmLength >= MaxLength && LookAxis < 0)
 	{
 		return;
 	}
-
 
 	const float CurrentTargetArmLength = Player->GetCameraBoom()->TargetArmLength;
 	const float MinTargetArmLength = CurrentTargetArmLength - 30.0f;
@@ -143,16 +141,10 @@ void UEQComponentMove::Sprint(const FInputActionValue& Value)
 		return;
 	}
 
-	constexpr float SprintSpeed = 600.0f;
-	constexpr float DefaultSpeed = 450.0f;
-	constexpr float SprintFieldOfView = 70.0f;
-	constexpr float DefaultFieldOfView = 90.0f;
-	constexpr int32 SprintInterpSpeed = 1.0f;
-	constexpr int32 DefaultInterpSpeed = 5.0f;
-
 	const bool bIsSprinting = Value.Get<bool>();
 	if (bIsSprinting)
 	{
+		constexpr float SprintSpeed = 600.0f;
 		Player->GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
 
 		if (GetWorld()->GetTimerManager().IsTimerActive(SprintTimerHandle))
@@ -160,20 +152,30 @@ void UEQComponentMove::Sprint(const FInputActionValue& Value)
 			GetWorld()->GetTimerManager().ClearTimer(SprintTimerHandle);
 		}
 
+		constexpr float SprintFieldOfView = 70.0f;
+		constexpr int32 SprintInterpSpeed = 1;
 		CurrentFieldOfView = FMath::FInterpTo(CurrentFieldOfView, SprintFieldOfView, GetWorld()->GetDeltaSeconds(), SprintInterpSpeed);
 		Player->GetFollowCamera()->FieldOfView = CurrentFieldOfView;
 	}
-	else
-	{
-		Player->GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
+}
 
-		if (CurrentFieldOfView >= DefaultFieldOfView - 1.0f)
+void UEQComponentMove::StopSprinting(const FInputActionValue& Value)
+{
+	const bool bIsSprinting = Value.Get<bool>();
+	if (!bIsSprinting)
+	{
+		constexpr float DefaultSpeed = 450.0f;
+		Player->GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
+		
+		constexpr float DefaultFieldOfView = 90.0f;
+		if (CurrentFieldOfView >= DefaultFieldOfView - KINDA_SMALL_NUMBER)
 		{
-			GetWorld()->GetTimerManager().ClearTimer(SprintTimerHandle);
+			GetWorld()->GetGameInstance()->GetTimerManager().ClearTimer(SprintTimerHandle);
 		}
 
-		GetWorld()->GetTimerManager().SetTimer(SprintTimerHandle, FTimerDelegate::CreateLambda([&]
+		GetWorld()->GetGameInstance()->GetTimerManager().SetTimer(SprintTimerHandle, FTimerDelegate::CreateLambda([&]
 			{
+				constexpr int32 DefaultInterpSpeed = 5;
 				CurrentFieldOfView = FMath::FInterpTo(CurrentFieldOfView, DefaultFieldOfView, GetWorld()->GetDeltaSeconds(), DefaultInterpSpeed);
 				Player->GetFollowCamera()->FieldOfView = CurrentFieldOfView;
 			}), GetWorld()->GetDeltaSeconds(), true);
@@ -182,13 +184,14 @@ void UEQComponentMove::Sprint(const FInputActionValue& Value)
 
 void UEQComponentMove::Enter(const FInputActionValue& Value)
 {
+	if (Player->IsLocallyControlled())
+	{
+		GetWorld()->GetGameInstance()->GetTimerManager().ClearTimer(SprintTimerHandle);
+	}
+
 	if (Player->HasAuthority())
 	{
-		UWorld* World = GetWorld();
-		if (World)
-		{
-			FString PathToLevel = FString(TEXT("/Game/Maps/DungeonMap?listen"));
-			World->ServerTravel(PathToLevel);
-		}
+		FString PathToLevel = FString(TEXT("/Game/Maps/DungeonMap?listen"));
+		GetWorld()->ServerTravel(PathToLevel);
 	}
 }

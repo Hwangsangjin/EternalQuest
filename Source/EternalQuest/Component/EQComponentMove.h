@@ -59,6 +59,7 @@ private:
 // Sprint
 protected:
 	void Sprint(const FInputActionValue& Value);
+	void StopSprinting(const FInputActionValue& Value);
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
@@ -66,7 +67,6 @@ private:
 
 	float CurrentFieldOfView = 90.0f;
 	FTimerHandle SprintTimerHandle;
-
 
 // Enter
 protected:
