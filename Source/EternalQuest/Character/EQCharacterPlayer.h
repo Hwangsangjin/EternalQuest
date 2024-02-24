@@ -60,7 +60,7 @@ protected:
 
 // Class Type
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, /*Replicated,*/ Category = Character, Meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character, Meta = (AllowPrivateAccess = true))
 	EClassType ClassType = EClassType::ECT_None;
 
 // Mesh

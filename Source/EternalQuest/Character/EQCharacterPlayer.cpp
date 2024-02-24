@@ -115,8 +115,6 @@ void AEQCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	//DOREPLIFETIME(ThisClass, ClassType);
-
 	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), *GetName(), TEXT("End"));
 }
 
@@ -287,9 +285,10 @@ void AEQCharacterPlayer::UpdatePlayerMesh()
 {
 	ensure(PlayerMeshes.Num() > 0);
 
+	ClassType = Cast<UEQGameInstance>(GetGameInstance())->GetClassType();
+
 	if (IsLocallyControlled())
 	{
-		ClassType = GetWorld()->GetFirstPlayerController()->GetPlayerState<AEQPlayerState>()->GetClassType();
 		switch (ClassType)
 		{
 		case EClassType::ECT_Mage:
@@ -309,7 +308,6 @@ void AEQCharacterPlayer::UpdatePlayerMesh()
 
 	if (!HasAuthority())
 	{
-		ClassType = Cast<UEQGameInstance>(GetGameInstance())->GetClassType();
 		Server_UpdatePlayerMesh(ClassType);
 	}
 }
