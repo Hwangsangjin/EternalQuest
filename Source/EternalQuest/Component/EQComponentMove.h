@@ -75,4 +75,11 @@ protected:
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UInputAction> EnterAction;
+
+public:
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SendChat(const FText& InText, const FText& InPlayerName);
+
+	UFUNCTION(Client, Reliable)
+	void ClientRPC_SendChat(const FText& InText, const FText& InPlayerName);
 };

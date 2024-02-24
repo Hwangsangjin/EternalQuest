@@ -21,9 +21,6 @@ public:
 	AEQBerserkerOrc();
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="AI")
 	UBehaviorTree* Tree;
-
-	
-	
 	
 	UBehaviorTree* GetBehaviorTree();
 };

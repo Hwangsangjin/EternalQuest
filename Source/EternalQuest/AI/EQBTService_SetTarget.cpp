@@ -39,4 +39,5 @@ void UEQBTService_SetTarget::OnBecomeRelevant(UBehaviorTreeComponent& OwnerComp,
 	}
 	//OwnerComp.GetBlackboardComponent()->SetValueAsVector(FName("TargetLocation"),TargetLocation);
 	OwnerComp.GetBlackboardComponent()->SetValueAsObject(FName("Target"),Target);
+	//OwnerComp.GetBlackboardComponent()->SetValueAsFloat(FName("CurrentTime"),0);
 }

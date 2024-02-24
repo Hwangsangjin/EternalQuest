@@ -15,11 +15,12 @@ class ETERNALQUEST_API AEQCharacterNeutralPlayerSeungTae : public AEQCharacterNe
 	GENERATED_BODY()
 public:
 	AEQCharacterNeutralPlayerSeungTae();
-
+	
 	// ----- 오버라이드 함수 -----
 	virtual void BeginPlay() override;
 	virtual void QuestAccepted() override;
 	virtual void QuestDenied() override;
 	// ----- 오버라이드 함수 -----
+
 	
 };

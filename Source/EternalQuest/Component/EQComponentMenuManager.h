@@ -27,6 +27,10 @@ public:
 
 	// ----- 함수 -----
 	void CallInventory(const FInputActionValue& Value);
+	void CallStatus(const FInputActionValue& Value);
+	void CallSkill(const FInputActionValue& Value);
+	void CallQuest(const FInputActionValue& Value);
+	void CallSettings(const FInputActionValue& Value);
 	void FlipFlopMouseMode(const FInputActionValue& Value);
 	// ----- 함수 -----
 
@@ -36,6 +40,18 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UInputAction> MouseModeAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UInputAction> CallSettingsAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UInputAction> CallStatusAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UInputAction> CallSkillAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UInputAction> CallQuestAction;
 
 	UPROPERTY()
 	TObjectPtr<UEQComponentInventory> EQComponentInventory;

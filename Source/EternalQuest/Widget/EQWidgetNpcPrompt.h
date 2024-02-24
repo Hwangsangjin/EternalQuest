@@ -54,4 +54,6 @@ public:
 
 	int32 PromptLast;
 	int32 PromptCurrent;
+	bool bQuestPromptCond;
+	int32 QuestTagIdx;
 };

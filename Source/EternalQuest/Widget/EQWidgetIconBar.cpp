@@ -5,6 +5,10 @@
 
 #include "EQWidgetInventory.h"
 #include "EQWidgetMainUI.h"
+#include "EQWidgetQuestList.h"
+#include "EQWidgetSettings.h"
+#include "EQWidgetSkill.h"
+#include "EQWidgetStatus.h"
 #include "Components/Button.h"
 #include "Player/EQPlayerController.h"
 
@@ -55,12 +59,15 @@ void UEQWidgetIconBar::OnClickStatus()
 	if (bOpenStatus)
 	{
 		bOpenStatus = false;
+		ClearIconFlag();
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStatus->SetVisibility(ESlateVisibility::Hidden);
 	}
 	else
 	{
 		ClearIconFlag();
 		OnHoverStatus();
 		bOpenStatus = true;
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStatus->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 
@@ -118,12 +125,15 @@ void UEQWidgetIconBar::OnClickSkill()
 	if (bOpenSkill)
 	{
 		bOpenSkill = false;
+		ClearIconFlag();
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetSkill->SetVisibility(ESlateVisibility::Hidden);
 	}
 	else
 	{
 		ClearIconFlag();
 		OnHoverSkill();
 		bOpenSkill = true;
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetSkill->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 
@@ -148,12 +158,15 @@ void UEQWidgetIconBar::OnClickQuest()
 	if (bOpenQuest)
 	{
 		bOpenQuest = false;
+		ClearIconFlag();
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetQuestList->SetVisibility(ESlateVisibility::Hidden);
 	}
 	else
 	{
 		ClearIconFlag();
 		OnHoverQuest();
 		bOpenQuest = true;
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetQuestList->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 
@@ -178,27 +191,50 @@ void UEQWidgetIconBar::OnClickSettings()
 	if (bOpenSettings)
 	{
 		bOpenSettings = false;
+		ClearIconFlag();
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetSettings->SetVisibility(ESlateVisibility::Hidden);
 	}
 	else
 	{
 		ClearIconFlag();
 		OnHoverSettings();
 		bOpenSettings = true;
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetSettings->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 
 void UEQWidgetIconBar::ClearIconFlag()
 {
-	bOpenStatus = false;
+	if (bOpenStatus)
+	{
+		bOpenStatus = false;
+		OnUnhoverStatus();
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStatus->SetVisibility(ESlateVisibility::Hidden);
+	}
 	if (bOpenInventory)
 	{
 		bOpenInventory = false;
 		OnUnhoverInventory();
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetInventory->OpenCloseInventoryWidget();
+	};
+	if (bOpenSkill)
+	{
+		bOpenSkill = false;
+		OnUnhoverSkill();
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetSkill->SetVisibility(ESlateVisibility::Hidden);
 	}
-	bOpenSkill = false;
-	bOpenQuest = false;
-	bOpenSettings = false;
+	if (bOpenQuest)
+	{
+		bOpenQuest = false;
+		OnUnhoverQuest();
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetQuestList->SetVisibility(ESlateVisibility::Hidden);
+	}
+	if (bOpenSettings)
+	{
+		bOpenSettings = false;
+		OnUnhoverSettings();
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetSettings->SetVisibility(ESlateVisibility::Hidden);
+	}
 	OnUnhoverStatus();
 	OnUnhoverInventory();
 	OnUnhoverSkill();
