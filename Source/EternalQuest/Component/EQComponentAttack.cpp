@@ -2,11 +2,14 @@
 
 
 #include "Component/EQComponentAttack.h"
+#include "EternalQuest.h"
+#include "Net/UnrealNetwork.h"
 #include "EnhancedInputComponent.h"
 #include "Animation/AnimMontage.h"
 #include "Character/EQCharacterPlayer.h"
 #include "Character/EQCharacterComboAttackData.h"
 #include "Component/EQComponentMove.h"
+#include "Component/EQComponentStat.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Game/EQGameInstance.h"
 #include "Components/CapsuleComponent.h"
@@ -36,45 +39,7 @@ void UEQComponentAttack::SetupPlayerInput(UInputComponent* PlayerInputComponent)
 
 void UEQComponentAttack::Attack()
 {
-	UEQGameInstance* GameInstance = Cast<UEQGameInstance>(Player->GetGameInstance());
-	if (Player->HasAuthority())
-	{
-		EClassType ClassType = GameInstance->GetClassType();
-		switch (ClassType)
-		{
-		case EClassType::ECT_Mage:
-			DefaultAttack();
-			break;
-		case EClassType::ECT_Paladin:
-			break;
-		case EClassType::ECT_Priest:
-			break;
-		case EClassType::ECT_Rogue:
-			break;
-		case EClassType::ECT_Warrior:
-			ComboAttack();
-			break;
-		}
-	}
-	else
-	{
-		EClassType ClassType = GameInstance->GetClassType();
-		switch (ClassType)
-		{
-		case EClassType::ECT_Mage:
-			DefaultAttack();
-			break;
-		case EClassType::ECT_Paladin:
-			break;
-		case EClassType::ECT_Priest:
-			break;
-		case EClassType::ECT_Rogue:
-			break;
-		case EClassType::ECT_Warrior:
-			ComboAttack();
-			break;
-		}
-	}
+	Server_Attack();
 }
 
 void UEQComponentAttack::HitCheck()
@@ -82,6 +47,9 @@ void UEQComponentAttack::HitCheck()
 	FHitResult OutHitResult;
 	FCollisionQueryParams Params(SCENE_QUERY_STAT(Attack), false, Player);
 
+	/*const float AttackRange = Player->GetStatComponent()->GetTotalStat().AttackRange;
+	const float AttackRadius = Player->GetStatComponent()->GetTotalStat().AttackRadius;
+	const float AttackDamage = Player->GetStatComponent()->GetTotalStat().AttackDamage;*/
 	const float AttackRange = 100.0f;
 	const float AttackRadius = 50.0f;
 	const float AttackDamage = 20.0f;
@@ -95,12 +63,41 @@ void UEQComponentAttack::HitCheck()
 		OutHitResult.GetActor()->TakeDamage(AttackDamage, DamageEvent, Player->GetController(), Player);
 	}
 
-// #if ENABLE_DRAW_DEBUG
-// 	const FVector CapsuleOrigin = Start + (End - Start) * 0.5f;
-// 	const float CapsuleHalfHeight = AttackRange * 0.5f;
-// 	const FColor DrawColor = bHitDetected ? FColor::Green : FColor::Red;
-// 	DrawDebugCapsule(GetWorld(), CapsuleOrigin, CapsuleHalfHeight, AttackRadius, FRotationMatrix::MakeFromZ(Player->GetActorForwardVector()).ToQuat(), DrawColor, false, 5.0f);
-// #endif
+#if ENABLE_DRAW_DEBUG
+	const FVector CapsuleOrigin = Start + (End - Start) * 0.5f;
+	const float CapsuleHalfHeight = AttackRange * 0.5f;
+	const FColor DrawColor = bHitDetected ? FColor::Green : FColor::Red;
+	DrawDebugCapsule(GetWorld(), CapsuleOrigin, CapsuleHalfHeight, AttackRadius, FRotationMatrix::MakeFromZ(Player->GetActorForwardVector()).ToQuat(), DrawColor, false, 5.0f);
+#endif
+}
+
+bool UEQComponentAttack::Server_Attack_Validate()
+{
+	return true;
+}
+
+void UEQComponentAttack::Server_Attack_Implementation()
+{
+	NetMulticast_Attack();
+}
+
+void UEQComponentAttack::NetMulticast_Attack_Implementation()
+{
+	switch (Player->GetClassType())
+	{
+	case EClassType::ECT_Mage:
+		DefaultAttack();
+		break;
+	case EClassType::ECT_Paladin:
+		break;
+	case EClassType::ECT_Priest:
+		break;
+	case EClassType::ECT_Rogue:
+		break;
+	case EClassType::ECT_Warrior:
+		ComboAttack();
+		break;
+	}
 }
 
 void UEQComponentAttack::DefaultAttack()
@@ -123,6 +120,7 @@ void UEQComponentAttack::DefaultAttackBegin()
 	bIsDefaultAttacking = true;
 	Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 
+	//const float AttackSpeedRate = Player->GetStatComponent()->GetTotalStat().AttackSpeed;
 	const float AttackSpeedRate = 1.0f;
 	UAnimInstance* AnimInstance = Player->GetMesh()->GetAnimInstance();
 	AnimInstance->Montage_Play(DefaultAttackMontage, AttackSpeedRate);
@@ -140,6 +138,7 @@ void UEQComponentAttack::DefaultAttackEnd(UAnimMontage* TargetMontage, bool bIsP
 
 void UEQComponentAttack::ComboAttack()
 {
+
 	if (CurrentCombo == 0)
 	{
 		ComboAttackBegin();
@@ -161,6 +160,7 @@ void UEQComponentAttack::ComboAttackBegin()
 	CurrentCombo = 1;
 	Player->GetCharacterMovement()->MaxWalkSpeed = 400.0f;
 
+	//const float AttackSpeedRate = Player->GetStatComponent()->GetTotalStat().AttackSpeed;
 	const float AttackSpeedRate = 1.0f;
 	UAnimInstance* AnimInstance = Player->GetMesh()->GetAnimInstance();
 	AnimInstance->Montage_Play(ComboAttackMontage, AttackSpeedRate);
@@ -185,6 +185,7 @@ void UEQComponentAttack::SetComboCheckTimer()
 	int32 ComboIndex = CurrentCombo - 1;
 	ensure(ComboAttackData->GetEffectiveFrameCount().IsValidIndex(ComboIndex));
 
+	//const float AttackSpeedRate = Player->GetStatComponent()->GetTotalStat().AttackSpeed;
 	const float AttackSpeedRate = 1.0f;
 	const float EffectiveComboTime = (ComboAttackData->GetEffectiveFrameCount()[ComboIndex] / ComboAttackData->GetFrameRate()) / AttackSpeedRate;
 	if (EffectiveComboTime > 0.0f)

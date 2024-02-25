@@ -10,7 +10,7 @@
 
 AEQGameMode::AEQGameMode()
 {
-	static ConstructorHelpers::FClassFinder<APawn> DefaultPawnClassRef(TEXT("/Script/Engine.Blueprint'/Game/Blueprints/Character/BP_Player.BP_Player'"));
+	static ConstructorHelpers::FClassFinder<APawn> DefaultPawnClassRef(TEXT("/Game/Blueprints/Character/BP_Player.BP_Player_C"));
 	if (DefaultPawnClassRef.Succeeded())
 	{
 		DefaultPawnClass = DefaultPawnClassRef.Class;
