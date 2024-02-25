@@ -8,6 +8,7 @@
 #include "Engine/AssetManager.h"
 #include "Player/EQPlayerController.h"
 #include "Player/EQPlayerState.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
@@ -37,18 +38,29 @@ AEQCharacterPlayer::AEQCharacterPlayer()
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -100.0f), FRotator(0.0f, -90.0f, 0.0f));
 	GetMesh()->SetHiddenInGame(true);
 
-	//static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMeshRef(TEXT(""));
-	//if (CharacterMeshRef.Succeeded())
-	//{
-	//	GetMesh()->SetSkeletalMesh(CharacterMeshRef.Object);
-	//}
+	HairMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Hair"));
+	HairMesh->SetupAttachment(GetMesh(), TEXT("Hair_Socket"));
+	HairMesh->SetHiddenInGame(true);
 
-	// AnimInstance
-	static ConstructorHelpers::FClassFinder<UAnimInstance> AnimInstanceClassRef(TEXT("/Game/Blueprints/Animation/ABP_CharacterPlayer.ABP_CharacterPlayer_C"));
-	if (AnimInstanceClassRef.Succeeded())
-	{
-		GetMesh()->SetAnimInstanceClass(AnimInstanceClassRef.Class);
-	}
+	HatMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Hat"));
+	HatMesh->SetupAttachment(GetMesh(), TEXT("Hat_Socket"));
+	HatMesh->SetHiddenInGame(true);
+
+	WandMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Wand"));
+	WandMesh->SetupAttachment(GetMesh(), TEXT("Wand_Socket"));
+	WandMesh->SetHiddenInGame(true);
+
+	BookMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Book"));
+	BookMesh->SetupAttachment(GetMesh(), TEXT("Book_Socket"));
+	BookMesh->SetHiddenInGame(true);
+
+	SwordMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Sword"));
+	SwordMesh->SetupAttachment(GetMesh(), TEXT("Sword_Socket"));
+	SwordMesh->SetHiddenInGame(true);
+
+	ShieldMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Shield"));
+	ShieldMesh->SetupAttachment(GetMesh(), TEXT("Shield_Socket"));
+	ShieldMesh->SetHiddenInGame(true);
 
 	// Camera
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
@@ -127,6 +139,7 @@ void AEQCharacterPlayer::PostInitializeComponents()
 	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), TEXT("End"));
 
 	StatComp->OnHpZero.AddUObject(this, &ThisClass::SetDead);
+	StatComp->OnStatChanged.AddUObject(this, &ThisClass::ApplyStat);
 }
 
 void AEQCharacterPlayer::PossessedBy(AController* NewController)
@@ -137,7 +150,7 @@ void AEQCharacterPlayer::PossessedBy(AController* NewController)
 
 	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), TEXT("End"));
 
-	UpdatePlayerMesh();
+	UpdateMesh();
 }
 
 void AEQCharacterPlayer::OnRep_Owner()
@@ -167,7 +180,7 @@ void AEQCharacterPlayer::OnRep_PlayerState()
 
 	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), *GetName(), TEXT("End"));
 
-	UpdatePlayerMesh();
+	UpdateMesh();
 }
 
 void AEQCharacterPlayer::PostNetInit()
@@ -230,6 +243,21 @@ void AEQCharacterPlayer::PlayDeadAnimation()
 	Animinstance->Montage_Play(DeadMontage, 1.0f);
 }
 
+int32 AEQCharacterPlayer::GetLevel()
+{
+	return StatComp->GetCurrentLevel();
+}
+
+void AEQCharacterPlayer::SetLevel(int32 InNewLevel)
+{
+	StatComp->SetLevelStat(InNewLevel);
+}
+
+void AEQCharacterPlayer::ApplyStat(const FEQCharacterStat& BaseStat, const FEQCharacterStat& ModifierStat)
+{
+	StatComp->ApplyStat(BaseStat, ModifierStat);
+}
+
 void AEQCharacterPlayer::SetupCharacterWidget(UEQWidgetBase* InWidgetBase)
 {
 	/*UEQWidgetUserName* UserNameWidget = Cast<UEQWidgetUserName>(Cast<UEQWidgetBase>(UserNameComp->GetWidget()));
@@ -244,8 +272,7 @@ void AEQCharacterPlayer::SetupCharacterWidget(UEQWidgetBase* InWidgetBase)
 	UEQWidgetHpBar* HpBarWidget = Cast<UEQWidgetHpBar>(InWidgetBase);
 	if (HpBarWidget)
 	{
-		HpBarWidget->SetMaxHp(StatComp->GetMaxHp());
-		HpBarWidget->UpdateHpBar(StatComp->GetCurrentHp());
+		HpBarWidget->UpdateHpBar(StatComp->GetCurrentHp(), StatComp->GetMaxHp());
 		StatComp->OnHpChanged.AddUObject(HpBarWidget, &UEQWidgetHpBar::UpdateHpBar);
 	}
 }
@@ -281,38 +308,22 @@ void AEQCharacterPlayer::SetPlayerController()
 	}
 }
 
-void AEQCharacterPlayer::UpdatePlayerMesh()
+void AEQCharacterPlayer::UpdateMesh()
 {
-	ensure(PlayerMeshes.Num() > 0);
-
 	ClassType = Cast<UEQGameInstance>(GetGameInstance())->GetClassType();
 
 	if (IsLocallyControlled())
 	{
-		switch (ClassType)
-		{
-		case EClassType::ECT_Mage:
-			PlayerMeshHandle = UAssetManager::Get().GetStreamableManager().RequestAsyncLoad(PlayerMeshes[9], FStreamableDelegate::CreateUObject(this, &ThisClass::PlayerMeshLoadCompleted));
-			break;
-		case EClassType::ECT_Paladin:
-			break;
-		case EClassType::ECT_Priest:
-			break;
-		case EClassType::ECT_Rogue:
-			break;
-		case EClassType::ECT_Warrior:
-			PlayerMeshHandle = UAssetManager::Get().GetStreamableManager().RequestAsyncLoad(PlayerMeshes[4], FStreamableDelegate::CreateUObject(this, &ThisClass::PlayerMeshLoadCompleted));
-			break;
-		}
+		SwitchClassType(ClassType, this);
 	}
 
 	if (!HasAuthority())
 	{
-		Server_UpdatePlayerMesh(ClassType);
+		Server_UpdateMesh(ClassType);
 	}
 }
 
-void AEQCharacterPlayer::Server_UpdatePlayerMesh_Implementation(EClassType InClassType)
+void AEQCharacterPlayer::Server_UpdateMesh_Implementation(EClassType InClassType)
 {
 	for (AEQCharacterPlayer* CharacterPlayer : TActorRange<AEQCharacterPlayer>(GetWorld()))
 	{
@@ -323,29 +334,15 @@ void AEQCharacterPlayer::Server_UpdatePlayerMesh_Implementation(EClassType InCla
 		else
 		{
 			CharacterPlayer->ClassType = InClassType;
-			switch (CharacterPlayer->ClassType)
-			{
-			case EClassType::ECT_Mage:
-				CharacterPlayer->PlayerMeshHandle = UAssetManager::Get().GetStreamableManager().RequestAsyncLoad(PlayerMeshes[9], FStreamableDelegate::CreateUObject(CharacterPlayer, &ThisClass::PlayerMeshLoadCompleted));
-				break;
-			case EClassType::ECT_Paladin:
-				break;
-			case EClassType::ECT_Priest:
-				break;
-			case EClassType::ECT_Rogue:
-				break;
-			case EClassType::ECT_Warrior:
-				CharacterPlayer->PlayerMeshHandle = UAssetManager::Get().GetStreamableManager().RequestAsyncLoad(PlayerMeshes[4], FStreamableDelegate::CreateUObject(CharacterPlayer, &ThisClass::PlayerMeshLoadCompleted));
-				break;
-			}
+			SwitchClassType(CharacterPlayer->ClassType, CharacterPlayer);
 		}
 	}
 
 	EClassType CClassType = GetWorld()->GetFirstPlayerController()->GetPlayerState<AEQPlayerState>()->GetClassType();
-	Client_UpdatePlayerMesh(CClassType);
+	Client_UpdateMesh(CClassType);
 }
 
-void AEQCharacterPlayer::Client_UpdatePlayerMesh_Implementation(EClassType InClassType)
+void AEQCharacterPlayer::Client_UpdateMesh_Implementation(EClassType InClassType)
 {
 	for (AEQCharacterPlayer* CharacterPlayer : TActorRange<AEQCharacterPlayer>(GetWorld()))
 	{
@@ -356,40 +353,138 @@ void AEQCharacterPlayer::Client_UpdatePlayerMesh_Implementation(EClassType InCla
 		else
 		{
 			CharacterPlayer->ClassType = InClassType;
-			switch (CharacterPlayer->ClassType)
-			{
-			case EClassType::ECT_Mage:
-				CharacterPlayer->PlayerMeshHandle = UAssetManager::Get().GetStreamableManager().RequestAsyncLoad(PlayerMeshes[9], FStreamableDelegate::CreateUObject(CharacterPlayer, &ThisClass::PlayerMeshLoadCompleted));
-				break;
-			case EClassType::ECT_Paladin:
-				break;
-			case EClassType::ECT_Priest:
-				break;
-			case EClassType::ECT_Rogue:
-				break;
-			case EClassType::ECT_Warrior:
-				CharacterPlayer->PlayerMeshHandle = UAssetManager::Get().GetStreamableManager().RequestAsyncLoad(PlayerMeshes[4], FStreamableDelegate::CreateUObject(CharacterPlayer, &ThisClass::PlayerMeshLoadCompleted));
-				break;
-			}
+			SwitchClassType(CharacterPlayer->ClassType, CharacterPlayer);
 		}
 	}
 }
 
-void AEQCharacterPlayer::PlayerMeshLoadCompleted()
+void AEQCharacterPlayer::SwitchClassType(EClassType InClassType, AEQCharacterPlayer* CharacterPlayer)
 {
-	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), TEXT("Begin"));
-
-	if (PlayerMeshHandle.IsValid())
+	switch (InClassType)
 	{
-		USkeletalMesh* SkeletalMesh = Cast<USkeletalMesh>(PlayerMeshHandle->GetLoadedAsset());
-		if (SkeletalMesh)
+	case EClassType::ECT_Mage:
+		CharacterPlayer->BodyMeshHandle = UAssetManager::Get().GetStreamableManager().RequestAsyncLoad(BodyMeshes[9], FStreamableDelegate::CreateUObject(CharacterPlayer, &ThisClass::BodyMeshLoadCompleted));
+		CharacterPlayer->HairMeshHandle = UAssetManager::Get().GetStreamableManager().RequestAsyncLoad(HairMeshes[7], FStreamableDelegate::CreateUObject(CharacterPlayer, &ThisClass::HairMeshLoadCompleted));
+		CharacterPlayer->HatMeshHandle = UAssetManager::Get().GetStreamableManager().RequestAsyncLoad(HatMeshes[0], FStreamableDelegate::CreateUObject(CharacterPlayer, &ThisClass::HatMeshLoadCompleted));
+		CharacterPlayer->WandMeshHandle = UAssetManager::Get().GetStreamableManager().RequestAsyncLoad(WandMeshes[0], FStreamableDelegate::CreateUObject(CharacterPlayer, &ThisClass::WandMeshLoadCompleted));
+		CharacterPlayer->BookMeshHandle = UAssetManager::Get().GetStreamableManager().RequestAsyncLoad(BookMeshes[0], FStreamableDelegate::CreateUObject(CharacterPlayer, &ThisClass::BookMeshLoadCompleted));
+		break;
+	case EClassType::ECT_Paladin:
+		break;
+	case EClassType::ECT_Priest:
+		break;
+	case EClassType::ECT_Rogue:
+		break;
+	case EClassType::ECT_Warrior:
+		CharacterPlayer->BodyMeshHandle = UAssetManager::Get().GetStreamableManager().RequestAsyncLoad(BodyMeshes[4], FStreamableDelegate::CreateUObject(CharacterPlayer, &ThisClass::BodyMeshLoadCompleted));
+		CharacterPlayer->HairMeshHandle = UAssetManager::Get().GetStreamableManager().RequestAsyncLoad(HairMeshes[0], FStreamableDelegate::CreateUObject(CharacterPlayer, &ThisClass::HairMeshLoadCompleted));
+		CharacterPlayer->SwordMeshHandle = UAssetManager::Get().GetStreamableManager().RequestAsyncLoad(SwordMeshes[0], FStreamableDelegate::CreateUObject(CharacterPlayer, &ThisClass::SwordMeshLoadCompleted));
+		break;
+	}
+}
+
+
+void AEQCharacterPlayer::BodyMeshLoadCompleted()
+{
+	if (BodyMeshHandle.IsValid())
+	{
+		USkeletalMesh* BodyMeshRef = Cast<USkeletalMesh>(BodyMeshHandle->GetLoadedAsset());
+		if (BodyMeshRef)
 		{
-			GetMesh()->SetSkeletalMesh(SkeletalMesh);
+			GetMesh()->SetSkeletalMesh(BodyMeshRef);
 			GetMesh()->SetHiddenInGame(false);
 		}
 	}
 
-	PlayerMeshHandle->ReleaseHandle();
+	BodyMeshHandle->ReleaseHandle();
+}
 
-	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), TEXT("End"));
+void AEQCharacterPlayer::HairMeshLoadCompleted()
+{
+	if (HairMeshHandle.IsValid())
+	{
+		USkeletalMesh* HairMeshRef = Cast<USkeletalMesh>(HairMeshHandle->GetLoadedAsset());
+		if (HairMeshRef)
+		{
+			HairMesh->SetSkeletalMesh(HairMeshRef);
+			HairMesh->SetHiddenInGame(false);
+		}
+	}
+
+	HairMeshHandle->ReleaseHandle();
+}
+
+void AEQCharacterPlayer::HatMeshLoadCompleted()
+{
+	if (HatMeshHandle.IsValid())
+	{
+		USkeletalMesh* HatMeshRef = Cast<USkeletalMesh>(HatMeshHandle->GetLoadedAsset());
+		if (HatMeshRef)
+		{
+			HatMesh->SetSkeletalMesh(HatMeshRef);
+			HatMesh->SetHiddenInGame(false);
+		}
+	}
+
+	HatMeshHandle->ReleaseHandle();
+}
+
+void AEQCharacterPlayer::WandMeshLoadCompleted()
+{
+	if (WandMeshHandle.IsValid())
+	{
+		USkeletalMesh* WandMeshRef = Cast<USkeletalMesh>(WandMeshHandle->GetLoadedAsset());
+		if (WandMeshRef)
+		{
+			WandMesh->SetSkeletalMesh(WandMeshRef);
+			WandMesh->SetHiddenInGame(false);
+		}
+	}
+
+	WandMeshHandle->ReleaseHandle();
+}
+
+void AEQCharacterPlayer::BookMeshLoadCompleted()
+{
+	if (BookMeshHandle.IsValid())
+	{
+		USkeletalMesh* BookMeshRef = Cast<USkeletalMesh>(BookMeshHandle->GetLoadedAsset());
+		if (BookMeshRef)
+		{
+			BookMesh->SetSkeletalMesh(BookMeshRef);
+			BookMesh->SetHiddenInGame(false);
+		}
+	}
+
+	BookMeshHandle->ReleaseHandle();
+}
+
+void AEQCharacterPlayer::SwordMeshLoadCompleted()
+{
+	if (SwordMeshHandle.IsValid())
+	{
+		USkeletalMesh* SwordMeshRef = Cast<USkeletalMesh>(SwordMeshHandle->GetLoadedAsset());
+		if (SwordMeshRef)
+		{
+			SwordMesh->SetSkeletalMesh(SwordMeshRef);
+			SwordMesh->SetHiddenInGame(false);
+		}
+	}
+
+	SwordMeshHandle->ReleaseHandle();
+}
+
+void AEQCharacterPlayer::ShieldMeshLoadCompleted()
+{
+	if (ShieldMeshHandle.IsValid())
+	{
+		USkeletalMesh* ShieldMeshRef = Cast<USkeletalMesh>(ShieldMeshHandle->GetLoadedAsset());
+		if (ShieldMeshRef)
+		{
+			ShieldMesh->SetSkeletalMesh(ShieldMeshRef);
+			ShieldMesh->SetHiddenInGame(false);
+		}
+	}
+
+	ShieldMeshHandle->ReleaseHandle();
 }
