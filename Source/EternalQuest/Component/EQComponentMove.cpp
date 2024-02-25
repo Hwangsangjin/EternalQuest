@@ -51,7 +51,7 @@ UEQComponentMove::UEQComponentMove()
 		SprintAction = InputActionSprintRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionEnterRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/Input/Actions/IA_Enter.IA_Entern'"));
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionEnterRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/Input/Actions/IA_Enter.IA_Enter'"));
 	if (InputActionEnterRef.Object)
 	{
 		EnterAction = InputActionEnterRef.Object;
