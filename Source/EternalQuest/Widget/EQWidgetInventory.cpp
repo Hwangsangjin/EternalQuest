@@ -67,6 +67,7 @@ void UEQWidgetInventory::ClearItemInventory()
 	WrapBox_Consume->ClearChildren();
 	WrapBox_Material->ClearChildren();
 	WrapBox_QuestItem->ClearChildren();
+	WrapBox_Equipping->ClearChildren();
 }
 
 void UEQWidgetInventory::AddItemInventory()
@@ -94,6 +95,12 @@ void UEQWidgetInventory::AddItemInventory()
 		auto temp = CreateWidget(GetWorld(), ItemSlotFactory);
 		Cast<UEQWidgetItemSlot>(temp)->EQSlot = &e;
 		WrapBox_QuestItem->AddChildToWrapBox(temp);
+	}
+	for (auto& e : EQComponentInventory->EQAllItem.Equipping)
+	{
+		auto temp = CreateWidget(GetWorld(), ItemSlotFactory);
+		Cast<UEQWidgetItemSlot>(temp)->EQSlot = &e;
+		WrapBox_Equipping->AddChildToWrapBox(temp);
 	}
 }
 

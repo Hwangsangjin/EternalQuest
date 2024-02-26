@@ -40,21 +40,54 @@ void UEQWidgetQuestList::OnClickedQuest2()
 {
 	Txt_QuestSubject->SetText(FText::FromString(TEXT("경복의 펭귄소드를 얻어라")));
 	Txt_QuestDetail->SetText(FText::FromString(TEXT("ㅁㄴㅇ")));
-	Txt_QuestState->SetText(FText::FromString(TEXT("퀘스트 미완료")));
+	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[1] == 0)
+	{
+		Txt_QuestState->SetText(FText::FromString(TEXT("퀘스트 미완료")));
+	}
+	else if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[1] == 1)
+	{
+		Txt_QuestState->SetText(FText::FromString(TEXT("퀘스트 진행중")));
+	}
+	else if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[1] == 2)
+	{
+		Txt_QuestState->SetText(FText::FromString(TEXT("퀘스트 완료")));
+	}
 }
 
 void UEQWidgetQuestList::OnClickedQuest3()
 {
 	Txt_QuestSubject->SetText(FText::FromString(TEXT("민경의 자전거를 되찾아라")));
 	Txt_QuestDetail->SetText(FText::FromString(TEXT("ㅁㄴㅇ")));
-	Txt_QuestState->SetText(FText::FromString(TEXT("퀘스트 미완료")));
+	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[2] == 0)
+	{
+		Txt_QuestState->SetText(FText::FromString(TEXT("퀘스트 미완료")));
+	}
+	else if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[2] == 1)
+	{
+		Txt_QuestState->SetText(FText::FromString(TEXT("퀘스트 진행중")));
+	}
+	else if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[2] == 2)
+	{
+		Txt_QuestState->SetText(FText::FromString(TEXT("퀘스트 완료")));
+	}
 }
 
 void UEQWidgetQuestList::OnClickedQuest4()
 {
 	Txt_QuestSubject->SetText(FText::FromString(TEXT("보스를 처치하고 새싹을 수료하자")));
 	Txt_QuestDetail->SetText(FText::FromString(TEXT("ㅁㄴㅇ")));
-	Txt_QuestState->SetText(FText::FromString(TEXT("퀘스트 미완료")));
+	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[3] == 0)
+	{
+		Txt_QuestState->SetText(FText::FromString(TEXT("퀘스트 미완료")));
+	}
+	else if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[3] == 1)
+	{
+		Txt_QuestState->SetText(FText::FromString(TEXT("퀘스트 진행중")));
+	}
+	else if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[3] == 2)
+	{
+		Txt_QuestState->SetText(FText::FromString(TEXT("퀘스트 완료")));
+	}
 }
 
 void UEQWidgetQuestList::ClearQuestIcon()

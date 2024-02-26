@@ -35,6 +35,7 @@ enum EEQItemType
 	Consumtion,
 	Material,
 	Questitem,
+	Equipping
 };
 
 
@@ -110,5 +111,8 @@ struct FEQAllItem : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FEQSlot> QuestItem;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FEQSlot> Equipping;
 };
 

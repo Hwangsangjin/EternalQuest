@@ -25,6 +25,11 @@ void UEQWidgetChattingSystem::NativeConstruct()
 
 void UEQWidgetChattingSystem::OnTextCommittedChat(const FText& Text, ETextCommit::Type CommitMethod)
 {
+	if (Text.IsEmpty())
+	{
+		GetWorld()->GetFirstPlayerController()->SetInputMode(FInputModeGameOnly());
+		return;
+	}
 	if (CommitMethod == ETextCommit::OnEnter)
 	{
 		auto MyEQChatWidget = Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetChattingSystem;

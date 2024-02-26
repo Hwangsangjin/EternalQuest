@@ -64,4 +64,7 @@ void AEQItemBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AEQItemBase, Slot)
+	DOREPLIFETIME(AEQItemBase, ItemName)
+	DOREPLIFETIME(AEQItemBase, ItemType)
+	DOREPLIFETIME(AEQItemBase, ItemQuantity)
 }

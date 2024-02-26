@@ -71,6 +71,9 @@ public:
 	TObjectPtr<UWrapBox> WrapBox_Equip;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(BindWidget))
+	TObjectPtr<UWrapBox> WrapBox_Equipping;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(BindWidget))
 	TObjectPtr<UWrapBox> WrapBox_Consume;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(BindWidget))
