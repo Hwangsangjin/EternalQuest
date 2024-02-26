@@ -41,12 +41,7 @@ void UEQComponentBase::InitializeComponent()
 	Super::InitializeComponent();
 	Player = Cast<AEQCharacterPlayer>(GetOwner());
 	Player->InputSignature.AddUObject(this, &UEQComponentBase::SetupPlayerInput);
-
-	FTimerHandle Handle;
-	GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
-	{
-		EQPlayerController = Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController());
-	}), 0.1, false, 0.1);
+	EQPlayerController = Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController());
 }
 
 void UEQComponentBase::SetupPlayerInput(UInputComponent* PlayerInputComponent)

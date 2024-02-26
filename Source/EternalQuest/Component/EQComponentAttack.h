@@ -29,6 +29,12 @@ public:
 	void Attack();
 	void HitCheck();
 
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_Attack();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticast_Attack();
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UInputAction> AttackAction;

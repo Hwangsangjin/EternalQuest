@@ -59,6 +59,7 @@ private:
 // Sprint
 protected:
 	void Sprint(const FInputActionValue& Value);
+	void StopSprinting(const FInputActionValue& Value);
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
@@ -67,7 +68,6 @@ private:
 	float CurrentFieldOfView = 90.0f;
 	FTimerHandle SprintTimerHandle;
 
-
 // Enter
 protected:
 	void Enter(const FInputActionValue& Value);
@@ -75,4 +75,11 @@ protected:
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UInputAction> EnterAction;
+
+public:
+	UFUNCTION(Server, Reliable)
+	void ServerRPC_SendChat(const FText& InText, const FText& InPlayerName);
+
+	UFUNCTION(Client, Reliable)
+	void ClientRPC_SendChat(const FText& InText, const FText& InPlayerName);
 };

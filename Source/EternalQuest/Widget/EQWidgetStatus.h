@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Character/EQCharacterPlayer.h"
-#include "EQCharacterWarrior.generated.h"
+#include "Blueprint/UserWidget.h"
+#include "EQWidgetStatus.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ETERNALQUEST_API AEQCharacterWarrior : public AEQCharacterPlayer
+class ETERNALQUEST_API UEQWidgetStatus : public UUserWidget
 {
 	GENERATED_BODY()
 	

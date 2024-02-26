@@ -7,6 +7,7 @@
 #include "EQWidgetHpBar.generated.h"
 
 class UProgressBar;
+class UTextBlock;
 
 UCLASS()
 class ETERNALQUEST_API UEQWidgetHpBar : public UEQWidgetBase
@@ -19,14 +20,21 @@ public:
 protected:
 	virtual void NativeConstruct() override;
 
-// Hp
 public:
 	FORCEINLINE void SetMaxHp(float NewMaxHp) { MaxHp = NewMaxHp; }
-	void UpdateHpBar(float NewCurrentHp);
+	void UpdateHpBar(float NewCurrentHp, float NewMaxHp);
+
+	FString GetHpText();
 
 protected:
 	UPROPERTY()
 	TObjectPtr<UProgressBar> ProgressBar_Hp;
+
+	UPROPERTY()
+	TObjectPtr<UTextBlock> TextBlock_Hp;
+
+	UPROPERTY()
+	float CurrentHp;
 
 	UPROPERTY()
 	float MaxHp;

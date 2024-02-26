@@ -10,7 +10,7 @@
 
 AEQGameMode::AEQGameMode()
 {
-	static ConstructorHelpers::FClassFinder<APawn> DefaultPawnClassRef(TEXT("/Script/Engine.Blueprint'/Game/Blueprints/Character/BP_Player.BP_Player'"));
+	static ConstructorHelpers::FClassFinder<APawn> DefaultPawnClassRef(TEXT("/Game/Blueprints/Character/BP_Player.BP_Player_C"));
 	if (DefaultPawnClassRef.Succeeded())
 	{
 		DefaultPawnClass = DefaultPawnClassRef.Class;
@@ -24,6 +24,8 @@ AEQGameMode::AEQGameMode()
 
 	GameStateClass = AEQGameState::StaticClass();
 	PlayerStateClass = AEQPlayerState::StaticClass();
+
+	bUseSeamlessTravel = true;
 }
 
 void AEQGameMode::PreLogin(const FString& Options, const FString& Address, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage)

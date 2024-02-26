@@ -6,6 +6,11 @@
 #include "Blueprint/UserWidget.h"
 #include "EQWidgetMainUI.generated.h"
 
+class UEQWidgetChattingSystem;
+class UEQWidgetSkill;
+class UEQWidgetStatus;
+class UEQWidgetQuestList;
+class UEQWidgetSettings;
 class UEQWidgetItemDropArea;
 class UEQWidgetItemActionMenu;
 class UEQWidgetInventory;
@@ -31,4 +36,19 @@ public:
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, meta=(BindWidget))
 	TObjectPtr<UEQWidgetItemActionMenu> WBP_EQWidgetItemActionMenu;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, meta=(BindWidget))
+	TObjectPtr<UEQWidgetSettings> WBP_EQWidgetSettings;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, meta=(BindWidget))
+	TObjectPtr<UEQWidgetQuestList> WBP_EQWidgetQuestList;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, meta=(BindWidget))
+	TObjectPtr<UEQWidgetStatus> WBP_EQWidgetStatus;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, meta=(BindWidget))
+	TObjectPtr<UEQWidgetSkill> WBP_EQWidgetSkill;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, meta=(BindWidget))
+	TObjectPtr<UEQWidgetChattingSystem> WBP_EQWidgetChattingSystem;
 };

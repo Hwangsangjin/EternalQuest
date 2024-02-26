@@ -2,18 +2,53 @@
 
 
 #include "Component/EQComponentStat.h"
+#include "EternalQuest.h"
+#include "Net/UnrealNetwork.h"
+#include "Game/EQGameSingleton.h"
+#include "Character/EQCharacterPlayer.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 UEQComponentStat::UEQComponentStat()
-	: MaxHp(200.0f)
-	, CurrentHp(MaxHp)
+	: CurrentLevel(1)
 {
+}
+
+void UEQComponentStat::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ThisClass, CurrentHp);
+	DOREPLIFETIME(ThisClass, MaxHp);
+	DOREPLIFETIME_CONDITION(ThisClass, BaseStat, COND_OwnerOnly);
+	DOREPLIFETIME_CONDITION(ThisClass, ModifierStat, COND_OwnerOnly);
+}
+
+void UEQComponentStat::InitializeComponent()
+{
+	Super::InitializeComponent();
+
+	SetLevelStat(CurrentLevel);
+	ResetStat();
+
+	OnStatChanged.AddUObject(this, &ThisClass::SetNewMaxHp);
+
+	SetIsReplicated(true);
+}
+
+void UEQComponentStat::ReadyForReplication()
+{
+	EQ_SUBLOG(LogEternalQuest, Log, TEXT("%s"), TEXT("Begin"));
+
+	Super::ReadyForReplication();
+
+	EQ_SUBLOG(LogEternalQuest, Log, TEXT("%s"), TEXT("End"));
 }
 
 void UEQComponentStat::BeginPlay()
 {
-	Super::BeginPlay();
+	EQ_SUBLOG(LogEternalQuest, Log, TEXT("%s"), TEXT("Begin"));
 
-	SetHp(MaxHp);
+	Super::BeginPlay();
 }
 
 float UEQComponentStat::ApplyDamage(float InDamage)
@@ -30,9 +65,72 @@ float UEQComponentStat::ApplyDamage(float InDamage)
 	return ActualDamage;
 }
 
+void UEQComponentStat::ApplyStat(const FEQCharacterStat& NewBaseStat, const FEQCharacterStat& NewModifierStat)
+{
+	const float MovementSpeed = (NewBaseStat + NewModifierStat).MovementSpeed;
+	Player->GetCharacterMovement()->MaxWalkSpeed = MovementSpeed;
+}
+
+void UEQComponentStat::SetLevelStat(int32 InNewLevel)
+{
+	CurrentLevel = FMath::Clamp(InNewLevel, 1, UEQGameSingleton::Get().CharacterMaxLevel);
+	SetBaseStat(UEQGameSingleton::Get().GetCharacterStat(CurrentLevel));
+	check(BaseStat.MaxHp > 0.0f);
+}
+
+void UEQComponentStat::SetNewMaxHp(const FEQCharacterStat& InBaseStat, const FEQCharacterStat& InModifierStat)
+{
+	float PrevMaxHp = MaxHp;
+	MaxHp = GetTotalStat().MaxHp;
+	if (PrevMaxHp != MaxHp)
+	{
+		OnHpChanged.Broadcast(CurrentHp, MaxHp);
+	}
+}
+
+void UEQComponentStat::ResetStat()
+{
+	SetLevelStat(CurrentLevel);
+	MaxHp = BaseStat.MaxHp;
+	SetHp(MaxHp);
+}
+
 void UEQComponentStat::SetHp(float NewHp)
 {
 	CurrentHp = FMath::Clamp<float>(NewHp, 0.0f, MaxHp);
 
-	OnHpChanged.Broadcast(CurrentHp);
+	OnHpChanged.Broadcast(CurrentHp, MaxHp);
+}
+
+void UEQComponentStat::OnRep_CurrentHp()
+{
+	EQ_SUBLOG(LogEternalQuest, Log, TEXT("%s"), TEXT("Begin"));
+
+	OnHpChanged.Broadcast(CurrentHp, MaxHp);
+
+	if (CurrentHp <= KINDA_SMALL_NUMBER)
+	{
+		OnHpZero.Broadcast();
+	}
+}
+
+void UEQComponentStat::OnRep_MaxHp()
+{
+	EQ_SUBLOG(LogEternalQuest, Log, TEXT("%s"), TEXT("Begin"));
+
+	OnHpChanged.Broadcast(CurrentHp, MaxHp);
+}
+
+void UEQComponentStat::OnRep_BaseStat()
+{
+	EQ_SUBLOG(LogEternalQuest, Log, TEXT("%s"), TEXT("Begin"));
+
+	OnStatChanged.Broadcast(BaseStat, ModifierStat);
+}
+
+void UEQComponentStat::OnRep_ModifierStat()
+{
+	EQ_SUBLOG(LogEternalQuest, Log, TEXT("%s"), TEXT("Begin"));
+
+	OnStatChanged.Broadcast(BaseStat, ModifierStat);
 }

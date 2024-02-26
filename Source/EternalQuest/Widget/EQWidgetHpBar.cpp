@@ -3,6 +3,7 @@
 
 #include "Widget/EQWidgetHpBar.h"
 #include "Components/ProgressBar.h"
+#include "Components/TextBlock.h"
 #include "Interface/EQInterfaceCharacterWidget.h"
 
 UEQWidgetHpBar::UEQWidgetHpBar(const FObjectInitializer& ObjectInitialzer)
@@ -25,11 +26,24 @@ void UEQWidgetHpBar::NativeConstruct()
 	}
 }
 
-void UEQWidgetHpBar::UpdateHpBar(float NewCurrentHp)
+void UEQWidgetHpBar::UpdateHpBar(float NewCurrentHp, float NewMaxHp)
 {
+	CurrentHp = NewCurrentHp;
+	MaxHp = NewMaxHp;
+
 	ensure(MaxHp > 0.0f);
 	if (ProgressBar_Hp)
 	{
-		ProgressBar_Hp->SetPercent(NewCurrentHp / MaxHp);
+		ProgressBar_Hp->SetPercent(CurrentHp / MaxHp);
 	}
+
+	if (TextBlock_Hp)
+	{
+		TextBlock_Hp->SetText(FText::FromString(GetHpText()));
+	}
+}
+
+FString UEQWidgetHpBar::GetHpText()
+{
+	return FString::Printf(TEXT("%.0f/%0.f"), CurrentHp, MaxHp);
 }

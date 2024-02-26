@@ -3,15 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Character/EQCharacterPlayer.h"
-#include "EQCharacterMage.generated.h"
+#include "Blueprint/UserWidget.h"
+#include "EQWidgetBindKeySkillBar.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ETERNALQUEST_API AEQCharacterMage : public AEQCharacterPlayer
+class ETERNALQUEST_API UEQWidgetBindKeySkillBar : public UUserWidget
 {
 	GENERATED_BODY()
-
+	
 };

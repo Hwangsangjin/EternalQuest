@@ -10,6 +10,8 @@
 #include "EQCharacterPlayer.generated.h"
 
 struct FStreamableHandle;
+struct FEQCharacterStat;
+class USkeletalMeshComponent;
 class USpringArmComponent;
 class UCameraComponent;
 class UInputMappingContext;
@@ -23,6 +25,7 @@ class UEQComponentMove;
 class UEQComponentInteraction;
 class UEQComponentMenuManager;
 class UEQComponentInventory;
+class UEQComponentQuest;
 class UEQComponentAttack;
 class UEQComponentStat;
 class UEQComponentWidget;
@@ -58,25 +61,68 @@ protected:
 	void SetPlayerController();
 
 // Class Type
+public:
+	FORCEINLINE EClassType GetClassType() { return ClassType; }
+
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, /*Replicated,*/ Category = Character, Meta = (AllowPrivateAccess = true))
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character, Meta = (AllowPrivateAccess = true))
 	EClassType ClassType = EClassType::ECT_None;
 
 // Mesh
 protected:
 	UFUNCTION(Server, Reliable)
-	void Server_UpdatePlayerMesh(EClassType InClassType);
+	void Server_UpdateMesh(EClassType InClassType);
 
 	UFUNCTION(Client, Reliable)
-	void Client_UpdatePlayerMesh(EClassType InClassType);
+	void Client_UpdateMesh(EClassType InClassType);
 
-	void UpdatePlayerMesh();
-	void PlayerMeshLoadCompleted();
+	void UpdateMesh();
+	void SwitchClassType(EClassType InClassType, AEQCharacterPlayer* CharacterPlayer);
+	void BodyMeshLoadCompleted();
+	void HairMeshLoadCompleted();
+	void HatMeshLoadCompleted();
+	void WandMeshLoadCompleted();
+	void BookMeshLoadCompleted();
+	void SwordMeshLoadCompleted();
+	void ShieldMeshLoadCompleted();
+
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Mesh, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<USkeletalMeshComponent> HairMesh;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Mesh, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<USkeletalMeshComponent> HatMesh;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Mesh, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<USkeletalMeshComponent> WandMesh;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Mesh, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<USkeletalMeshComponent> BookMesh;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Mesh, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<USkeletalMeshComponent> SwordMesh;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Mesh, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<USkeletalMeshComponent> ShieldMesh;
 
 	UPROPERTY(config)
-	TArray<FSoftObjectPath> PlayerMeshes;
+	TArray<FSoftObjectPath> BodyMeshes;
+	UPROPERTY(config)
+	TArray<FSoftObjectPath> HairMeshes;
+	UPROPERTY(config)
+	TArray<FSoftObjectPath> HatMeshes;
+	UPROPERTY(config)
+	TArray<FSoftObjectPath> WandMeshes;
+	UPROPERTY(config)
+	TArray<FSoftObjectPath> BookMeshes;
+	UPROPERTY(config)
+	TArray<FSoftObjectPath> SwordMeshes;
+	UPROPERTY(config)
+	TArray<FSoftObjectPath> ShieldMeshes;
 
-	TSharedPtr<FStreamableHandle> PlayerMeshHandle;
+	TSharedPtr<FStreamableHandle> BodyMeshHandle;
+	TSharedPtr<FStreamableHandle> HairMeshHandle;
+	TSharedPtr<FStreamableHandle> HatMeshHandle;
+	TSharedPtr<FStreamableHandle> WandMeshHandle;
+	TSharedPtr<FStreamableHandle> BookMeshHandle;
+	TSharedPtr<FStreamableHandle> SwordMeshHandle;
+	TSharedPtr<FStreamableHandle> ShieldMeshHandle;
 
 // Camera
 public:
@@ -93,6 +139,7 @@ protected:
 // Interaction Box
 public:
 	FORCEINLINE UEQComponentMove* GetMoveComponent() const { return MoveComp; }
+	FORCEINLINE UEQComponentStat* GetStatComponent() const { return StatComp; }
 	FORCEINLINE UBoxComponent* GetInteractionBox() const { return InteractionBox; }
 
 protected:
@@ -119,6 +166,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UAnimMontage> DeadMontage;
+
+// Stat
+public:
+	int32 GetLevel();
+	void SetLevel(int32 InNewLevel);
+	void ApplyStat(const FEQCharacterStat& BaseStat, const FEQCharacterStat& ModifierStat);
 
 // UI Widget
 protected:
@@ -149,4 +202,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UEQComponentWidget> HpBarComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UEQComponentQuest> QuestComp;
 };
