@@ -127,7 +127,6 @@ void UEQBaseFSM::SetState(EMonsterState Next)
 
 bool UEQBaseFSM::UpdateRandLoc(FVector OldLoc, float Radius, FVector& NewLoc)
 {
-	
 	auto NS = UNavigationSystemV1::GetNavigationSystem(GetWorld());
 	FNavLocation Location;
 	auto Result = NS->GetRandomReachablePointInRadius(OldLoc,Radius,Location);
@@ -136,18 +135,16 @@ bool UEQBaseFSM::UpdateRandLoc(FVector OldLoc, float Radius, FVector& NewLoc)
 		NewLoc = Location.Location;
 		return true;
 	}
-	else
-	{
-		//return UpdateRandLoc(OldLoc,Radius,NewLoc);
-		return false;
-	}
-	
+	//return UpdateRandLoc(OldLoc,Radius,NewLoc);
+	return false;
 }
 
 void UEQBaseFSM::MeleeAttackCheck()
 {
 	
 }
+
+
 
 
 void UEQBaseFSM::ServerRPC_SetState_Implementation(EMonsterState Next)
@@ -161,7 +158,6 @@ void UEQBaseFSM::ServerRPC_SetState_Implementation(EMonsterState Next)
 	AnimInst->State = Next;
 	State = Next;
 	CurrentTime = 0;
-	
 }
 
 

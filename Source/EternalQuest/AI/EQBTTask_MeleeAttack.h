@@ -6,6 +6,7 @@
 #include "BehaviorTree/Tasks/BTTask_BlackboardBase.h"
 #include "EQBTTask_MeleeAttack.generated.h"
 
+class AEQBerserkerOrc;
 /**
  * 
  */
@@ -21,6 +22,7 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Animaiton")
 	UAnimMontage* Montage;
 
+	
 private:
 	void MonsterCheckHit(UBehaviorTreeComponent& OwnerComp);
 };

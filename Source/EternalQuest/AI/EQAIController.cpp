@@ -11,6 +11,7 @@
 
 AEQAIController::AEQAIController(FObjectInitializer const& ObjectInitializer)
 {
+	bReplicates = true;
 }
 
 void AEQAIController::OnPossess(APawn* InPawn)

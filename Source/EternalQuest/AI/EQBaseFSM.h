@@ -88,6 +88,7 @@ protected:
 	
 	
 	
+	
 
 protected:
 	void TickIdle();
@@ -122,5 +123,6 @@ public:
 
 	UFUNCTION(Server,Reliable)
 	void ServerRPC_SetState(EMonsterState Next);
+	
 	
 };

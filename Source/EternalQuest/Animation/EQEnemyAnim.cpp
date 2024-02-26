@@ -4,6 +4,7 @@
 #include "Animation/EQEnemyAnim.h"
 
 #include "AI/EQBaseFSM.h"
+#include "Character/EQBerserkerOrc.h"
 #include "Character/EQMush.h"
 #include "Character/EQScorpion.h"
 #include "Character/EQSpider.h"
@@ -49,6 +50,17 @@ void UEQEnemyAnim::AnimNotify_MushAttack()
 	if(Mush != nullptr)
 	{
 		Mush->BaseFsm->MeleeAttackCheck();
+	}
+}
+
+void UEQEnemyAnim::AnimNotify_BK_Dodge()
+{
+	AEQBerserkerOrc* BerserkerOrc = Cast<AEQBerserkerOrc>(TryGetPawnOwner());
+	if(BerserkerOrc != nullptr)
+	{
+		FVector SelfPos = BerserkerOrc->GetActorLocation();
+		FVector DodgePos = SelfPos + FVector(-0.000221,0,0);
+		BerserkerOrc->SetActorLocation(DodgePos);
 	}
 }
 

@@ -23,15 +23,15 @@ EBTNodeResult::Type UEQBTTask_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& O
 	auto Orc = Cast<AEQBerserkerOrc>(Monster);
 	if(Orc)
 	{
-		MonsterCheckHit(OwnerComp);
-		Orc->PlayAnimMontage(Montage,1.f,FName("Attack1"));
-		//Orc->PlayAnimMontage(Montage,1.f,FName("Attack2"));
+		//MonsterCheckHit(OwnerComp);
+		Orc->MultiRPC_Attack();
 		FinishLatentTask(OwnerComp,EBTNodeResult::Succeeded);
 		Orc->Ability->bIsHit = false;
 		return EBTNodeResult::Succeeded;	
 	}
 	return EBTNodeResult::Failed;
 }
+
 
 void UEQBTTask_MeleeAttack::MonsterCheckHit(UBehaviorTreeComponent& OwnerComp)
 {
@@ -43,9 +43,11 @@ void UEQBTTask_MeleeAttack::MonsterCheckHit(UBehaviorTreeComponent& OwnerComp)
 	float MeleeRange = 100.f;
 	float MeleeAttackRad = 50.f;
 	float Damage = 5;
-	FVector StartLoc = Self->GetActorLocation() + Self->GetActorForwardVector() * Self->GetCapsuleComponent()->GetScaledCapsuleRadius();
-	FVector EndLoc = StartLoc + Self->GetActorForwardVector() * MeleeRange;
-	DrawDebugSphere(GetWorld(),StartLoc,MeleeAttackRad,100,FColor::Red,false,2,0);
+	//FVector StartLoc = Self->GetActorLocation() + Self->GetActorForwardVector() * Self->GetCapsuleComponent()->GetScaledCapsuleRadius();
+	FVector StartLoc = Self->WeaponComp_L->GetSocketLocation(FName("Axe_StartPos"));
+	FVector EndLoc = Self->WeaponComp_L->GetSocketLocation(FName("Axe_EndPos"));
+	//FVector EndLoc = StartLoc + Self->GetActorForwardVector() * MeleeRange;
+	DrawDebugSphere(GetWorld(),StartLoc,MeleeAttackRad,100,FColor::Red,false,2,0,10);
 
 	bool bHit = GetWorld()->SweepSingleByChannel(HitResult,StartLoc,EndLoc,FQuat::Identity,ECC_GameTraceChannel1,FCollisionShape::MakeSphere(MeleeAttackRad),Params);
 	if(bHit)

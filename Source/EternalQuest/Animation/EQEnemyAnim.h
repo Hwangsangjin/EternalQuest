@@ -35,6 +35,10 @@ public:
 	UFUNCTION()
 	void AnimNotify_MushAttack();
 
+	// Berserker //
+	 UFUNCTION()
+	 void AnimNotify_BK_Dodge();
+
 public:
 	bool IsDieDone = false;
 	

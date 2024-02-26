@@ -22,7 +22,7 @@ EBTNodeResult::Type UEQBTTask_ChaseTarget::ExecuteTask(UBehaviorTreeComponent& O
 		auto Player = Cast<AEQCharacterPlayer>(Target);
 		if(Player)
 		{
-			FVector TargetLoc = Player->GetActorLocation() - 100.f;
+			const FVector TargetLoc = Player->GetActorLocation() - 100.f;
 			// 그위치로 이동시킨다.
 			UAIBlueprintHelperLibrary::SimpleMoveToLocation(Controller,TargetLoc);
 			FinishLatentTask(OwnerComp,EBTNodeResult::Succeeded);

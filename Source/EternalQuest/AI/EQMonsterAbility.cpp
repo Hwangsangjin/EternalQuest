@@ -5,6 +5,7 @@
 
 #include "AIController.h"
 #include "EQBaseFSM.h"
+#include "Character/EQBossEnemy.h"
 #include "Character/EQNormalEnemy.h"
 #include "Net/UnrealNetwork.h"
 
@@ -13,7 +14,7 @@ UEQMonsterAbility::UEQMonsterAbility()
 {
 	
 	PrimaryComponentTick.bCanEverTick = true;
-	//SetIsReplicated(true);
+	SetIsReplicated(true);
 	
 }
 
@@ -33,16 +34,27 @@ void UEQMonsterAbility::BeginPlay()
 
 void UEQMonsterAbility::UpdateHP(float UpdateHealth)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Current Health222: %f"), CurrentHealth);
+	//UE_LOG(LogTemp, Warning, TEXT("Current Health222: %f"), CurrentHealth);
 	//CurrentHealth = FMath::Max(0,CurrentHealth+UpdateHealth);
 	ServerRPC_UpdateHP(UpdateHealth);
-	UE_LOG(LogTemp,Warning,TEXT("damage: %.1f, curent Health: %.1f"), UpdateHealth, CurrentHealth);
+	//UE_LOG(LogTemp,Warning,TEXT("damage: %.1f, curent Health: %.1f"), UpdateHealth, CurrentHealth);
 }
 
 void UEQMonsterAbility::StaminaRecovery()
 {
 	// 체력증가
-	
+	float RecoveryRate = 0.03f;
+
+	// 현재 체력이 최대 체력보다 작을 때만 회복 수행
+	if (CurrentHealth < MaxHealth)
+	{
+		// 초당 체력 회복량 계산 및 적용
+		float RecoveryAmount = MaxHealth * RecoveryRate;
+		CurrentHealth += RecoveryAmount;
+
+		// 최대 체력을 넘지 않도록 보정
+		CurrentHealth = FMath::Min(CurrentHealth, MaxHealth);
+	}
 }
 
 
@@ -51,7 +63,7 @@ void UEQMonsterAbility::StaminaRecovery()
 void UEQMonsterAbility::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle,this,&UEQMonsterAbility::StaminaRecovery,RecoveryInterval,false);
+	CheckCanDodge();
 }
 
 void UEQMonsterAbility::TakeDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
@@ -80,7 +92,38 @@ void UEQMonsterAbility::TakeDamage(AActor* DamagedActor, float Damage, const UDa
 			Monster->BaseFsm->SetState(EMonsterState::Die);
 		}
 	}
+	if(DamagedActor -> IsA<AEQBossEnemy>())
+	{
+		SaveDamage(Damage);
+	}
 }
+
+
+void UEQMonsterAbility::SaveDamage(float Damage)
+{
+	DamageReceiver += Damage;
+		
+	if(GetWorld()->GetTimerManager().IsTimerActive(DamageTimerHandle))
+	{
+		GetWorld()->GetTimerManager().ClearTimer(DamageTimerHandle);
+	}
+	GetWorld()->GetTimerManager().SetTimer(DamageTimerHandle,this,&UEQMonsterAbility::CheckCanDodge,3.0f,false);
+}
+
+void UEQMonsterAbility::CheckCanDodge()
+{
+	UE_LOG(LogTemp,Warning,TEXT("%f"),DamageReceiver);
+	if(DamageReceiver >= 100.f)
+	{
+		bIsDamageOver = true;
+	}
+	else
+	{
+		bIsDamageOver = false;
+	}
+	
+}
+
 
 void UEQMonsterAbility::ServerRPC_UpdateHP_Implementation(float UpdateHealth)
 {
@@ -99,5 +142,8 @@ void UEQMonsterAbility::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 	DOREPLIFETIME(UEQMonsterAbility,MushAttackDamage);
 	DOREPLIFETIME(UEQMonsterAbility,ScorpionAttackDamage);
 	DOREPLIFETIME(UEQMonsterAbility,bIsHit);
+	DOREPLIFETIME(UEQMonsterAbility,DamageReceiver);
+	DOREPLIFETIME(UEQMonsterAbility,bIsDamageOver);
+	
 	
 }

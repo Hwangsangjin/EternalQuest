@@ -7,6 +7,7 @@
 #include "Struct/EQStructEnumBase.h"
 #include "EQCharacterNonPlayer.generated.h"
 
+class UEQMonsterAbility;
 struct FEQSlot;
 /**
  * 
@@ -19,5 +20,12 @@ class ETERNALQUEST_API AEQCharacterNonPlayer : public AEQCharacterBase
 public:
 	AEQCharacterNonPlayer();
 	FEQSlot EQSlot;
-	
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	UEQMonsterAbility* Ability;
+
+protected:
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)override;
+	UPROPERTY()
+	UDamageType* Type;
 };
