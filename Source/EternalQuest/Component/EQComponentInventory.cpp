@@ -3,9 +3,11 @@
 
 #include "Component/EQComponentInventory.h"
 
+#include "EngineUtils.h"
 #include "Character/EQCharacterPlayer.h"
 #include "Item/EQItemBase.h"
 #include "Net/UnrealNetwork.h"
+#include "Player/EQPlayerController.h"
 
 UEQComponentInventory::UEQComponentInventory()
 {
@@ -39,6 +41,9 @@ void UEQComponentInventory::BeginPlay()
 
 	EmptySlot.ItemType = EEQItemType::Questitem;
 	for (int i = 0; i < 20; i++) EQAllItem.QuestItem.Push(EmptySlot);
+	
+	EmptySlot.ItemType = EEQItemType::Equipping;
+	for (int i = 0; i < 4; i++) EQAllItem.Equipping.Push(EmptySlot);
 }
 
 void UEQComponentInventory::TickComponent(float DeltaTime, ELevelTick TickType,
@@ -162,30 +167,10 @@ bool UEQComponentInventory::AddToInventory(const FEQSlot& InSlot)
 
 void UEQComponentInventory::DropItem(FEQSlot* InSlot)
 {
-	DropRowName = InSlot->ItemID.RowName;
-	DropItemType = InSlot->ItemType;
-	DropQuantity = InSlot->Quantity;
-	MyPlayer = Cast<AEQCharacterPlayer>(GetWorld()->GetFirstPlayerController()->GetCharacter());
-	if (GetOwner()->HasAuthority())
-	{
-		FTransform SpawnTransform(FRotator(0),
-						  FVector(MyPlayer->GetActorLocation() + MyPlayer->GetActorForwardVector() * 100));
-		// CurrItem = GetWorld()->SpawnActor<AEQItemBase>(ItemFactory, SpawnTransform);
-		CurrItem = GetWorld()->SpawnActorDeferred<AEQItemBase>(ItemFactory, SpawnTransform);
-		if (CurrItem)
-		{
-			CurrItem->ItemName.RowName = DropRowName;
-			CurrItem->ItemType = DropItemType;
-			CurrItem->ItemQuantity = DropQuantity;
-			CurrItem->FinishSpawning(SpawnTransform);
-		}
-		// OnRep_SetItem();
-		CurrItem->SetItemName(DropRowName, DropItemType, DropQuantity);
-	}
-	else
-	{
-		ServerRPC_DropItem(DropRowName, DropItemType, DropQuantity, MyPlayer);
-	}
+	auto InPlayer = GetWorld()->GetFirstPlayerController()->GetCharacter();
+	FTransform SpawnTransform(FRotator(0),
+							  FVector(InPlayer->GetActorLocation() + InPlayer->GetActorForwardVector() * 100));
+	ServerRPC_DropItem(InSlot->ItemID.RowName, InSlot->ItemType, InSlot->Quantity, SpawnTransform);
 	
 	int temp = InSlot->Quantity;
 	for (int i = temp; i > 0; i--)
@@ -195,48 +180,31 @@ void UEQComponentInventory::DropItem(FEQSlot* InSlot)
 	InSlot->ItemID.RowName = TEXT("");
 }
 
-void UEQComponentInventory::OnRep_SetItem()
-{
-	CurrItem->ItemName.RowName = DropRowName;
-	CurrItem->ItemType = DropItemType;
-	CurrItem->ItemQuantity = DropQuantity;
-	CurrItem->SetItemName(DropRowName, DropItemType, DropQuantity);
-}
-
 void UEQComponentInventory::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(UEQComponentInventory, CurrItem)
-	DOREPLIFETIME(UEQComponentInventory, DropRowName)
-	DOREPLIFETIME(UEQComponentInventory, DropItemType)
-	DOREPLIFETIME(UEQComponentInventory, DropQuantity)
 
+	DOREPLIFETIME(UEQComponentInventory, CurrItem)
 }
 
 void UEQComponentInventory::ClientRPC_DropItem_Implementation(const FName& RowName, const EEQItemType& ItemType,
-                                                             const int32& Quantity,
-                                                             const FTransform& InTransform)
+                                                              const int32& Quantity)
 {
-	if (CurrItem)
-	{
-		CurrItem->SetItemName(RowName,ItemType,Quantity);
-	}
 }
 
 void UEQComponentInventory::ServerRPC_DropItem_Implementation(const FName& RowName, const EEQItemType& ItemType,
-                                                              const int32& Quantity,
-                                                              AEQCharacterPlayer* InPlayer)
+                                                              const int32& Quantity, const FTransform& ItemLoc)
 {
-	FTransform SpawnTransform(FRotator(0),
-	                          FVector(InPlayer->GetActorLocation() + InPlayer->GetActorForwardVector() * 100));
-	// CurrItem = GetWorld()->SpawnActor<AEQItemBase>(ItemFactory, SpawnTransform);
-	CurrItem = GetWorld()->SpawnActorDeferred<AEQItemBase>(ItemFactory, SpawnTransform);
+	CurrItem = GetWorld()->SpawnActorDeferred<AEQItemBase>(ItemFactory, ItemLoc);
 	if (CurrItem)
 	{
 		CurrItem->ItemName.RowName = RowName;
 		CurrItem->ItemType = ItemType;
 		CurrItem->ItemQuantity = Quantity;
-		CurrItem->FinishSpawning(SpawnTransform);
 	}
-	ClientRPC_DropItem(RowName, ItemType, Quantity, SpawnTransform);
+	CurrItem->FinishSpawning(ItemLoc);
+	
+	for (auto e : TActorRange<AEQPlayerController>(GetWorld()))
+	{
+	}
 }

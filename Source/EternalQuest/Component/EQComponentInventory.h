@@ -31,10 +31,10 @@ public:
 	void DropItem(FEQSlot* InSlot);
 
 	UFUNCTION(Server, Reliable)
-	void ServerRPC_DropItem(const FName& RowName,const EEQItemType& ItemType,const int32& Quantity, AEQCharacterPlayer* InPlayer);
+	void ServerRPC_DropItem(const FName& RowName,const EEQItemType& ItemType,const int32& Quantity, const FTransform& ItemLoc);
 
 	UFUNCTION(Client, Reliable)
-	void ClientRPC_DropItem(const FName& RowName,const EEQItemType& ItemType,const int32& Quantity, const FTransform& InTransform);
+	void ClientRPC_DropItem(const FName& RowName,const EEQItemType& ItemType,const int32& Quantity);
 	
 	// ----- 함수 -----
 
@@ -45,14 +45,11 @@ public:
 	UPROPERTY()
 	TArray<AActor*> ArrActor;
 	
-	UPROPERTY(ReplicatedUsing="OnRep_SetItem")
+	UPROPERTY(Replicated)
 	AEQItemBase* CurrItem;
 
-	UFUNCTION()
-	void OnRep_SetItem();
-	
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-
+	
 	// ----- 구충돌 변수 -----
 
 	// ----- 변수 -----
@@ -71,13 +68,13 @@ public:
 	UPROPERTY()
 	TSubclassOf<AEQItemBase> ItemFactory;
 	
-	UPROPERTY(Replicated)
+	UPROPERTY()
 	FName DropRowName;
 
-	UPROPERTY(Replicated)
+	UPROPERTY()
 	TEnumAsByte<EEQItemType> DropItemType;
 
-	UPROPERTY(Replicated)
+	UPROPERTY()
 	int32 DropQuantity;
 	// ----- 변수 -----
 };

@@ -23,7 +23,7 @@ AEQCharacterNeutralPlayerPKB::AEQCharacterNeutralPlayerPKB()
 void AEQCharacterNeutralPlayerPKB::BeginPlay()
 {
 	Super::BeginPlay();
-	NPCName = TEXT("박경복");
+	NPCName = TEXT("경복");
 	NPCPrompt.PushLast(TEXT("승태한테 새로운 모험가가 왔다고 이야기는 들었어"));
 	NPCPrompt.PushLast(TEXT("나는 VFX 대장장이 경복이라고 해"));
 	NPCPrompt.PushLast(TEXT("마을에 나가서 내가 만든 새로운 펭귄소드를 시험해보려 하는데"));
