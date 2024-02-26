@@ -40,6 +40,11 @@ UBehaviorTree* AEQBerserkerOrc::GetBehaviorTree()
 	return Tree;
 }
 
+void AEQBerserkerOrc::MultiRPC_Die_Implementation()
+{
+	PlayAnimMontage(Montage,2,FName("Die"));
+}
+
 void AEQBerserkerOrc::MultiRPC_Combo_Implementation()
 {
 	PlayAnimMontage(Montage,1,FName("Combo"));

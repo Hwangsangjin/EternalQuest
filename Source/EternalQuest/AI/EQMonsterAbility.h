@@ -7,6 +7,8 @@
 #include "EQMonsterAbility.generated.h"
 
 
+class UEQBossMonsterHPUI;
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ETERNALQUEST_API UEQMonsterAbility : public UActorComponent
 {
@@ -24,6 +26,8 @@ public:
 	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="UI")
+	UEQBossMonsterHPUI* BossMonsterHPUI;
 	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Monster")
 	float MaxHealth;
@@ -52,6 +56,9 @@ public:
 	bool bIsDamageOver = false;	
 	FTimerHandle DamageTimerHandle;
 
+	UPROPERTY(Replicated)
+	bool IsDead = false;
+
 public:
 	void UpdateHP(float UpdateHealth);
 	void StaminaRecovery();
@@ -61,6 +68,10 @@ public:
 	UFUNCTION(Server,Reliable)
 	void ServerRPC_UpdateHP(float UpdateHealth);
 
+
+	float CurrentTime = 0;
+	float DieTime = 5.0f;
+	
 	// TODO : 데미지가 3초동안 100이상이 들어오면
 	void SaveDamage(float Damage);
 	void CheckCanDodge();

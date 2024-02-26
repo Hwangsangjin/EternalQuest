@@ -25,13 +25,12 @@ public:
 	UTextBlock* Txt_BarCount;
 
 public:
-	float SavePercent = 1;
-
-	int32 Baridx = 0;
-	int32 DevideValue = 1500;
-	UPROPERTY(EditAnywhere)
-	TArray<TSubclassOf<UProgressBar>> HPBarArray;
 	
+	int32 BarIdx;
+	int32 ChangePhase;
+	
+
+	virtual void NativeConstruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
-	void UpdateHP(float CurrentHealth, float MaxHealth);
+	void UpdateHP(float Health);
 };

@@ -5,9 +5,11 @@
 
 #include "AIController.h"
 #include "EQBaseFSM.h"
+#include "Character/EQBerserkerOrc.h"
 #include "Character/EQBossEnemy.h"
 #include "Character/EQNormalEnemy.h"
 #include "Net/UnrealNetwork.h"
+#include "Widget/EQBossMonsterHPUI.h"
 
 
 UEQMonsterAbility::UEQMonsterAbility()
@@ -95,6 +97,10 @@ void UEQMonsterAbility::TakeDamage(AActor* DamagedActor, float Damage, const UDa
 	if(DamagedActor -> IsA<AEQBossEnemy>())
 	{
 		SaveDamage(Damage);
+		if(CurrentHealth <= 0)
+		{
+			IsDead = true;
+		}
 	}
 }
 
@@ -112,7 +118,7 @@ void UEQMonsterAbility::SaveDamage(float Damage)
 
 void UEQMonsterAbility::CheckCanDodge()
 {
-	UE_LOG(LogTemp,Warning,TEXT("%f"),DamageReceiver);
+	//UE_LOG(LogTemp,Warning,TEXT("%f"),DamageReceiver);
 	if(DamageReceiver >= 100.f)
 	{
 		bIsDamageOver = true;
@@ -144,6 +150,6 @@ void UEQMonsterAbility::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 	DOREPLIFETIME(UEQMonsterAbility,bIsHit);
 	DOREPLIFETIME(UEQMonsterAbility,DamageReceiver);
 	DOREPLIFETIME(UEQMonsterAbility,bIsDamageOver);
-	
+	DOREPLIFETIME(UEQMonsterAbility,IsDead);
 	
 }
