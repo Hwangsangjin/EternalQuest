@@ -50,6 +50,7 @@ protected:
 	virtual void OnRep_PlayerState() override;
 	virtual void PostNetInit() override;
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
 
 public:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
@@ -65,7 +66,6 @@ public:
 	FORCEINLINE EClassType GetClassType() { return ClassType; }
 
 protected:
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character, Meta = (AllowPrivateAccess = true))
 	EClassType ClassType = EClassType::ECT_None;
 
@@ -150,6 +150,14 @@ protected:
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
+
+// Ground Speed
+public:
+	FORCEINLINE float GetGroundSpeed() { return GroundSpeed; }
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement, Meta = (AllowPrivateAccess = true))
+	float GroundSpeed;
 
 // Attack Hit
 protected:

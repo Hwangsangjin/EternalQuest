@@ -130,6 +130,10 @@ bool UEQBaseFSM::UpdateRandLoc(FVector OldLoc, float Radius, FVector& NewLoc)
 	auto NS = UNavigationSystemV1::GetNavigationSystem(GetWorld());
 	FNavLocation Location;
 	auto Result = NS->GetRandomReachablePointInRadius(OldLoc,Radius,Location);
+	if (!NS)
+	{
+		return false;
+	}
 	if(Result == true)
 	{
 		NewLoc = Location.Location;

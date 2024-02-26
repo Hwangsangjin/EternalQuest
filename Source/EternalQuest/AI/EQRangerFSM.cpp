@@ -40,6 +40,12 @@ void UEQRangerFSM::TickMove()
 			Target = Cast<AEQCharacterPlayer>(AllPlayer[i]);
 		}
 	}
+
+	if (!Target)
+	{
+		return;
+	}
+
 	FVector Direction = Target->GetActorLocation() - Self->GetActorLocation();
 	FVector Destination = Target->GetActorLocation();
 	UNavigationSystemV1* NaviSys = UNavigationSystemV1::GetNavigationSystem(GetWorld());

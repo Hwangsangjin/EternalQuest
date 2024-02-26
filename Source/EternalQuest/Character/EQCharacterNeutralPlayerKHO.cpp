@@ -39,6 +39,16 @@ void AEQCharacterNeutralPlayerKHO::QuestAccepted()
 		GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[3] = 1;
 	}
 	NPCPrompt.PushLast(TEXT("혹시 내 일기장을 못봤니?"));
+
+	if (HasAuthority())
+	{
+		UWorld* World = GetWorld();
+		if (World)
+		{
+			FString PathToLevel = FString("/Game/Maps/DungeonMap?listen");
+			World->ServerTravel(PathToLevel);
+		}
+	}
 }
 
 void AEQCharacterNeutralPlayerKHO::QuestDenied()

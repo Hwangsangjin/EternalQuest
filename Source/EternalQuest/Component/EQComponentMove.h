@@ -7,9 +7,6 @@
 #include "Component/EQComponentBase.h"
 #include "EQComponentMove.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class ETERNALQUEST_API UEQComponentMove : public UEQComponentBase
 {
@@ -22,6 +19,7 @@ protected:
 
 public:
 	virtual void SetupPlayerInput(UInputComponent* PlayerInputComponent) override;
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 // Jump
 protected:
@@ -67,6 +65,8 @@ private:
 
 	float CurrentFieldOfView = 90.0f;
 	FTimerHandle SprintTimerHandle;
+
+	bool bIsSprinting = false;
 
 // Enter
 protected:

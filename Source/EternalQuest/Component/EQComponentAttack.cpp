@@ -63,12 +63,12 @@ void UEQComponentAttack::HitCheck()
 		OutHitResult.GetActor()->TakeDamage(AttackDamage, DamageEvent, Player->GetController(), Player);
 	}
 
-#if ENABLE_DRAW_DEBUG
-	const FVector CapsuleOrigin = Start + (End - Start) * 0.5f;
-	const float CapsuleHalfHeight = AttackRange * 0.5f;
-	const FColor DrawColor = bHitDetected ? FColor::Green : FColor::Red;
-	DrawDebugCapsule(GetWorld(), CapsuleOrigin, CapsuleHalfHeight, AttackRadius, FRotationMatrix::MakeFromZ(Player->GetActorForwardVector()).ToQuat(), DrawColor, false, 5.0f);
-#endif
+//#if ENABLE_DRAW_DEBUG
+//	const FVector CapsuleOrigin = Start + (End - Start) * 0.5f;
+//	const float CapsuleHalfHeight = AttackRange * 0.5f;
+//	const FColor DrawColor = bHitDetected ? FColor::Green : FColor::Red;
+//	DrawDebugCapsule(GetWorld(), CapsuleOrigin, CapsuleHalfHeight, AttackRadius, FRotationMatrix::MakeFromZ(Player->GetActorForwardVector()).ToQuat(), DrawColor, false, 5.0f);
+//#endif
 }
 
 bool UEQComponentAttack::Server_Attack_Validate()
@@ -190,7 +190,7 @@ void UEQComponentAttack::SetComboCheckTimer()
 	const float EffectiveComboTime = (ComboAttackData->GetEffectiveFrameCount()[ComboIndex] / ComboAttackData->GetFrameRate()) / AttackSpeedRate;
 	if (EffectiveComboTime > 0.0f)
 	{
-		GetWorld()->GetTimerManager().SetTimer(ComboTimerHandle, this, &ThisClass::ComboCheck, EffectiveComboTime, false);
+		GetWorld()->GetGameInstance()->GetTimerManager().SetTimer(ComboTimerHandle, this, &ThisClass::ComboCheck, EffectiveComboTime, false);
 	}
 }
 

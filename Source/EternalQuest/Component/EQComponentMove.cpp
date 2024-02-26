@@ -21,6 +21,8 @@
 
 UEQComponentMove::UEQComponentMove()
 {
+	PrimaryComponentTick.bCanEverTick = true;
+
 	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionJumpRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/Input/Actions/IA_Jump.IA_Jump'"));
 	if (InputActionJumpRef.Object)
 	{
@@ -76,6 +78,19 @@ void UEQComponentMove::SetupPlayerInput(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &ThisClass::Sprint);
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ThisClass::StopSprinting);
 		EnhancedInputComponent->BindAction(EnterAction, ETriggerEvent::Completed, this, &ThisClass::Enter);
+	}
+}
+
+void UEQComponentMove::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	if (!bIsSprinting)
+	{
+		constexpr float DefaultFieldOfView = 90.0f;
+		constexpr int32 DefaultInterpSpeed = 5;
+		CurrentFieldOfView = FMath::FInterpTo(CurrentFieldOfView, DefaultFieldOfView, DeltaTime, DefaultInterpSpeed);
+		Player->GetFollowCamera()->FieldOfView = CurrentFieldOfView;
 	}
 }
 
@@ -149,15 +164,15 @@ void UEQComponentMove::Sprint(const FInputActionValue& Value)
 		return;
 	}
 
-	const bool bIsSprinting = Value.Get<bool>();
+	bIsSprinting = Value.Get<bool>();
 	if (bIsSprinting)
 	{
 		constexpr float SprintSpeed = 600.0f;
 		Player->GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
 
-		if (GetWorld()->GetTimerManager().IsTimerActive(SprintTimerHandle))
+		if (GetWorld()->GetGameInstance()->GetTimerManager().IsTimerActive(SprintTimerHandle))
 		{
-			GetWorld()->GetTimerManager().ClearTimer(SprintTimerHandle);
+			GetWorld()->GetGameInstance()->GetTimerManager().ClearTimer(SprintTimerHandle);
 		}
 
 		constexpr float SprintFieldOfView = 70.0f;
@@ -169,13 +184,13 @@ void UEQComponentMove::Sprint(const FInputActionValue& Value)
 
 void UEQComponentMove::StopSprinting(const FInputActionValue& Value)
 {
-	const bool bIsSprinting = Value.Get<bool>();
+	bIsSprinting = Value.Get<bool>();
 	if (!bIsSprinting)
 	{
 		constexpr float DefaultSpeed = 450.0f;
 		Player->GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
 		
-		constexpr float DefaultFieldOfView = 90.0f;
+		/*constexpr float DefaultFieldOfView = 90.0f;
 		if (CurrentFieldOfView >= DefaultFieldOfView - KINDA_SMALL_NUMBER)
 		{
 			GetWorld()->GetGameInstance()->GetTimerManager().ClearTimer(SprintTimerHandle);
@@ -186,7 +201,7 @@ void UEQComponentMove::StopSprinting(const FInputActionValue& Value)
 				constexpr int32 DefaultInterpSpeed = 5;
 				CurrentFieldOfView = FMath::FInterpTo(CurrentFieldOfView, DefaultFieldOfView, GetWorld()->GetDeltaSeconds(), DefaultInterpSpeed);
 				Player->GetFollowCamera()->FieldOfView = CurrentFieldOfView;
-			}), GetWorld()->GetDeltaSeconds(), true);
+			}), GetWorld()->GetDeltaSeconds(), true);*/
 	}
 }
 

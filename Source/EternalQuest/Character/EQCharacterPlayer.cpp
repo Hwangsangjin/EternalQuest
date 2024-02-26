@@ -32,7 +32,6 @@ AEQCharacterPlayer::AEQCharacterPlayer()
 {
 	// Replication
 	bReplicates = true;
-	SetReplicateMovement(true);
 
 	// Mesh
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -100.0f), FRotator(0.0f, -90.0f, 0.0f));
@@ -139,7 +138,7 @@ void AEQCharacterPlayer::PostInitializeComponents()
 	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), TEXT("End"));
 
 	StatComp->OnHpZero.AddUObject(this, &ThisClass::SetDead);
-	StatComp->OnStatChanged.AddUObject(this, &ThisClass::ApplyStat);
+	//StatComp->OnStatChanged.AddUObject(this, &ThisClass::ApplyStat);
 }
 
 void AEQCharacterPlayer::PossessedBy(AController* NewController)
@@ -205,6 +204,13 @@ void AEQCharacterPlayer::BeginPlay()
 	}
 
 	SetPlayerController();
+}
+
+void AEQCharacterPlayer::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	GroundSpeed = GetCharacterMovement()->Velocity.Size2D();
 }
 
 void AEQCharacterPlayer::AttackHitCheck()
