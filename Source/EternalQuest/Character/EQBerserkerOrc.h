@@ -41,5 +41,7 @@ public:
 	void MultiRPC_Combo();
 	UFUNCTION(NetMulticast,Unreliable)
 	void MultiRPC_Dodge();
+	UFUNCTION(NetMulticast,Unreliable)
+	void MultiRPC_Die();
 	
 };
