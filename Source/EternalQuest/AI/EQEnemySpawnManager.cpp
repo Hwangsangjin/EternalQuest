@@ -22,7 +22,7 @@ void AEQEnemySpawnManager::BeginPlay()
 	Super::BeginPlay();
 	if(HasAuthority())
 	{
-		GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle,this,&AEQEnemySpawnManager::Spawn,SpawnTime,false);
+		GetWorld()->GetGameInstance()->GetTimerManager().SetTimer(SpawnTimerHandle,this,&AEQEnemySpawnManager::Spawn,SpawnTime,false);
 	}
 }
 
@@ -43,12 +43,12 @@ void AEQEnemySpawnManager::SeverRPC_Spawn_Implementation()
 		if(PoolActor == nullptr)
 		{
 			UE_LOG(LogTemp,Warning,TEXT("CannotSpawn"));
-			GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle,this,&AEQEnemySpawnManager::Spawn,SpawnTime,false);
+			GetWorld()->GetGameInstance()->GetTimerManager().SetTimer(SpawnTimerHandle,this,&AEQEnemySpawnManager::Spawn,SpawnTime,false);
 			return;
 		}
 		// 월드 안에 랜덤한 위치에 스폰한다.
 		PoolActor->ActivateEnemy(RandomLoc+SpawnPoint);
-		GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle,this,&AEQEnemySpawnManager::Spawn,SpawnTime,false);
+		GetWorld()->GetGameInstance()->GetTimerManager().SetTimer(SpawnTimerHandle,this,&AEQEnemySpawnManager::Spawn,SpawnTime,false);
 		UE_LOG(LogTemp,Warning,TEXT("Spawning"));
 	}
 	else UE_LOG(LogTemp,Warning,TEXT("NoPool!!!!!!!!!!!"));

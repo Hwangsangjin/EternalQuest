@@ -111,9 +111,9 @@ void UEQMonsterAbility::SaveDamage(float Damage)
 		
 	if(GetWorld()->GetTimerManager().IsTimerActive(DamageTimerHandle))
 	{
-		GetWorld()->GetTimerManager().ClearTimer(DamageTimerHandle);
+		GetWorld()->GetGameInstance()->GetTimerManager().ClearTimer(DamageTimerHandle);
 	}
-	GetWorld()->GetTimerManager().SetTimer(DamageTimerHandle,this,&UEQMonsterAbility::CheckCanDodge,3.0f,false);
+	GetWorld()->GetGameInstance()->GetTimerManager().SetTimer(DamageTimerHandle,this,&UEQMonsterAbility::CheckCanDodge,3.0f,false);
 }
 
 void UEQMonsterAbility::CheckCanDodge()
