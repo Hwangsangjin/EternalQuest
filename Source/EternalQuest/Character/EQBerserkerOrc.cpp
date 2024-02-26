@@ -33,6 +33,25 @@ AEQBerserkerOrc::AEQBerserkerOrc()
 		WeaponComp_R->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	}
+	HelmetMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("HelmetMesh"));
+	HelmetMesh -> SetupAttachment(GetMesh(),FName("Halmet"));
+	ConstructorHelpers::FObjectFinder<USkeletalMesh>HatTemp(TEXT("/Script/Engine.SkeletalMesh'/Game/Assets/ma17_OrcSet/ma035_OrcBerserker/Mesh/SK_ma035_Helmet.SK_ma035_Helmet'"));
+	if(HatTemp.Succeeded())
+	{
+		HelmetMesh->SetSkeletalMesh(HatTemp.Object);
+		HelmetMesh->SetRelativeLocation(FVector(-85,0,0));
+		// (Pitch=90.000000,Yaw=1350.000000,Roll=-995.000000)
+		HelmetMesh->SetRelativeRotation(FRotator(90,1350,-995));
+	}
+	ShoulderMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ShoulderMesh"));
+	ConstructorHelpers::FObjectFinder<USkeletalMesh>ShoTemp(TEXT("/Script/Engine.SkeletalMesh'/Game/Assets/ma17_OrcSet/ma035_OrcBerserker/Mesh/SK_ma035_Pauldrons.SK_ma035_Pauldrons'"));
+	if(ShoTemp.Succeeded())
+	{
+		ShoulderMesh->SetSkeletalMesh(ShoTemp.Object);
+		ShoulderMesh->SetRelativeLocation(FVector(-60,0,0));
+		//(Pitch=-90.000000,Yaw=180.000000,Roll=180.000000)
+		ShoulderMesh->SetRelativeRotation(FRotator(-90,180,180));
+	}
 }
 
 UBehaviorTree* AEQBerserkerOrc::GetBehaviorTree()
@@ -42,7 +61,7 @@ UBehaviorTree* AEQBerserkerOrc::GetBehaviorTree()
 
 void AEQBerserkerOrc::MultiRPC_Die_Implementation()
 {
-	PlayAnimMontage(Montage,2,FName("Die"));
+	PlayAnimMontage(Montage,1,FName("Die"));
 }
 
 void AEQBerserkerOrc::MultiRPC_Combo_Implementation()

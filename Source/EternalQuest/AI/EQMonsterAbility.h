@@ -7,6 +7,7 @@
 #include "EQMonsterAbility.generated.h"
 
 
+class AEQBerserkerOrc;
 class UEQBossMonsterHPUI;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -56,7 +57,7 @@ public:
 	bool bIsDamageOver = false;	
 	FTimerHandle DamageTimerHandle;
 
-	UPROPERTY(Replicated)
+	UPROPERTY(EditAnywhere,Replicated)
 	bool IsDead = false;
 
 public:
@@ -67,7 +68,7 @@ public:
 
 	UFUNCTION(Server,Reliable)
 	void ServerRPC_UpdateHP(float UpdateHealth);
-
+	
 
 	float CurrentTime = 0;
 	float DieTime = 5.0f;

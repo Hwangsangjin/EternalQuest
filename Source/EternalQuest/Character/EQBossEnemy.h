@@ -34,6 +34,7 @@ public:
 	
 	virtual void Tick(float DeltaSeconds) override;
 	virtual bool GetIsMonsterHit();
+	virtual bool GetIsMonsterDie();
 	
 	virtual void ShowBossHPBar();
 	virtual void RemoveBossHPBar();

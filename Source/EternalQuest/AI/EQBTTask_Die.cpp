@@ -5,6 +5,7 @@
 
 #include "EQAIController.h"
 #include "EQMonsterAbility.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Character/EQBerserkerOrc.h"
 #include "Character/EQBossEnemy.h"
 
@@ -20,11 +21,13 @@ EBTNodeResult::Type UEQBTTask_Die::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 	auto Orc = Cast<AEQBerserkerOrc>(Self);
 	float CurrentTime = 0;
 	CurrentTime += GetWorld()->GetDeltaSeconds();
-	Orc->Ability->IsDead = false;
+	bool Check = Orc->GetIsMonsterDie();
+	UE_LOG(LogTemp,Warning,TEXT("Check : %d"),Check);
 	Orc->MultiRPC_Die();
 	if(CurrentTime > DieTime)
 	{
 		Orc->Destroy();
+		
 		FinishLatentTask(OwnerComp,EBTNodeResult::Succeeded);
 		return EBTNodeResult::Succeeded;
 	}

@@ -8,6 +8,7 @@
 #include "Character/EQBerserkerOrc.h"
 #include "Character/EQBossEnemy.h"
 #include "Character/EQNormalEnemy.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "Widget/EQBossMonsterHPUI.h"
 
@@ -71,6 +72,8 @@ void UEQMonsterAbility::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 void UEQMonsterAbility::TakeDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
 	AController* InstigatedBy, AActor* DamageCauser)
 {
+	UE_LOG(LogTemp,Warning,TEXT("CurrentHP : %f"),CurrentHealth);
+	UE_LOG(LogTemp,Warning,TEXT("MaxHP : %f"), MaxHealth);
 	if(Damage <= 0)
 	{
 		return;
@@ -99,10 +102,31 @@ void UEQMonsterAbility::TakeDamage(AActor* DamagedActor, float Damage, const UDa
 		SaveDamage(Damage);
 		if(CurrentHealth <= 0)
 		{
+			
 			IsDead = true;
+			
+			
+			
+			auto Orc = Cast<AEQBerserkerOrc>(DamagedActor);
+			UE_LOG(LogTemp,Warning,TEXT("44444444444444444444444444444444"));
+			Orc->MultiRPC_Die();
+			UE_LOG(LogTemp,Warning,TEXT("6666666666666666666666666666666"));
+			FTimerHandle DieTimerHandle;
+			GetWorld()->GetTimerManager().SetTimer(DieTimerHandle, [Orc]()
+			{
+				Orc->Destroy();
+			}, 5.0f, false);
+			UE_LOG(LogTemp,Warning,TEXT("55555555555555555555555555555555555"));
+		}
+		else
+		{
+			IsDead = false;
 		}
 	}
 }
+
+
+
 
 
 void UEQMonsterAbility::SaveDamage(float Damage)

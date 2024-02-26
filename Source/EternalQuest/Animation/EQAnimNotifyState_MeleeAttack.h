@@ -13,6 +13,5 @@ UCLASS()
 class ETERNALQUEST_API UEQAnimNotifyState_MeleeAttack : public UAnimNotifyState
 {
 	GENERATED_BODY()
-	virtual void NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime) override;
 	
 };
