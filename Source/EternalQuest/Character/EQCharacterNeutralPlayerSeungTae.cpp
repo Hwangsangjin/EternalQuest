@@ -24,7 +24,7 @@ AEQCharacterNeutralPlayerSeungTae::AEQCharacterNeutralPlayerSeungTae()
 void AEQCharacterNeutralPlayerSeungTae::BeginPlay()
 {
 	Super::BeginPlay();
-	NPCName = TEXT("김승태");
+	NPCName = TEXT("승태");
 	NPCPrompt.PushLast(TEXT("안녕!, 넌 엘리시움에 못보던 얼굴인데 모험가인가봐?"));
 	NPCPrompt.PushLast(TEXT("나는 새싹광산에서 일하고 있는 승태 라고 해,"));
 	NPCPrompt.PushLast(TEXT("일기장에 일기와 오늘의 할일을 써야 하는데 어디있는지 보이질 않어!"));

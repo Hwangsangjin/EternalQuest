@@ -23,7 +23,7 @@ AEQCharacterNeutralPlayerSMK::AEQCharacterNeutralPlayerSMK()
 void AEQCharacterNeutralPlayerSMK::BeginPlay()
 {
 	Super::BeginPlay();
-	NPCName = TEXT("성민경");
+	NPCName = TEXT("민경");
 	NPCPrompt.PushLast(TEXT("안녕? 네가 경복이가 말했던 모험가구나?"));
 	NPCPrompt.PushLast(TEXT("일 잘하기로 소문이 자자하던데, 내 부탁좀 들어줄 수 있겠어?"));
 	NPCPrompt.PushLast(TEXT("마을 밖에서 자전거를 타고 달리다가, 버섯돌이들이 너무 많아서 그만 넘어져버렸지 뭐야?"));

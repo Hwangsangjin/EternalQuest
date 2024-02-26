@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "EQWidgetMainUI.generated.h"
 
+class UEQWidgetStateUI;
 class UEQWidgetChattingSystem;
 class UEQWidgetSkill;
 class UEQWidgetStatus;
@@ -51,4 +52,7 @@ public:
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, meta=(BindWidget))
 	TObjectPtr<UEQWidgetChattingSystem> WBP_EQWidgetChattingSystem;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, meta=(BindWidget))
+	TObjectPtr<UEQWidgetStateUI> WBP_EQWidgetStateUI;
 };

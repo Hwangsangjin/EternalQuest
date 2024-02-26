@@ -23,7 +23,7 @@ UEQBaseFSM::UEQBaseFSM()
 
 	PrimaryComponentTick.bCanEverTick = true;
 	bWantsInitializeComponent = true;
-	//SetIsReplicated(true);
+	SetIsReplicated(true);
 	
 }
 
