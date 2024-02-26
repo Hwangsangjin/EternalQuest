@@ -59,6 +59,11 @@ bool AEQBossEnemy::GetIsMonsterHit()
 	return Ability->bIsHit;
 }
 
+bool AEQBossEnemy::GetIsMonsterDie()
+{
+	return Ability->IsDead;
+}
+
 void AEQBossEnemy::ShowBossHPBar()
 {
 	auto UI = CreateWidget<UEQBossMonsterHPUI>(GetWorld(),HPUIFactory);

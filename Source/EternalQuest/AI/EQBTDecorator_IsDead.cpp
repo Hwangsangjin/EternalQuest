@@ -18,15 +18,14 @@ bool UEQBTDecorator_IsDead::CalculateRawConditionValue(UBehaviorTreeComponent& O
 {
 	auto const * const Controller = OwnerComp.GetAIOwner();
 	auto Self = Controller->GetPawn();
-	auto Boss = Cast<AEQBerserkerOrc>(Self);
+	auto Boss = Cast<AEQBossEnemy>(Self);
 	if(Boss)
 	{
-		if(Boss->Ability->IsDead == true)
+		if(Boss->GetIsMonsterDie() == true)
 		{
-			OwnerComp.GetBlackboardComponent()->SetValueAsBool(FName("IsDead"),true);
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 	return false;
 }

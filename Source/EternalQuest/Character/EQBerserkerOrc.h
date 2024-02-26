@@ -19,7 +19,12 @@ class ETERNALQUEST_API AEQBerserkerOrc : public AEQBossEnemy
 	
 public:
 	AEQBerserkerOrc();
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Amor")
+	USkeletalMeshComponent* HelmetMesh;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Amor")
+	USkeletalMeshComponent* ShoulderMesh;
 
+	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Weapon")
 	UStaticMeshComponent* WeaponComp_L;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Weapon")
