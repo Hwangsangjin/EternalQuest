@@ -19,8 +19,27 @@ class ETERNALQUEST_API AEQBerserkerOrc : public AEQBossEnemy
 	
 public:
 	AEQBerserkerOrc();
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Weapon")
+	UStaticMeshComponent* WeaponComp_L;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Weapon")
+	UStaticMeshComponent* WeaponComp_R;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="AI")
 	UBehaviorTree* Tree;
 	
 	UBehaviorTree* GetBehaviorTree();
+
+	UPROPERTY(EditAnywhere,Blueprintable,Category="Animaition")
+	UAnimMontage*Montage;
+
+	
+	UFUNCTION(NetMulticast,Unreliable)
+	void MultiRPC_Attack();
+	UFUNCTION(NetMulticast,Unreliable)
+	void MultiRPC_Smash();
+	UFUNCTION(NetMulticast,Unreliable)
+	void MultiRPC_Combo();
+	UFUNCTION(NetMulticast,Unreliable)
+	void MultiRPC_Dodge();
+	
 };

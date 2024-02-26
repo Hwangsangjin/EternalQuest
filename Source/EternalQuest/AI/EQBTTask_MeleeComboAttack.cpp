@@ -4,6 +4,7 @@
 #include "AI/EQBTTask_MeleeComboAttack.h"
 
 #include "EQAIController.h"
+#include "EQMonsterAbility.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Character/EQBerserkerOrc.h"
 #include "Character/EQCharacterPlayer.h"
@@ -25,8 +26,9 @@ EBTNodeResult::Type UEQBTTask_MeleeComboAttack::ExecuteTask(UBehaviorTreeCompone
 	{
 		Controller->StopMovement();
 		Controller->SetFocus(Player,EAIFocusPriority::Gameplay);
-		Orc->PlayAnimMontage(Montage,1,FName("Combo"));
+		Orc->MultiRPC_Combo();
 		Controller->GetBlackboardComponent()->SetValueAsFloat(FName(TEXT("CurrentTime")), 0);
+		Orc->Ability->bIsHit = false;
 		FinishLatentTask(OwnerComp,EBTNodeResult::Succeeded);
 		return EBTNodeResult::Succeeded;
 	}

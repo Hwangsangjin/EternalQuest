@@ -4,12 +4,13 @@
 #include "AI/EQBTTask_Smash.h"
 
 #include "EQAIController.h"
+#include "EQMonsterAbility.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Character/EQBerserkerOrc.h"
 #include "Character/EQCharacterPlayer.h"
 
 UEQBTTask_Smash::UEQBTTask_Smash(FObjectInitializer const& ObjectInitializer)
-{
+{ 
 	NodeName = TEXT("Smash");
 }
 
@@ -24,9 +25,9 @@ EBTNodeResult::Type UEQBTTask_Smash::ExecuteTask(UBehaviorTreeComponent& OwnerCo
 	if(Orc)
 	{
 		Controller->SetFocus(Player,EAIFocusPriority::Gameplay);
-		Orc->PlayAnimMontage(Montage,1.f,FName("Smash"));
+		Orc->MultiRPC_Smash();
 		FinishLatentTask(OwnerComp,EBTNodeResult::Succeeded);
-		//Orc->Ability->bIsHit = false;
+		Orc->Ability->bIsHit = false;
 		return EBTNodeResult::Succeeded;	
 	}
 	return EBTNodeResult::Failed;

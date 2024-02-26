@@ -27,8 +27,8 @@ public:
 	UPROPERTY(EditAnywhere,Category="NPC")
 	AEQCharacterNonPlayer* NPC;
 	
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Ability")
-	UEQMonsterAbility* Ability;
+	// UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Ability")
+	// UEQMonsterAbility* Ability;
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Ability")
 	UWidgetComponent* HPComp;
@@ -45,11 +45,10 @@ private:
 	bool bIsActive;
 
 protected:
-	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)override;
+	
 	virtual void MonsterProjectileHit(AActor* OtherActor); 
 	
-	UPROPERTY()
-	UDamageType* Type;
+	
 	virtual void Tick(float DeltaSeconds) override;
 	
 };

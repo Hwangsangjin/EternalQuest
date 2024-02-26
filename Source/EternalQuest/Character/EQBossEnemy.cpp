@@ -8,6 +8,7 @@
 #include "Components/WidgetComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Widget/EQBossMonsterHPUI.h"
 
 AEQBossEnemy::AEQBossEnemy()
 {
@@ -24,8 +25,12 @@ AEQBossEnemy::AEQBossEnemy()
 		HPComp->SetCastShadow(false);
 	}
 	
-	Ability = CreateDefaultSubobject<UEQMonsterAbility>(TEXT("Ability"));
+	//Ability = CreateDefaultSubobject<UEQMonsterAbility>(TEXT("Ability"));
+	bReplicates = true;
+	SetReplicateMovement(true);
 }
+
+
 
 void AEQBossEnemy::Tick(float DeltaSeconds)
 {
@@ -38,9 +43,37 @@ void AEQBossEnemy::Tick(float DeltaSeconds)
 	HPComp->SetWorldRotation(NewRotation);
 	if(Dist < DetectRange || bCanShowHP == true ) HPComp->SetVisibility(true);
 	else  HPComp->SetVisibility(false);
+	
+	if(Dist < DetectRange || bCanShowHP == true )
+	{
+		ShowBossHPBar();
+	}
+	else
+	{
+		RemoveBossHPBar();
+	}
 }
 
 bool AEQBossEnemy::GetIsMonsterHit()
 {
 	return Ability->bIsHit;
+}
+
+void AEQBossEnemy::ShowBossHPBar()
+{
+	auto UI = CreateWidget<UEQBossMonsterHPUI>(GetWorld(),HPUIFactory);
+	UI->AddToViewport();
+	UI->SetVisibility(ESlateVisibility::Visible);
+	BossHp = Cast<UEQBossMonsterHPUI>(UI);
+	UI->UpdateHP(Ability->CurrentHealth,Ability->MaxHealth);
+}
+
+void AEQBossEnemy::RemoveBossHPBar()
+{
+	if(BossHp)
+	{
+		auto UI = CreateWidget<UEQBossMonsterHPUI>(GetWorld(),HPUIFactory);
+		UI->SetVisibility(ESlateVisibility::Hidden);
+		BossHp = Cast<UEQBossMonsterHPUI>(UI);
+	}
 }

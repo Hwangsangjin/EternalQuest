@@ -14,7 +14,7 @@
 AEQNormalEnemy::AEQNormalEnemy()
 {
 	BaseFsm = CreateDefaultSubobject<UEQBaseFSM>("BasFSM");
-	Ability = CreateDefaultSubobject<UEQMonsterAbility>("Ability");
+	//Ability = CreateDefaultSubobject<UEQMonsterAbility>("Ability");
 	HPComp = CreateDefaultSubobject<UWidgetComponent>("HPComp");
 	HPComp -> SetupAttachment(RootComponent);
 	ConstructorHelpers::FClassFinder<UUserWidget>WidgetTemp(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blueprints/UI/WBP_MonsterHPBar.WBP_MonsterHPBar_C'"));
@@ -55,17 +55,7 @@ void AEQNormalEnemy::Deactivate()
 	bIsActive = false;
 }
 
-float AEQNormalEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
-	AActor* DamageCauser)
-{
-	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-	Ability->TakeDamage(this,DamageAmount,Type,EventInstigator,DamageCauser);
-
-	return DamageAmount;
-	
-	
-}
 
 void AEQNormalEnemy::MonsterProjectileHit(AActor* OtherActor)
 {

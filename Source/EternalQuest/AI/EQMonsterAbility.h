@@ -42,8 +42,16 @@ public:
 
 	FTimerHandle TimerHandle;
 	float RecoveryInterval = 1.5f;
+
 	UPROPERTY(EditAnywhere,Replicated,Category="AI")
 	bool bIsHit = false;
+
+	UPROPERTY(EditAnywhere,Replicated,Category="AI")
+	float DamageReceiver;
+	UPROPERTY(EditAnywhere,Replicated,Category="AI")
+	bool bIsDamageOver = false;	
+	FTimerHandle DamageTimerHandle;
+
 public:
 	void UpdateHP(float UpdateHealth);
 	void StaminaRecovery();
@@ -53,6 +61,9 @@ public:
 	UFUNCTION(Server,Reliable)
 	void ServerRPC_UpdateHP(float UpdateHealth);
 
-	
+	// TODO : 데미지가 3초동안 100이상이 들어오면
+	void SaveDamage(float Damage);
+	void CheckCanDodge();
 
+	
 };
