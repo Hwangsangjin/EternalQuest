@@ -166,9 +166,15 @@ public:
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
 // Dead
+public:
+	FORCEINLINE bool IsDead() const { return bIsDead; }
+
 protected:
 	virtual void SetDead();
 	void PlayDeadAnimation();
+
+private:
+	bool bIsDead = false;
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = true))

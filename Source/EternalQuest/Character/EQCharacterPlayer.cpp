@@ -236,6 +236,7 @@ void AEQCharacterPlayer::SetDead()
 		PlayDeadAnimation();
 		SetActorEnableCollision(false);
 		HpBarComp->SetHiddenInGame(true);
+		bIsDead = true;
 
 		APlayerController* PlayerController = Cast<APlayerController>(GetWorld()->GetFirstPlayerController());
 		if (PlayerController)
