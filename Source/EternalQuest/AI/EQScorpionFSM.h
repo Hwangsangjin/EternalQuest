@@ -38,6 +38,7 @@ private:
 	float MaxRangeAttackRange = 1500;
 	bool bIsUsingSkill;
 
+
 public:
 	void ScorpionAttack();
 	void ScorpionSkill();

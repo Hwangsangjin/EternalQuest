@@ -43,8 +43,8 @@ public:
 	UPROPERTY(EditAnywhere,Blueprintable,Category="Animaition")
 	UAnimMontage* Montage;
 
-	void CheckAttack_L();
-	void CheckAttack_R();
+	void CheckAttack_L(float Damage);
+	void CheckAttack_R(float Damage);
 	
 	
 	UFUNCTION(NetMulticast,Unreliable)
