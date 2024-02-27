@@ -94,6 +94,7 @@ void UEQMonsterAbility::TakeDamage(AActor* DamagedActor, float Damage, const UDa
 		}
 		else
 		{
+			Monster->BaseFsm->bIsDead = true;
 			Monster->BaseFsm->SetState(EMonsterState::Die);
 		}
 	}
@@ -102,21 +103,15 @@ void UEQMonsterAbility::TakeDamage(AActor* DamagedActor, float Damage, const UDa
 		SaveDamage(Damage);
 		if(CurrentHealth <= 0)
 		{
-			
 			IsDead = true;
-			
-			
-			
 			auto Orc = Cast<AEQBerserkerOrc>(DamagedActor);
-			UE_LOG(LogTemp,Warning,TEXT("44444444444444444444444444444444"));
+			Orc->SetActorEnableCollision(ECollisionEnabled::NoCollision);
 			Orc->MultiRPC_Die();
-			UE_LOG(LogTemp,Warning,TEXT("6666666666666666666666666666666"));
 			FTimerHandle DieTimerHandle;
 			GetWorld()->GetTimerManager().SetTimer(DieTimerHandle, [Orc]()
 			{
-				Orc->Destroy();
+				//Orc->Destroy();
 			}, 5.0f, false);
-			UE_LOG(LogTemp,Warning,TEXT("55555555555555555555555555555555555"));
 		}
 		else
 		{
@@ -124,10 +119,6 @@ void UEQMonsterAbility::TakeDamage(AActor* DamagedActor, float Damage, const UDa
 		}
 	}
 }
-
-
-
-
 
 void UEQMonsterAbility::SaveDamage(float Damage)
 {
@@ -142,7 +133,6 @@ void UEQMonsterAbility::SaveDamage(float Damage)
 
 void UEQMonsterAbility::CheckCanDodge()
 {
-	//UE_LOG(LogTemp,Warning,TEXT("%f"),DamageReceiver);
 	if(DamageReceiver >= 100.f)
 	{
 		bIsDamageOver = true;
@@ -151,16 +141,13 @@ void UEQMonsterAbility::CheckCanDodge()
 	{
 		bIsDamageOver = false;
 	}
-	
 }
-
 
 void UEQMonsterAbility::ServerRPC_UpdateHP_Implementation(float UpdateHealth)
 {
 	CurrentHealth = FMath::Max(0,CurrentHealth+UpdateHealth);
 	bIsHit = true;
 }
-
 
 void UEQMonsterAbility::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {

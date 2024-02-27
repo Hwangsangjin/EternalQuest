@@ -113,9 +113,10 @@ void UEQRangerFSM::ShootWeb()
 
 void UEQRangerFSM::ServerRPC_SpiderAttack_Implementation()
 {
+	bCanAttack = true;
 	CurrentTime += GetWorld()->GetDeltaSeconds();
 	// 공격 시간이되면
-	if(CurrentTime > AttackTime)
+	if(CurrentTime > AttackTime && bCanAttack == true)
 	{
 		if (Target)
 		{

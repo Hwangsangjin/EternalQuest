@@ -3,8 +3,13 @@
 
 #include "Character/EQBerserkerOrc.h"
 
+#include "EQCharacterPlayer.h"
 #include "AI/EQMonsterAbility.h"
 #include "Components/CapsuleComponent.h"
+#include "Engine/DamageEvents.h"
+#include "Kismet/KismetSystemLibrary.h"
+
+
 
 
 AEQBerserkerOrc::AEQBerserkerOrc()
@@ -21,7 +26,17 @@ AEQBerserkerOrc::AEQBerserkerOrc()
 	WeaponComp_L = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponComp_L"));
 	WeaponComp_L -> SetupAttachment(GetMesh(),FName("weapon_root_L"));
 	WeaponComp_R = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponComp_R"));
-	WeaponComp_R ->SetupAttachment(GetMesh(),FName("weapon_root_R"));
+	WeaponComp_R -> SetupAttachment(GetMesh(),FName("weapon_root_R"));
+	// HitSphere_L = CreateDefaultSubobject<UCapsuleComponent>(TEXT("HitSphere_L"));
+	// HitSphere_L -> SetupAttachment(WeaponComp_L);
+	// HitSphere_L -> SetRelativeLocation(FVector(-32.f,0.f,45.f));
+	// HitSphere_L -> SetCapsuleRadius(13.f);
+	// HitSphere_L -> SetCapsuleHalfHeight(40.f);
+	// HitSphere_R = CreateDefaultSubobject<UCapsuleComponent>(TEXT("HitSphere_R"));
+	// HitSphere_R -> SetupAttachment(WeaponComp_R);
+	// HitSphere_R ->SetRelativeLocation(FVector(-32.f,0.f,45.f));
+	// HitSphere_R -> SetCapsuleRadius(13.f);
+	// HitSphere_R -> SetCapsuleHalfHeight(40.f);
 	ConstructorHelpers::FObjectFinder<UStaticMesh> WeaponMesh(TEXT("/Script/Engine.StaticMesh'/Game/Assets/ma17_OrcSet/ma035_OrcBerserker/Mesh/SM_ma035_Weapon.SM_ma035_Weapon'"));
 	if(WeaponMesh.Succeeded())
 	{
@@ -33,6 +48,11 @@ AEQBerserkerOrc::AEQBerserkerOrc()
 		WeaponComp_R->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	}
+	StartPos = CreateDefaultSubobject<USceneComponent>(TEXT("StartPos"));
+	StartPos ->SetupAttachment(WeaponComp_L,FName(TEXT("Axe_StartPos")));
+	EndPos = CreateDefaultSubobject<USceneComponent>(TEXT("EndPos"));
+	EndPos ->SetupAttachment(WeaponComp_L,FName(TEXT("Axe_EndPos")));
+	
 	HelmetMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("HelmetMesh"));
 	HelmetMesh -> SetupAttachment(GetMesh(),FName("Halmet"));
 	ConstructorHelpers::FObjectFinder<USkeletalMesh>HatTemp(TEXT("/Script/Engine.SkeletalMesh'/Game/Assets/ma17_OrcSet/ma035_OrcBerserker/Mesh/SK_ma035_Helmet.SK_ma035_Helmet'"));
@@ -57,6 +77,25 @@ AEQBerserkerOrc::AEQBerserkerOrc()
 UBehaviorTree* AEQBerserkerOrc::GetBehaviorTree()
 {
 	return Tree;
+}
+
+
+void AEQBerserkerOrc::CheckAttack()
+{
+	TArray<FHitResult> OutHitArray;
+	if (UKismetSystemLibrary::SphereTraceMulti(GetWorld(), StartPos->GetComponentLocation(), EndPos->GetComponentLocation(), 10.f, UEngineTypes::ConvertToTraceType(ECC_Visibility), false, {}, 
+			EDrawDebugTrace::Persistent, OutHitArray, true))
+	{
+		for (FHitResult Iter : OutHitArray)
+		{
+			if (Cast<ACharacter>(Iter.GetActor()))
+			{
+				UE_LOG(LogTemp,Warning,TEXT("AEQBerserkerOrc::CheckAttack) Overlapped Actor : %s"), *Iter.GetActor()->GetActorNameOrLabel());
+
+				break;
+			}	
+		}
+	}
 }
 
 void AEQBerserkerOrc::MultiRPC_Die_Implementation()
