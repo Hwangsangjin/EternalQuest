@@ -74,11 +74,11 @@ UBehaviorTree* AEQBerserkerOrc::GetBehaviorTree()
 }
 
 
-void AEQBerserkerOrc::CheckAttack_L()
+void AEQBerserkerOrc::CheckAttack_L(float Damage)
 {
 	TArray<FHitResult> OutHitArray;
-	if (UKismetSystemLibrary::SphereTraceMulti(GetWorld(), StartPos_L->GetComponentLocation(), EndPos_L->GetComponentLocation(), 10.f, UEngineTypes::ConvertToTraceType(ECC_Visibility), false, {}, 
-			EDrawDebugTrace::Persistent, OutHitArray, true))
+	if (UKismetSystemLibrary::SphereTraceMulti(GetWorld(), StartPos_L->GetComponentLocation(), EndPos_L->GetComponentLocation(), 50.f, UEngineTypes::ConvertToTraceType(ECC_Visibility), false, {}, 
+			EDrawDebugTrace::None, OutHitArray, true))
 	{
 		TArray<AEQCharacterPlayer*> HitPlayers;
 		for (FHitResult Iter : OutHitArray)
@@ -87,7 +87,6 @@ void AEQBerserkerOrc::CheckAttack_L()
 			{
 				if (!HitPlayers.Contains(Player))
 				{
-					float Damage = 10.f;
 					FDamageEvent DamageEvent;
 					Player->TakeDamage(Damage, DamageEvent, nullptr, this);
 					HitPlayers.Add(Player);
@@ -97,11 +96,11 @@ void AEQBerserkerOrc::CheckAttack_L()
 	}
 }
 
-void AEQBerserkerOrc::CheckAttack_R()
+void AEQBerserkerOrc::CheckAttack_R(float Damage)
 {
 	TArray<FHitResult> OutHitArray;
-	if (UKismetSystemLibrary::SphereTraceMulti(GetWorld(), StartPos_R->GetComponentLocation(), EndPos_R->GetComponentLocation(), 10.f, UEngineTypes::ConvertToTraceType(ECC_Visibility), false, {}, 
-			EDrawDebugTrace::Persistent, OutHitArray, true))
+	if (UKismetSystemLibrary::SphereTraceMulti(GetWorld(), StartPos_R->GetComponentLocation(), EndPos_R->GetComponentLocation(), 50.f, UEngineTypes::ConvertToTraceType(ECC_Visibility), false, {}, 
+			EDrawDebugTrace::None, OutHitArray, true))
 	{
 		TArray<AEQCharacterPlayer*> HitPlayers;
 		for (FHitResult Iter : OutHitArray)
@@ -110,7 +109,6 @@ void AEQBerserkerOrc::CheckAttack_R()
 			{
 				if (!HitPlayers.Contains(Player))
 				{
-					float Damage = 10.f;
 					FDamageEvent DamageEvent;
 					Player->TakeDamage(Damage, DamageEvent, nullptr, this);
 					HitPlayers.Add(Player);

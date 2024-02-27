@@ -5,9 +5,6 @@
 
 #include "EQCharacterPlayer.h"
 #include "AI/EQMonsterAbility.h"
-#include "Components/WidgetComponent.h"
-#include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetMathLibrary.h"
 #include "Widget/EQBossMonsterHPUI.h"
 
 AEQBossEnemy::AEQBossEnemy()

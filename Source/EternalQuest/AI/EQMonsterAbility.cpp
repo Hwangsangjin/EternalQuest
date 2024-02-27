@@ -31,42 +31,19 @@ void UEQMonsterAbility::BeginPlay()
 	if(Owner)
 	{
 		Owner->OnTakeAnyDamage.AddDynamic(this,&UEQMonsterAbility::TakeDamage);
+		if(Owner->IsA<AEQBossEnemy>())
+		{
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle,this,&UEQMonsterAbility::StaminaRecovery,1.0f,true);
+		}
 	}
 	
 }
-
-void UEQMonsterAbility::UpdateHP(float UpdateHealth)
-{
-	//UE_LOG(LogTemp, Warning, TEXT("Current Health222: %f"), CurrentHealth);
-	//CurrentHealth = FMath::Max(0,CurrentHealth+UpdateHealth);
-	ServerRPC_UpdateHP(UpdateHealth);
-	//UE_LOG(LogTemp,Warning,TEXT("damage: %.1f, curent Health: %.1f"), UpdateHealth, CurrentHealth);
-}
-
-void UEQMonsterAbility::StaminaRecovery()
-{
-	// 체력증가
-	float RecoveryRate = 0.03f;
-
-	// 현재 체력이 최대 체력보다 작을 때만 회복 수행
-	if (CurrentHealth < MaxHealth)
-	{
-		// 초당 체력 회복량 계산 및 적용
-		float RecoveryAmount = MaxHealth * RecoveryRate;
-		CurrentHealth += RecoveryAmount;
-
-		// 최대 체력을 넘지 않도록 보정
-		CurrentHealth = FMath::Min(CurrentHealth, MaxHealth);
-	}
-}
-
-
-
 
 void UEQMonsterAbility::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	CheckCanDodge();
+	
 }
 
 void UEQMonsterAbility::TakeDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
@@ -78,19 +55,27 @@ void UEQMonsterAbility::TakeDamage(AActor* DamagedActor, float Damage, const UDa
 	{
 		return;
 	}
-
 	UpdateHP(-Damage);
 	
 	if(DamagedActor->IsA<AEQNormalEnemy>())
 	{
 		auto Monster = Cast<AEQNormalEnemy>(DamagedActor);
+		HitCount ++;
+		if(HitCount == 3)
+		{
+			Monster->BaseFsm->SuperAmor = true;	
+		}
 		if(CurrentHealth > 0)
 		{
+			
 			if(Monster->HasAuthority())
 			{
 				Monster->BaseFsm->AI->StopMovement();
+				if(Monster->BaseFsm->SuperAmor == false)
+				{
+					Monster->BaseFsm->SetState(EMonsterState::Hit);
+				}
 			}
-			Monster->BaseFsm->SetState(EMonsterState::Hit);
 		}
 		else
 		{
@@ -98,11 +83,12 @@ void UEQMonsterAbility::TakeDamage(AActor* DamagedActor, float Damage, const UDa
 			Monster->BaseFsm->SetState(EMonsterState::Die);
 		}
 	}
-	if(DamagedActor -> IsA<AEQBossEnemy>())
+	if(DamagedActor->IsA<AEQBossEnemy>())
 	{
 		SaveDamage(Damage);
 		if(CurrentHealth <= 0)
 		{
+			
 			IsDead = true;
 			auto Orc = Cast<AEQBerserkerOrc>(DamagedActor);
 			Orc->SetActorEnableCollision(ECollisionEnabled::NoCollision);
@@ -120,10 +106,35 @@ void UEQMonsterAbility::TakeDamage(AActor* DamagedActor, float Damage, const UDa
 	}
 }
 
+void UEQMonsterAbility::UpdateHP(float UpdateHealth)
+{
+	//UE_LOG(LogTemp, Warning, TEXT("Current Health222: %f"), CurrentHealth);
+	//CurrentHealth = FMath::Max(0,CurrentHealth+UpdateHealth);
+	ServerRPC_UpdateHP(UpdateHealth);
+	//UE_LOG(LogTemp,Warning,TEXT("damage: %.1f, curent Health: %.1f"), UpdateHealth, CurrentHealth);
+}
+
+void UEQMonsterAbility::StaminaRecovery()
+{
+	// 체력증가
+	float RecoveryRate = 0.003f;
+	// 현재 체력이 최대 체력보다 작을 때만 회복 수행
+	if (CurrentHealth < MaxHealth)
+	{
+		// 초당 체력 회복량 계산 및 적용
+		float RecoveryAmount = MaxHealth * RecoveryRate;
+		CurrentHealth += RecoveryAmount;
+
+		// 최대 체력을 넘지 않도록 보정
+		CurrentHealth = FMath::Min(CurrentHealth, MaxHealth);
+	}
+}
+
+
 void UEQMonsterAbility::SaveDamage(float Damage)
 {
 	DamageReceiver += Damage;
-		
+	
 	if(GetWorld()->GetTimerManager().IsTimerActive(DamageTimerHandle))
 	{
 		GetWorld()->GetGameInstance()->GetTimerManager().ClearTimer(DamageTimerHandle);

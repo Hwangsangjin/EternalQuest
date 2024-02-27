@@ -29,6 +29,8 @@ public:
 	UFUNCTION()
 	void AnimNotify_ScorAttack();
 	UFUNCTION()
+	void AnimNotify_SuperAmorEnd();
+	UFUNCTION()
 	void AnimNotify_DieEnd();
 
 	// Mush //

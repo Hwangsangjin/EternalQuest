@@ -36,7 +36,6 @@ void UEQScorpionFSM::TickMove()
 	TArray<AActor*> allPlayer;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEQCharacterPlayer::StaticClass(), allPlayer);
 	float dist = 100000;
-	
 	for(int32 i = 0; i < allPlayer.Num(); i++)
 	{
 		float tempDist = FVector::Distance(allPlayer[i]->GetActorLocation(), Self->GetActorLocation());
@@ -77,13 +76,11 @@ void UEQScorpionFSM::TickMove()
       
 		Self->GetCharacterMovement()->MaxWalkSpeed = BasicSpeed;
 		FPathFollowingRequestResult R;
-		// Ai는 Controller가 Server에만 있기 떄문에 Has Authority 를 사용하여 서버임을 알린다.
 		R.Code = AI -> MoveToLocation(RandomLoc);
 		if(R != EPathFollowingRequestResult::RequestSuccessful)
 		{
 			UpdateRandLoc(Self->GetActorLocation(),500,RandomLoc);
 			ChaseSpeed = BasicSpeed;
-			//   UE_LOG(LogTemp,Warning,TEXT("%f"),ChaseSpeed);
 		}
 	}
 
@@ -92,10 +89,6 @@ void UEQScorpionFSM::TickMove()
 void UEQScorpionFSM::TickAttack()
 {
 	Super::TickAttack();
-	// DrawDebugSphere(GetWorld(),Self->GetActorLocation(),MeleeAttackRange,100,FColor::Green);
-	// DrawDebugSphere(GetWorld(),Self->GetActorLocation(),MinRangeAttackRange,100,FColor::Red);
-	// DrawDebugSphere(GetWorld(),Self->GetActorLocation(),MaxRangeAttackRange,100,FColor::White);
-
 	CurrentTime += GetWorld()->GetDeltaSeconds();
 	if(CurrentTime > AttackTime && Target != nullptr)
 	{
@@ -131,15 +124,6 @@ void UEQScorpionFSM::MeleeAttackCheck()
 
 void UEQScorpionFSM::ScorpionAttack()
 {
-	// AI->MoveToLocation(Target->GetActorLocation());
-	// SetFocus();
-	// // 근거리 공격
-	// float Dist = FVector::Dist(Target->GetActorLocation(),Self->GetActorLocation());
-	// if(Dist < MeleeAttackRange)
-	// {
-	// 	Self->PlayAnimMontage(AnimMontage,1,FName("Attack"));
-	// 	SetState(EMonsterState::Attack);
-	// }
 	ServerRPC_ScorpionAttack();
 }
 
@@ -176,8 +160,6 @@ void UEQScorpionFSM::SetFocus()
 void UEQScorpionFSM::ScorpionPrj()
 {
 	Super::ScorpionPrj();
-	//AI->SetFocus(Target,EAIFocusPriority::Gameplay);
-	//FTransform ShootPoint = Self->GetArrowComponent()->GetComponentTransform();
 	FTransform ShootPoint = Self->GetMesh()->GetSocketTransform(FName("SkillPoint"));
 	GetWorld()->SpawnActor<AEQScorpionSkill>(SkillFactory,ShootPoint);
 	bIsUsingSkill = false;
@@ -203,7 +185,7 @@ void UEQScorpionFSM::ServerRPC_ScorpionAttack_Implementation()
 {
 	AI->MoveToLocation(Target->GetActorLocation());
 	SetFocus();
-	// 근거리 공격
+	SuperAmor = true;
 	float Dist = FVector::Dist(Target->GetActorLocation(),Self->GetActorLocation());
 	if(Dist < MeleeAttackRange)
 	{
@@ -215,7 +197,5 @@ void UEQScorpionFSM::ServerRPC_ScorpionAttack_Implementation()
 void UEQScorpionFSM::MultiRPC_ScorpionAttack_Implementation()
 {
 	Self->PlayAnimMontage(AnimMontage,1,FName("Attack"));
-	UE_LOG(LogTemp,Warning,TEXT("ScorAttack!!!!!!!!!!!!!"));
-
 }
 
