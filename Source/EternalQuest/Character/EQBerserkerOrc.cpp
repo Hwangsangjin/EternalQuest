@@ -38,14 +38,13 @@ AEQBerserkerOrc::AEQBerserkerOrc()
 		WeaponComp_R->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	}
-	
-	StartPos_L = CreateDefaultSubobject<USceneComponent>(TEXT("StartPos"));
+	StartPos_L = CreateDefaultSubobject<USceneComponent>(TEXT("StartPos_L"));
 	StartPos_L ->SetupAttachment(WeaponComp_L,FName(TEXT("Axe_StartPos")));
-	EndPos_L = CreateDefaultSubobject<USceneComponent>(TEXT("EndPos"));
+	EndPos_L = CreateDefaultSubobject<USceneComponent>(TEXT("EndPos_L"));
 	EndPos_L ->SetupAttachment(WeaponComp_L,FName(TEXT("Axe_EndPos")));
-	StartPos_R = CreateDefaultSubobject<USceneComponent>(TEXT("StartPos"));
+	StartPos_R = CreateDefaultSubobject<USceneComponent>(TEXT("StartPos_R"));
 	StartPos_R ->SetupAttachment(WeaponComp_L,FName(TEXT("Axe_StartPos")));
-	EndPos_R = CreateDefaultSubobject<USceneComponent>(TEXT("EndPos"));
+	EndPos_R = CreateDefaultSubobject<USceneComponent>(TEXT("EndPos_R"));
 	EndPos_R ->SetupAttachment(WeaponComp_L,FName(TEXT("Axe_EndPos")));
 	
 	HelmetMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("HelmetMesh"));
@@ -77,6 +76,7 @@ UBehaviorTree* AEQBerserkerOrc::GetBehaviorTree()
 
 void AEQBerserkerOrc::CheckAttack_L()
 {
+	TArray<EQ*> 
 	TArray<FHitResult> OutHitArray;
 	if (UKismetSystemLibrary::SphereTraceMulti(GetWorld(), StartPos_L->GetComponentLocation(), EndPos_R->GetComponentLocation(), 10.f, UEngineTypes::ConvertToTraceType(ECC_Visibility), false, {}, 
 			EDrawDebugTrace::Persistent, OutHitArray, true))
