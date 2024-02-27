@@ -215,7 +215,7 @@ void AEQCharacterPlayer::Tick(float DeltaSeconds)
 
 void AEQCharacterPlayer::AttackHitCheck()
 {
-	AttackComp->HitCheck();
+	AttackComp->AttackHitCheck();
 }
 
 float AEQCharacterPlayer::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -229,17 +229,20 @@ float AEQCharacterPlayer::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 
 void AEQCharacterPlayer::SetDead()
 {
-	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
-	GetWorld()->GetFirstPlayerController()->SetInputMode(FInputModeUIOnly());
-	PlayDeadAnimation();
-	SetActorEnableCollision(false);
-	HpBarComp->SetHiddenInGame(true);
-	
-	//APlayerController* PlayerController = Cast<APlayerController>(GetController());
-	//if (PlayerController)
-	//{
-	//	DisableInput(PlayerController);
-	//}
+	if (IsLocallyControlled())
+	{
+		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+		GetWorld()->GetFirstPlayerController()->SetInputMode(FInputModeUIOnly());
+		PlayDeadAnimation();
+		SetActorEnableCollision(false);
+		HpBarComp->SetHiddenInGame(true);
+
+		APlayerController* PlayerController = Cast<APlayerController>(GetWorld()->GetFirstPlayerController());
+		if (PlayerController)
+		{
+			DisableInput(PlayerController);
+		}
+	}
 }
 
 void AEQCharacterPlayer::PlayDeadAnimation()
@@ -249,7 +252,7 @@ void AEQCharacterPlayer::PlayDeadAnimation()
 	Animinstance->Montage_Play(DeadMontage, 1.0f);
 }
 
-int32 AEQCharacterPlayer::GetLevel()
+int32 AEQCharacterPlayer::GetLevel() const
 {
 	return StatComp->GetCurrentLevel();
 }

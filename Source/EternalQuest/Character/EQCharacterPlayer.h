@@ -63,9 +63,9 @@ protected:
 
 // Class Type
 public:
-	FORCEINLINE EClassType GetClassType() { return ClassType; }
+	FORCEINLINE EClassType GetClassType() const { return ClassType; }
 
-protected:
+private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character, Meta = (AllowPrivateAccess = true))
 	EClassType ClassType = EClassType::ECT_None;
 
@@ -129,7 +129,7 @@ public:
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
-protected:
+private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<USpringArmComponent> CameraBoom;
 
@@ -138,24 +138,22 @@ protected:
 
 // Interaction Box
 public:
-	FORCEINLINE UEQComponentMove* GetMoveComponent() const { return MoveComp; }
-	FORCEINLINE UEQComponentStat* GetStatComponent() const { return StatComp; }
 	FORCEINLINE UBoxComponent* GetInteractionBox() const { return InteractionBox; }
 
-protected:
+private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interaction, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UBoxComponent> InteractionBox;
 
 // Input
-protected:
+private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
 
 // Ground Speed
 public:
-	FORCEINLINE float GetGroundSpeed() { return GroundSpeed; }
+	FORCEINLINE float GetGroundSpeed() const { return GroundSpeed; }
 
-protected:
+private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement, Meta = (AllowPrivateAccess = true))
 	float GroundSpeed;
 
@@ -172,13 +170,16 @@ protected:
 	virtual void SetDead();
 	void PlayDeadAnimation();
 
+private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UAnimMontage> DeadMontage;
 
 // Stat
 public:
-	int32 GetLevel();
+	int32 GetLevel() const;
 	void SetLevel(int32 InNewLevel);
+
+protected:
 	void ApplyStat(const FEQCharacterStat& BaseStat, const FEQCharacterStat& ModifierStat);
 
 // UI Widget
@@ -186,7 +187,12 @@ protected:
 	virtual void SetupCharacterWidget(UEQWidgetBase* InWidgetBase) override;
 
 // Component
-protected:
+public:
+	FORCEINLINE UEQComponentMove* GetMoveComponent() const { return MoveComp; }
+	FORCEINLINE UEQComponentStat* GetStatComponent() const { return StatComp; }
+	FORCEINLINE UEQComponentAttack* GetAttackComponent() const { return AttackComp; }
+
+private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UEQComponentMove> MoveComp;
 
