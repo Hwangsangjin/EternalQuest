@@ -30,8 +30,12 @@ public:
 	void CallStatus(const FInputActionValue& Value);
 	void CallSkill(const FInputActionValue& Value);
 	void CallQuest(const FInputActionValue& Value);
+	void CallPostBox(const FInputActionValue& Value);
+	
 	void CallSettings(const FInputActionValue& Value);
 	void FlipFlopMouseMode(const FInputActionValue& Value);
+
+	void ClearPos();
 	// ----- 함수 -----
 
 	// ----- 변수 -----
@@ -53,9 +57,23 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UInputAction> CallQuestAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UInputAction> CallPostBoxAction;
+
 	UPROPERTY()
 	TObjectPtr<UEQComponentInventory> EQComponentInventory;
 	
 	bool bMouseModeFlag = false;
+
+	bool bStateFlag = false;
+	FVector2D StatePos = FVector2D(0);
+	bool bInventoryFlag = false;
+	FVector2D InventoryPos = FVector2D(0);
+	bool bSkillFlag = false;
+	FVector2D SkillPos = FVector2D(0);
+	bool bQuestFlag = false;
+	FVector2D QuestPos = FVector2D(0);
+	bool bPostBoxFlag = false;
+	FVector2D PostBoxPos = FVector2D(0);
 	// ----- 변수 -----
 };

@@ -4,14 +4,13 @@
 #include "Widget/EQBossMonsterHPUI.h"
 
 #include "Components/ProgressBar.h"
+#include "Components/TextBlock.h"
 #include "Kismet/KismetMathLibrary.h"
 
 void UEQBossMonsterHPUI::NativeConstruct()
 {
 	Super::NativeConstruct();
-
-	BarIdx = 2;
-	ChangePhase = 1000;
+	
 	
 }
 
@@ -21,14 +20,26 @@ void UEQBossMonsterHPUI::NativeTick(const FGeometry& MyGeometry, float InDeltaTi
 	// BossHPBar->SetPercent(NewPercent);
 }
 
-void UEQBossMonsterHPUI::UpdateHP(float Health)
+void UEQBossMonsterHPUI::UpdateHP(float CurrentHealth, float MaxHealth)
 {
 	
-	auto FirstBar = UKismetMathLibrary::MapRangeClamped(Health,0.5,1,0,1);
-	
-	BossHPBar_1->SetPercent(FirstBar);
-	auto SecondBar = UKismetMathLibrary::MapRangeClamped(Health,0,0.5,0,1);
-	
-	BossHPBar->SetPercent(SecondBar);
-	
+	const int32 LineCount = MaxHealth / BarLimit;
+	Txt_BarCount->SetText(FText::FromString(FString::Printf(TEXT("X%d"),LineCount)));
+	if(!(MaxHealth/BarLimit) == 0)
+	{
+		//반올림한 값이 줄의 개수
+	}
+	const float LimitHealth = MaxHealth/LineCount;
+	if(CurrentHealth > LimitHealth)
+	{
+		BossHPBar_1->SetPercent((CurrentHealth-LimitHealth)/LimitHealth);
+		BossHPBar->SetPercent(1.f);
+	}
+	else
+	{
+		BossHPBar_1->SetPercent(0.f);
+		BossHPBar->SetPercent(CurrentHealth/LimitHealth);
+	}
 }
+
+

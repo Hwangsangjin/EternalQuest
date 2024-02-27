@@ -47,19 +47,17 @@ public:
 
 	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Berserker")
-	float BerserkerBasicAttackDamage;
+	float BerserkerBasicAttackDamage = 10.f;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Berserker")
-	float BerserkerComboAttackDamage_1;
+	float BerserkerComboAttackDamage_1 = 10.f;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Berserker")
-	float BerserkerComboAttackDamage_2;
+	float BerserkerComboAttackDamage_2 = 15.f;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Berserker")
-	float BerserkerComboAttackDamage_3;
+	float BerserkerComboAttackDamage_3 = 20.f;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Berserker")
-	float BerserkerSmashDamage;
-
-
+	float BerserkerSmashDamage = 50.f;
 	
-	FTimerHandle TimerHandle;
+	FTimerHandle RecoveryTimerHandle;
 	float RecoveryInterval = 1.5f;
 	UPROPERTY(EditAnywhere,Replicated,Category="AI")
 	bool bIsHit = false;
@@ -70,6 +68,8 @@ public:
 	FTimerHandle DamageTimerHandle;
 	UPROPERTY(EditAnywhere,Replicated)
 	bool IsDead = false;
+	UPROPERTY(Replicated)
+	int32 HitCount = 0;
 
 public:
 	void UpdateHP(float UpdateHealth);

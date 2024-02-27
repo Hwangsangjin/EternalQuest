@@ -11,25 +11,35 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="63226f85-0a41-4fd5-9731-20837f29bd3b" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/AI/BB_Berserker.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/AI/BB_Berserker.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/AI/BT_Berserker.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/AI/BT_Berserker.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Animation/ABP_BerserkerOrc.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Animation/ABP_BerserkerOrc.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/BP_Busker.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/BP_Busker.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Maps/KesTestMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/KesTestMap.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Maps/LoginMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/LoginMap.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Maps/VillageMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/VillageMap.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/AI/EQBTTask_ChaseTarget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/AI/EQBTTask_ChaseTarget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/AI/EQBTTask_MeleeAttack.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/AI/EQBTTask_MeleeAttack.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/AI/EQBTTask_MeleeComboAttack.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/AI/EQBTTask_MeleeComboAttack.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/AI/EQBTTask_Smash.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/AI/EQBTTask_Smash.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/AI/EQBaseFSM.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/AI/EQBaseFSM.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/AI/EQBaseFSM.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/AI/EQBaseFSM.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/AI/EQMonsterAbility.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/AI/EQMonsterAbility.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/AI/EQMonsterAbility.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/AI/EQMonsterAbility.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Animation/EQEnemyAnim.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Animation/EQEnemyAnim.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Animation/EQEnemyAnim.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Animation/EQEnemyAnim.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Character/EQBerserkerOrc.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Character/EQBerserkerOrc.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Character/EQBerserkerOrc.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Character/EQBerserkerOrc.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.EternalQuest/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.EternalQuest/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Input/IMC_Default.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Input/IMC_Default.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_EQWidgetChatMessage.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_EQWidgetChatMessage.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_EQWidgetChattingSystem.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_EQWidgetChattingSystem.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_EQWidgetIconBar.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_EQWidgetIconBar.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_EQWidgetInteract.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_EQWidgetInteract.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_EQWidgetInventory.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_EQWidgetInventory.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_EQWidgetMinimap.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_EQWidgetMinimap.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_EQWidgetNpcPrompt.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_EQWidgetNpcPrompt.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_EQWidgetQuestList.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_EQWidgetQuestList.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_EQWidgetSettings.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_EQWidgetSettings.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_EQWidgetSkill.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_EQWidgetSkill.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_Slot.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_Slot.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_WidgetMain.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_WidgetMain.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Maps/TestMap_LDJ.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/TestMap_LDJ.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Component/EQComponentInteraction.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Component/EQComponentInteraction.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Component/EQComponentInteraction.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Component/EQComponentInteraction.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Component/EQComponentInventory.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Component/EQComponentInventory.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Component/EQComponentMenuManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Component/EQComponentMenuManager.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Component/EQComponentMenuManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Component/EQComponentMenuManager.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Widget/EQWidgetIconBar.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Widget/EQWidgetIconBar.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Widget/EQWidgetIconBar.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Widget/EQWidgetIconBar.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Widget/EQWidgetItemSlot.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Widget/EQWidgetItemSlot.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Widget/EQWidgetMainUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Widget/EQWidgetMainUI.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Widget/EQWidgetMainUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Widget/EQWidgetMainUI.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Widget/EQWidgetNpcPrompt.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Widget/EQWidgetNpcPrompt.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Widget/EQWidgetNpcPrompt.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Widget/EQWidgetNpcPrompt.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Widget/EQWidgetSettings.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Widget/EQWidgetSettings.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Widget/EQWidgetSettings.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Widget/EQWidgetSettings.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,6 +48,10 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -56,7 +70,7 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;KSE&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;LDJ&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -199,6 +213,8 @@
       <workItem from="1707929295937" duration="5000" />
       <workItem from="1708666141298" duration="102000" />
       <workItem from="1708849487894" duration="17000" />
+      <workItem from="1708925541690" duration="12505000" />
+      <workItem from="1708996011212" duration="10276000" />
     </task>
     <servers />
   </component>

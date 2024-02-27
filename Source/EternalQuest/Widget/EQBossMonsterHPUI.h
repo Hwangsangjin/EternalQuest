@@ -26,11 +26,10 @@ public:
 
 public:
 	
-	int32 BarIdx;
-	int32 ChangePhase;
-	
+	int32 BarIdx = 0;
+	int32 BarLimit = 1000;
 
 	virtual void NativeConstruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
-	void UpdateHP(float Health);
+	void UpdateHP(float CurrentHealth, float MaxHealth);
 };

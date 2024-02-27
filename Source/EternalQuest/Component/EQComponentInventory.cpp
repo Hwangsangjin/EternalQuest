@@ -162,11 +162,42 @@ bool UEQComponentInventory::AddToInventory(const FEQSlot& InSlot)
 		}
 		return false;
 	}
+
+	else if (InSlot.ItemType == EEQItemType::Equipping)
+	{
+		for (int i = 0; i < EQAllItem.Equipping.Num(); i++)
+		{
+			if (InSlot.ItemID.RowName == EQAllItem.Equipping[i].ItemID.RowName)
+			{
+				auto OutRow = InSlot.ItemID.DataTable->FindRow<FEQItem>(InSlot.ItemID.RowName, "");
+				if (OutRow->StackSize >= (InSlot.Quantity + EQAllItem.Equipping[i].Quantity))
+				{
+					EQAllItem.Equipping[i].Quantity = (InSlot.Quantity + EQAllItem.Equipping[i].Quantity);
+					return true;
+				}
+			}
+		}
+
+		for (int i = 0; i < EQAllItem.Equipping.Num(); i++)
+		{
+			if (EQAllItem.Equipping[i].Quantity == 0)
+			{
+				EQAllItem.Equipping[i] = InSlot;
+				return true;
+			}
+		}
+		return false;
+	}
 	return false;
 }
 
 void UEQComponentInventory::DropItem(FEQSlot* InSlot)
 {
+	if (InSlot->ItemType == EEQItemType::Equipping)
+	{
+		GEngine->AddOnScreenDebugMessage(-1,5,FColor::Red, TEXT("현재 장비중인 아이템입니다. 버릴 수 없습니다."));
+		return;
+	}
 	auto InPlayer = GetWorld()->GetFirstPlayerController()->GetCharacter();
 	FTransform SpawnTransform(FRotator(0),
 							  FVector(InPlayer->GetActorLocation() + InPlayer->GetActorForwardVector() * 100));

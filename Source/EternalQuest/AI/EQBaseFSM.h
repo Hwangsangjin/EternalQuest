@@ -90,9 +90,9 @@ protected:
 public:
 	UPROPERTY(Replicated)
 	bool bIsDead = false;
-	
-	
-	
+
+	UPROPERTY(Replicated)
+	bool SuperAmor = false;
 	
 
 protected:
@@ -101,7 +101,8 @@ protected:
 	virtual void TickAttack();
 	virtual void TickHit();
 	virtual void TickDie();
-	
+
+	void PlayerDie();
 
 
 public:

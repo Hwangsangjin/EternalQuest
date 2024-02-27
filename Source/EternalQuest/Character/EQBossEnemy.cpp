@@ -5,9 +5,6 @@
 
 #include "EQCharacterPlayer.h"
 #include "AI/EQMonsterAbility.h"
-#include "Components/WidgetComponent.h"
-#include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetMathLibrary.h"
 #include "Widget/EQBossMonsterHPUI.h"
 
 AEQBossEnemy::AEQBossEnemy()
@@ -48,7 +45,7 @@ void AEQBossEnemy::ShowBossHPBar()
 	UI->AddToViewport();
 	UI->SetVisibility(ESlateVisibility::Visible);
 	BossHp = Cast<UEQBossMonsterHPUI>(UI);
-	UI->UpdateHP(Ability->CurrentHealth/Ability->MaxHealth);
+	UI->UpdateHP(Ability->CurrentHealth,Ability->MaxHealth);
 }
 
 void AEQBossEnemy::RemoveBossHPBar()

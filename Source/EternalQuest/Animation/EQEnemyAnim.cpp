@@ -4,6 +4,7 @@
 #include "Animation/EQEnemyAnim.h"
 
 #include "AI/EQBaseFSM.h"
+#include "AI/EQMonsterAbility.h"
 #include "Character/EQBerserkerOrc.h"
 #include "Character/EQMush.h"
 #include "Character/EQScorpion.h"
@@ -36,6 +37,16 @@ void UEQEnemyAnim::AnimNotify_ScorAttack()
 	if(Scorpion != nullptr)
 	{
 		Scorpion->BaseFsm->MeleeAttackCheck();
+	}
+}
+
+void UEQEnemyAnim::AnimNotify_SuperAmorEnd()
+{
+	AEQScorpion* Scorpion = Cast<AEQScorpion>(TryGetPawnOwner());
+	if(Scorpion != nullptr)
+	{
+		Scorpion->BaseFsm->SuperAmor = false;
+		Scorpion->Ability->HitCount = 0;
 	}
 }
 
