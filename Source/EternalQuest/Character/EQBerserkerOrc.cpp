@@ -27,16 +27,6 @@ AEQBerserkerOrc::AEQBerserkerOrc()
 	WeaponComp_L -> SetupAttachment(GetMesh(),FName("weapon_root_L"));
 	WeaponComp_R = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponComp_R"));
 	WeaponComp_R -> SetupAttachment(GetMesh(),FName("weapon_root_R"));
-	// HitSphere_L = CreateDefaultSubobject<UCapsuleComponent>(TEXT("HitSphere_L"));
-	// HitSphere_L -> SetupAttachment(WeaponComp_L);
-	// HitSphere_L -> SetRelativeLocation(FVector(-32.f,0.f,45.f));
-	// HitSphere_L -> SetCapsuleRadius(13.f);
-	// HitSphere_L -> SetCapsuleHalfHeight(40.f);
-	// HitSphere_R = CreateDefaultSubobject<UCapsuleComponent>(TEXT("HitSphere_R"));
-	// HitSphere_R -> SetupAttachment(WeaponComp_R);
-	// HitSphere_R ->SetRelativeLocation(FVector(-32.f,0.f,45.f));
-	// HitSphere_R -> SetCapsuleRadius(13.f);
-	// HitSphere_R -> SetCapsuleHalfHeight(40.f);
 	ConstructorHelpers::FObjectFinder<UStaticMesh> WeaponMesh(TEXT("/Script/Engine.StaticMesh'/Game/Assets/ma17_OrcSet/ma035_OrcBerserker/Mesh/SM_ma035_Weapon.SM_ma035_Weapon'"));
 	if(WeaponMesh.Succeeded())
 	{
@@ -48,10 +38,15 @@ AEQBerserkerOrc::AEQBerserkerOrc()
 		WeaponComp_R->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	}
-	StartPos = CreateDefaultSubobject<USceneComponent>(TEXT("StartPos"));
-	StartPos ->SetupAttachment(WeaponComp_L,FName(TEXT("Axe_StartPos")));
-	EndPos = CreateDefaultSubobject<USceneComponent>(TEXT("EndPos"));
-	EndPos ->SetupAttachment(WeaponComp_L,FName(TEXT("Axe_EndPos")));
+	
+	StartPos_L = CreateDefaultSubobject<USceneComponent>(TEXT("StartPos"));
+	StartPos_L ->SetupAttachment(WeaponComp_L,FName(TEXT("Axe_StartPos")));
+	EndPos_L = CreateDefaultSubobject<USceneComponent>(TEXT("EndPos"));
+	EndPos_L ->SetupAttachment(WeaponComp_L,FName(TEXT("Axe_EndPos")));
+	StartPos_R = CreateDefaultSubobject<USceneComponent>(TEXT("StartPos"));
+	StartPos_R ->SetupAttachment(WeaponComp_L,FName(TEXT("Axe_StartPos")));
+	EndPos_R = CreateDefaultSubobject<USceneComponent>(TEXT("EndPos"));
+	EndPos_R ->SetupAttachment(WeaponComp_L,FName(TEXT("Axe_EndPos")));
 	
 	HelmetMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("HelmetMesh"));
 	HelmetMesh -> SetupAttachment(GetMesh(),FName("Halmet"));
@@ -80,22 +75,43 @@ UBehaviorTree* AEQBerserkerOrc::GetBehaviorTree()
 }
 
 
-void AEQBerserkerOrc::CheckAttack()
+void AEQBerserkerOrc::CheckAttack_L()
 {
 	TArray<FHitResult> OutHitArray;
-	if (UKismetSystemLibrary::SphereTraceMulti(GetWorld(), StartPos->GetComponentLocation(), EndPos->GetComponentLocation(), 10.f, UEngineTypes::ConvertToTraceType(ECC_Visibility), false, {}, 
+	if (UKismetSystemLibrary::SphereTraceMulti(GetWorld(), StartPos_L->GetComponentLocation(), EndPos_R->GetComponentLocation(), 10.f, UEngineTypes::ConvertToTraceType(ECC_Visibility), false, {}, 
 			EDrawDebugTrace::Persistent, OutHitArray, true))
 	{
 		for (FHitResult Iter : OutHitArray)
 		{
-			if (Cast<ACharacter>(Iter.GetActor()))
+			if (auto Player = Cast<AEQCharacterPlayer>(Iter.GetActor()))
 			{
-				UE_LOG(LogTemp,Warning,TEXT("AEQBerserkerOrc::CheckAttack) Overlapped Actor : %s"), *Iter.GetActor()->GetActorNameOrLabel());
-
+				//UE_LOG(LogTemp,Warning,TEXT("AEQBerserkerOrc::CheckAttack) Overlapped Actor : %s"), *Iter.GetActor()->GetActorNameOrLabel());
+				float Damage = 10.f;
+				FDamageEvent DamageEvent;
+				Player->TakeDamage(Damage,DamageEvent,nullptr,this);
 				break;
 			}	
 		}
 	}
+}
+
+void AEQBerserkerOrc::CheckAttack_R()
+{
+	TArray<FHitResult> OutHitArray;
+	if (UKismetSystemLibrary::SphereTraceMulti(GetWorld(), StartPos_L->GetComponentLocation(), EndPos_R->GetComponentLocation(), 10.f, UEngineTypes::ConvertToTraceType(ECC_Visibility), false, {}, 
+			EDrawDebugTrace::Persistent, OutHitArray, true))
+	{
+		for(FHitResult Iter : OutHitArray)
+		{
+			if(auto Player = Cast<AEQCharacterPlayer>(Iter.GetActor()))
+			{
+				float Damage = 10.f;
+				FDamageEvent DamageEvent;
+				Player->TakeDamage(Damage,DamageEvent,nullptr,this);
+			}
+		}
+	}
+	
 }
 
 void AEQBerserkerOrc::MultiRPC_Die_Implementation()

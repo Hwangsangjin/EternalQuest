@@ -28,9 +28,13 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Weapon")
 	UStaticMeshComponent* WeaponComp_R;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Weapon")
-	USceneComponent* StartPos;
+	USceneComponent* StartPos_L;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Weapon")
-	USceneComponent* EndPos;
+	USceneComponent* EndPos_L;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Weapon")
+	USceneComponent* StartPos_R;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Weapon")
+	USceneComponent* EndPos_R;
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="AI")
 	UBehaviorTree* Tree;
@@ -39,7 +43,8 @@ public:
 	UPROPERTY(EditAnywhere,Blueprintable,Category="Animaition")
 	UAnimMontage* Montage;
 
-	void CheckAttack();
+	void CheckAttack_L();
+	void CheckAttack_R();
 	
 	
 	UFUNCTION(NetMulticast,Unreliable)

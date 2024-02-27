@@ -27,8 +27,6 @@ public:
 	UPROPERTY(EditAnywhere,Category="NPC")
 	AEQCharacterNonPlayer* NPC;
 	
-	// UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Ability")
-	// UEQMonsterAbility* Ability;
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Ability")
 	UWidgetComponent* HPComp;
