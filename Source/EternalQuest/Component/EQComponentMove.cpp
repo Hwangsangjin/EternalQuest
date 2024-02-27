@@ -18,6 +18,7 @@
 #include "Widget/EQWidgetChatMessage.h"
 #include "Widget/EQWidgetChattingSystem.h"
 #include "Widget/EQWidgetMainUI.h"
+#include "Component/EQComponentAttack.h"
 
 UEQComponentMove::UEQComponentMove()
 {
@@ -75,6 +76,7 @@ void UEQComponentMove::SetupPlayerInput(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ThisClass::Move);
 		EnhancedInputComponent->BindAction(TurnAction, ETriggerEvent::Triggered, this, &ThisClass::Turn);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ThisClass::Look);
+		EnhancedInputComponent->BindAction(AvoidAction, ETriggerEvent::Triggered, this, &ThisClass::Avoid);
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &ThisClass::Sprint);
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ThisClass::StopSprinting);
 		EnhancedInputComponent->BindAction(EnterAction, ETriggerEvent::Completed, this, &ThisClass::Enter);
@@ -157,9 +159,80 @@ void UEQComponentMove::Look(const FInputActionValue& Value)
 	}
 }
 
+void UEQComponentMove::Avoid(const FInputActionValue& Value)
+{
+	if (IsAvoiding())
+	{
+		return;
+	}
+
+	Server_Avoid();
+}
+
+bool UEQComponentMove::Server_Avoid_Validate()
+{
+	return true;
+}
+
+void UEQComponentMove::Server_Avoid_Implementation()
+{
+	NetMulticast_Avoid();
+}
+
+void UEQComponentMove::NetMulticast_Avoid_Implementation()
+{
+	switch (Player->GetClassType())
+	{
+	case EClassType::ECT_Mage:
+		break;
+	case EClassType::ECT_Paladin:
+		break;
+	case EClassType::ECT_Priest:
+		break;
+	case EClassType::ECT_Rogue:
+		break;
+	case EClassType::ECT_Warrior:
+		Roll();
+		break;
+	}
+}
+
+void UEQComponentMove::Roll()
+{
+	if (Player->GetCharacterMovement()->GetCurrentAcceleration().IsZero())
+	{
+		return;
+	}
+
+	RollBegin();
+}
+
+void UEQComponentMove::RollBegin()
+{
+	bIsAvoiding = true;
+
+	const float AvoidSpeedRate = 1.0f;
+	UAnimInstance* AnimInstance = Player->GetMesh()->GetAnimInstance();
+	AnimInstance->Montage_Play(RollMontage, AvoidSpeedRate);
+
+	FOnMontageEnded EndDelegate;
+	EndDelegate.BindUObject(this, &ThisClass::RollEnd);
+	AnimInstance->Montage_SetEndDelegate(EndDelegate, RollMontage);
+}
+
+void UEQComponentMove::RollEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded)
+{
+	bIsAvoiding = false;
+}
+
 void UEQComponentMove::Sprint(const FInputActionValue& Value)
 {
 	if (Player->GetCharacterMovement()->GetCurrentAcceleration().IsZero())
+	{
+		return;
+	}
+
+	if (Player->GetAttackComponent()->IsAttack())
 	{
 		return;
 	}

@@ -6,9 +6,8 @@
 #include "Animation/EQAnimInstance.h"
 #include "EQEnemyAnim.generated.h"
 
-/**
- * 
- */
+enum class EMonsterState : uint8;
+
 UCLASS()
 class ETERNALQUEST_API UEQEnemyAnim : public UEQAnimInstance
 {
