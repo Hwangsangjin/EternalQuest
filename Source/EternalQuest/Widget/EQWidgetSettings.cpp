@@ -7,6 +7,7 @@
 #include "Components/Button.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Player/EQPlayerController.h"
+#include "Widget/EQWidgetIconBar.h"
 
 void UEQWidgetSettings::NativeConstruct()
 {
@@ -15,11 +16,13 @@ void UEQWidgetSettings::NativeConstruct()
 	Btn_Settings->OnClicked.AddDynamic(this, &UEQWidgetSettings::OnClickedSetting);
 	Btn_Exit->OnClicked.AddDynamic(this, &UEQWidgetSettings::OnClickedExit);
 	Btn_Cancel->OnClicked.AddDynamic(this, &UEQWidgetSettings::OnClickedCancel);
+	EQPlayerController = Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController());
 }
 
 void UEQWidgetSettings::OnClickedSetting()
 {
 	Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetSettings->SetVisibility(ESlateVisibility::Hidden);
+	EQPlayerController->EQWidgetMainUI->WBP_EQWidgetIconBar->OnClickSettings();
 }
 
 void UEQWidgetSettings::OnClickedExit()
@@ -29,5 +32,6 @@ void UEQWidgetSettings::OnClickedExit()
 
 void UEQWidgetSettings::OnClickedCancel()
 {
-	Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetSettings->SetVisibility(ESlateVisibility::Hidden);
+	// Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetSettings->SetVisibility(ESlateVisibility::Hidden);
+	EQPlayerController->EQWidgetMainUI->WBP_EQWidgetIconBar->OnClickSettings();
 }
