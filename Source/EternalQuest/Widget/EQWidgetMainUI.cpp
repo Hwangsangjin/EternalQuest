@@ -13,6 +13,14 @@ bool UEQWidgetMainUI::NativeOnDrop(const FGeometry& InGeometry, const FDragDropE
 {
 	auto HangItem = Cast<UEQItemDragDropOperation>(InOperation);
 	auto MainUI = Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI;
+	
+	if (HangItem->EQSlot->ItemType == EEQItemType::Equipping)
+	{
+		GEngine->AddOnScreenDebugMessage(-1,5,FColor::Red, TEXT("현재 장비중인 아이템입니다. 버릴 수 없습니다."));
+		MainUI->WBP_EQWidgetInventory->UpdateItemInInventoryUI();
+		return true;
+	}
+	
 	MainUI->WBP_EQWidgetItemActionMenu->OnClickBtnDrop();
 	MainUI->WBP_EQWidgetInventory->UpdateItemInInventoryUI();
 	return true;

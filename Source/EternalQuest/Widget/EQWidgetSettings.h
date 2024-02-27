@@ -6,6 +6,8 @@
 #include "Blueprint/UserWidget.h"
 #include "EQWidgetSettings.generated.h"
 
+class AEQPlayerController;
+class UEQWidgetIconBar;
 class UButton;
 /**
  * 
@@ -31,4 +33,7 @@ public:
 
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UButton> Btn_Cancel;
+
+	UPROPERTY()
+	TObjectPtr<AEQPlayerController> EQPlayerController;
 };

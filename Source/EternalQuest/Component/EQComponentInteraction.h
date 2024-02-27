@@ -79,4 +79,6 @@ public:
 	// ----- 변수 -----
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	bool bCommunicationNPC = false;
 };

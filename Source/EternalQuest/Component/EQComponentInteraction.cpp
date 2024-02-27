@@ -82,12 +82,13 @@ void UEQComponentInteraction::SetupPlayerInput(UInputComponent* PlayerInputCompo
 
 void UEQComponentInteraction::Interaction()
 {
-	if (!NPC) return;
+	if (!NPC || bCommunicationNPC) return;
+	PromptWidget->DisplayText = TEXT("");
 	PromptWidget->PullNPCInfomation(NPC);
+	bCommunicationNPC = true;
 	FInputModeGameAndUI InData;
 	GetWorld()->GetFirstPlayerController()->SetInputMode(InData);
 	GetWorld()->GetFirstPlayerController()->SetShowMouseCursor(true);
-
 	PromptWidget->AddToViewport();
 }
 

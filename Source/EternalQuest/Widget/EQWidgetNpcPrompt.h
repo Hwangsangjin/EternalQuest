@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "EQWidgetNpcPrompt.generated.h"
 
+class UBorder;
 class UHorizontalBox;
 class AEQCharacterNeutralPlayer;
 class UButton;
@@ -20,6 +21,7 @@ class ETERNALQUEST_API UEQWidgetNpcPrompt : public UUserWidget
 public:
 
 	virtual void NativeOnInitialized() override;
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 	void PullNPCInfomation(AEQCharacterNeutralPlayer* InNPC);
 	
@@ -29,7 +31,7 @@ public:
 	void AcceptQuest();
 	UFUNCTION()
 	void DenyQuest();
-
+	
 	UPROPERTY(EditDefaultsOnly, meta=(BindWidget))
 	UTextBlock* Txt_NPCName;
 
@@ -48,12 +50,29 @@ public:
 	UPROPERTY(EditDefaultsOnly, meta=(BindWidget))
 	UButton* Btn_QuestDeny;
 	
-
 	UPROPERTY()
 	AEQCharacterNeutralPlayer* NPC;
+
+	UPROPERTY()
+	FString DisplayText;
 
 	int32 PromptLast;
 	int32 PromptCurrent;
 	bool bQuestPromptCond;
 	int32 QuestTagIdx;
+
+	void TypeWritingText();
+	float CurrentTime;
+
+
+	UPROPERTY(EditDefaultsOnly, meta=(BindWidget))
+	TObjectPtr<UBorder> Border_Base;
+
+	UPROPERTY(EditDefaultsOnly, meta=(BindWidget))
+	TObjectPtr<UBorder> Border_NPCName;
+
+	UPROPERTY(EditDefaultsOnly, meta=(BindWidget))
+	TObjectPtr<UBorder> Border_NPCPrompt;
+
+	float RenderOpacityValue = 0;
 };

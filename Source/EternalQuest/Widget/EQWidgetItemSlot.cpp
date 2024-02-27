@@ -67,6 +67,21 @@ bool UEQWidgetItemSlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDro
 	UDragDropOperation* InOperation)
 {
 	auto HangItem = Cast<UEQItemDragDropOperation>(InOperation);
+	if (HangItem->EQSlot->ItemType != EEQItemType::Equipment && EQSlot->ItemType == EEQItemType::Equipping) // 소비->장비창으로 옮길 때
+	{
+		EQWidgetInventory->UpdateItemInInventoryUI();
+		GEngine->AddOnScreenDebugMessage(-1,3,FColor::Magenta, TEXT("123"));
+		return true;
+	}
+	
+	if (EQSlot->ItemType == EEQItemType::Equipping) // 장비->장비창으로 옮길 떄
+	{
+		Swap(HangItem->EQWidgetItemSlot->EQSlot->Quantity, EQSlot->Quantity);
+		Swap(HangItem->EQWidgetItemSlot->EQSlot->ItemID.RowName, EQSlot->ItemID.RowName);
+		EQWidgetInventory->UpdateItemInInventoryUI();
+		return true;
+	}
+	
 	if (HangItem->EQSlot->ItemID.RowName == EQSlot->ItemID.RowName)
 	{
 		Swap(HangItem->EQSlot->Quantity, EQSlot->Quantity);
@@ -89,6 +104,13 @@ FReply UEQWidgetItemSlot::NativeOnPreviewMouseButtonDown(const FGeometry& InGeom
 	{
 		return FReply::Unhandled();
 	}
+
+	if (InMouseEvent.IsMouseButtonDown(EKeys::LeftMouseButton)) // 좌클릭
+	{
+		auto Reply = UWidgetBlueprintLibrary::DetectDragIfPressed(InMouseEvent, this, EKeys::LeftMouseButton);
+		EQWidgetItemActionMenu->EQSlot = EQSlot;
+		return Reply.NativeReply;
+	}
 	
 	if(InMouseEvent.IsMouseButtonDown(EKeys::RightMouseButton)) // 우클릭
 	{
@@ -98,13 +120,7 @@ FReply UEQWidgetItemSlot::NativeOnPreviewMouseButtonDown(const FGeometry& InGeom
 		EQWidgetItemActionMenu->SetVisibility(ESlateVisibility::Visible);
 		return FReply::Handled();
 	}
-
-	if (InMouseEvent.IsMouseButtonDown(EKeys::LeftMouseButton))
-	{
-		auto Reply = UWidgetBlueprintLibrary::DetectDragIfPressed(InMouseEvent, this, EKeys::LeftMouseButton);
-		EQWidgetItemActionMenu->EQSlot = EQSlot;
-		return Reply.NativeReply;
-	}
+	
 	return FReply::Unhandled();
 }
 
