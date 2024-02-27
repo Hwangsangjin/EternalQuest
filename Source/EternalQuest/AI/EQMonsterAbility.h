@@ -39,24 +39,35 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Spider")
 	float SpiderWebDamage = 20.f;
 
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Spider")
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Mush")
 	float MushAttackDamage = 10.f;
 
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Spider")
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Scorpion")
 	float ScorpionAttackDamage = 25.f;
 
+	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Berserker")
+	float BerserkerBasicAttackDamage;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Berserker")
+	float BerserkerComboAttackDamage_1;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Berserker")
+	float BerserkerComboAttackDamage_2;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Berserker")
+	float BerserkerComboAttackDamage_3;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Berserker")
+	float BerserkerSmashDamage;
+
+
+	
 	FTimerHandle TimerHandle;
 	float RecoveryInterval = 1.5f;
-
 	UPROPERTY(EditAnywhere,Replicated,Category="AI")
 	bool bIsHit = false;
-
 	UPROPERTY(EditAnywhere,Replicated,Category="AI")
 	float DamageReceiver;
 	UPROPERTY(EditAnywhere,Replicated,Category="AI")
 	bool bIsDamageOver = false;	
 	FTimerHandle DamageTimerHandle;
-
 	UPROPERTY(EditAnywhere,Replicated)
 	bool IsDead = false;
 
@@ -76,6 +87,5 @@ public:
 	// TODO : 데미지가 3초동안 100이상이 들어오면
 	void SaveDamage(float Damage);
 	void CheckCanDodge();
-
 	
 };

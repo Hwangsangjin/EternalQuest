@@ -3,7 +3,9 @@
 
 #include "AI/EQEnemyPool.h"
 
+#include "EQBaseFSM.h"
 #include "EQMonsterAbility.h"
+#include "Animation/EQEnemyAnim.h"
 #include "Character/EQMush.h"
 #include "Character/EQNormalEnemy.h"
 
@@ -73,9 +75,9 @@ void AEQEnemyPool::ReturnEnemyToPool(AEQNormalEnemy* Enemy)
 {
 	if(Enemy)
 	{
+		Enemy->BaseFsm->bIsDead = false;
 		Enemy->Ability->CurrentHealth = 100.f;
 		Enemy->Deactivate();
-		UE_LOG(LogTemp,Warning,TEXT("DeactivateEnemy!!!!!!!!!!!!!!!!"));
 	}
 }
 

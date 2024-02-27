@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Character/EQCharacterNonPlayer.h"
+#include "Character/EQCharacterEnemy.h"
 #include "EQNormalEnemy.generated.h"
 
 
@@ -15,7 +15,7 @@ class UEQBaseFSM;
  * 
  */
 UCLASS()
-class ETERNALQUEST_API AEQNormalEnemy : public AEQCharacterNonPlayer
+class ETERNALQUEST_API AEQNormalEnemy : public AEQCharacterEnemy
 {
 	GENERATED_BODY()
 public:
@@ -27,8 +27,6 @@ public:
 	UPROPERTY(EditAnywhere,Category="NPC")
 	AEQCharacterNonPlayer* NPC;
 	
-	// UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Ability")
-	// UEQMonsterAbility* Ability;
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Ability")
 	UWidgetComponent* HPComp;

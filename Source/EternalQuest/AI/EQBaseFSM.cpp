@@ -75,31 +75,11 @@ void UEQBaseFSM::TickAttack() {}
 
 void UEQBaseFSM::TickHit()
 {
-	//Self->PlayAnimMontage(AnimMontage, 1, FName("Hit"));
-	// AActor* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-	// if (PlayerCharacter)
-	// {
-	// 	FVector PlayerLocation = PlayerCharacter->GetActorLocation();
-	// 	AI->MoveToLocation(PlayerLocation);
-	// 	SetState(EMonsterState::Attack);
-	// }
-	// Self->bCanShowHP = true;
 	ServerRPC_TickHit();
 }
 
 void UEQBaseFSM::TickDie()
 {
-	// CurrentTime += GetWorld()->GetDeltaSeconds();
-	//
-	// Self->PlayAnimMontage(AnimMontage,1,FName("Died"));
-	//
-	// Self->SetActorEnableCollision(ECollisionEnabled::NoCollision);
-	// if(CurrentTime>DieTime)
-	// {
-	// 	Pool->ReturnEnemyToPool(Self);
-	// 	UE_LOG(LogTemp,Warning,TEXT("BackToPool"));
-	// 	SetState(EMonsterState::Idle);
-	// }
 	ServerRPC_TickDie();
 }
 
@@ -148,9 +128,6 @@ void UEQBaseFSM::MeleeAttackCheck()
 	
 }
 
-
-
-
 void UEQBaseFSM::ServerRPC_SetState_Implementation(EMonsterState Next)
 {
 	if(Next == EMonsterState::Move)
@@ -179,7 +156,7 @@ void UEQBaseFSM::ServerRPC_TickDie_Implementation()
 {
 	CurrentTime += GetWorld()->GetDeltaSeconds();
 	Self->SetActorEnableCollision(ECollisionEnabled::NoCollision);
-
+	bCanAttack = false;
 	// 아이템 드롭
 	// 이름
 	// Self->EQSlot.ItemID.RowName = TEXT("Apple")
@@ -189,24 +166,26 @@ void UEQBaseFSM::ServerRPC_TickDie_Implementation()
 	// Self->EQSlot.ItemType = EEQItemType::Consumtion;
 	// // 드랍 아이템 매개변수 안데 EQSLot을 
 	//Target->FindComponentByClass<UEQComponentInventory>()->;
+	if(bIsDead ==  true)
+	{
+		MultiRPC_TickDie();
+	}
 	if(CurrentTime>DieTime)
 	{
-		Pool->ReturnEnemyToPool(Self);
-		UE_LOG(LogTemp,Warning,TEXT("BackToPool"));
 		SetState(EMonsterState::Idle);
+		Pool->ReturnEnemyToPool(Self);
 	}
-	MultiRPC_TickDie();
+	
 }
 
 void UEQBaseFSM::MultiRPC_TickDie_Implementation()
 {
-	Self->PlayAnimMontage(AnimMontage,1,FName("Died"));
+	Self->PlayAnimMontage(AnimMontage,1,FName("Die"));
 }
 
 
 void UEQBaseFSM::ServerRPC_TickHit_Implementation()
 {
-	UE_LOG(LogTemp,Warning,TEXT("ServerHit!!!!!!!!!!!!!!"));
 	AActor* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 	if (PlayerCharacter)
 	{
@@ -219,7 +198,6 @@ void UEQBaseFSM::ServerRPC_TickHit_Implementation()
 }
 void UEQBaseFSM::MultiRPC_TickHit_Implementation()
 {
-	UE_LOG(LogTemp,Warning,TEXT("MultiHit!!!!!!!!!!!!!!"));
 	Self->PlayAnimMontage(AnimMontage, 1, FName("Hit"));
 }
 
@@ -238,7 +216,7 @@ void UEQBaseFSM::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifeti
 	DOREPLIFETIME(UEQBaseFSM, DetectionRange);
 	DOREPLIFETIME(UEQBaseFSM, DieTime);
 	DOREPLIFETIME(UEQBaseFSM, RandomLoc);
-	
+	DOREPLIFETIME(UEQBaseFSM, bCanAttack);
 }
 
 

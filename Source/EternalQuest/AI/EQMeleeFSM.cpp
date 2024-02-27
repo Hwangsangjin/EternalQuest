@@ -33,9 +33,9 @@ void UEQMeleeFSM::TickAttack()
 	//ServerRPC_MushAttack();
 
 	if(!Self->HasAuthority()) return;
-	
+	bCanAttack = true;
 	CurrentTime += GetWorld()->GetDeltaSeconds();
-	if(CurrentTime>AttackTime)
+	if(CurrentTime > AttackTime && bCanAttack == true)
 	{
 		float Dist = FVector::Dist(Target->GetActorLocation(),Self->GetActorLocation());
 		{
@@ -200,8 +200,9 @@ void UEQMeleeFSM::ServerRPC_MushMove_Implementation()
 
 void UEQMeleeFSM::ServerRPC_MushAttack_Implementation()
 {
+	bCanAttack = true;
 	CurrentTime += GetWorld()->GetDeltaSeconds();
-	if(CurrentTime>AttackTime)
+	if(CurrentTime > AttackTime && bCanAttack == true)
 	{
 		float Dist = FVector::Dist(Target->GetActorLocation(),Self->GetActorLocation());
 		{
@@ -219,8 +220,6 @@ void UEQMeleeFSM::ServerRPC_MushAttack_Implementation()
 				MultiRPC_MushAttack();
 			}
 		}
-		
-		
 	}
 }
 

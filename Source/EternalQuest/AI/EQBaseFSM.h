@@ -85,6 +85,11 @@ protected:
 	float DieTime = 5.0f;
 	UPROPERTY(Replicated)
 	FVector RandomLoc;
+	UPROPERTY(Replicated)
+	bool bCanAttack = true;
+public:
+	UPROPERTY(Replicated)
+	bool bIsDead = false;
 	
 	
 	

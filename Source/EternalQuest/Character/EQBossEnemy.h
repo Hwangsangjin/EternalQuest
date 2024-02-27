@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Character/EQCharacterNonPlayer.h"
+#include "Character/EQCharacterEnemy.h"
 #include "EQBossEnemy.generated.h"
 class UEQBossMonsterHPUI;
 class UWidgetComponent;
@@ -12,17 +12,12 @@ class UEQMonsterAbility;
  * 
  */
 UCLASS()
-class ETERNALQUEST_API AEQBossEnemy : public AEQCharacterNonPlayer
+class ETERNALQUEST_API AEQBossEnemy : public AEQCharacterEnemy
 {
 	GENERATED_BODY()
 public:
 	AEQBossEnemy();
-	// UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Ability")
-	// UEQMonsterAbility* Ability;
-
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="UI")
-	UWidgetComponent* HPComp;
-
+	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UEQBossMonsterHPUI> HPUIFactory;
 	UPROPERTY()

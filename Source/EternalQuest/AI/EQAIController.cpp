@@ -27,5 +27,4 @@ void AEQAIController::OnPossess(APawn* InPawn)
 			RunBehaviorTree(Tree); 
 		}
 	}
-	
 }
