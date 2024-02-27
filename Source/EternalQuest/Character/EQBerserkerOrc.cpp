@@ -43,9 +43,9 @@ AEQBerserkerOrc::AEQBerserkerOrc()
 	EndPos_L = CreateDefaultSubobject<USceneComponent>(TEXT("EndPos_L"));
 	EndPos_L ->SetupAttachment(WeaponComp_L,FName(TEXT("Axe_EndPos")));
 	StartPos_R = CreateDefaultSubobject<USceneComponent>(TEXT("StartPos_R"));
-	StartPos_R ->SetupAttachment(WeaponComp_L,FName(TEXT("Axe_StartPos")));
+	StartPos_R ->SetupAttachment(WeaponComp_R,FName(TEXT("Axe_StartPos")));
 	EndPos_R = CreateDefaultSubobject<USceneComponent>(TEXT("EndPos_R"));
-	EndPos_R ->SetupAttachment(WeaponComp_L,FName(TEXT("Axe_EndPos")));
+	EndPos_R ->SetupAttachment(WeaponComp_R,FName(TEXT("Axe_EndPos")));
 	
 	HelmetMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("HelmetMesh"));
 	HelmetMesh -> SetupAttachment(GetMesh(),FName("Halmet"));
@@ -76,21 +76,23 @@ UBehaviorTree* AEQBerserkerOrc::GetBehaviorTree()
 
 void AEQBerserkerOrc::CheckAttack_L()
 {
-	TArray<EQ*> 
 	TArray<FHitResult> OutHitArray;
-	if (UKismetSystemLibrary::SphereTraceMulti(GetWorld(), StartPos_L->GetComponentLocation(), EndPos_R->GetComponentLocation(), 10.f, UEngineTypes::ConvertToTraceType(ECC_Visibility), false, {}, 
+	if (UKismetSystemLibrary::SphereTraceMulti(GetWorld(), StartPos_L->GetComponentLocation(), EndPos_L->GetComponentLocation(), 10.f, UEngineTypes::ConvertToTraceType(ECC_Visibility), false, {}, 
 			EDrawDebugTrace::Persistent, OutHitArray, true))
 	{
+		TArray<AEQCharacterPlayer*> HitPlayers;
 		for (FHitResult Iter : OutHitArray)
 		{
 			if (auto Player = Cast<AEQCharacterPlayer>(Iter.GetActor()))
 			{
-				//UE_LOG(LogTemp,Warning,TEXT("AEQBerserkerOrc::CheckAttack) Overlapped Actor : %s"), *Iter.GetActor()->GetActorNameOrLabel());
-				float Damage = 10.f;
-				FDamageEvent DamageEvent;
-				Player->TakeDamage(Damage,DamageEvent,nullptr,this);
-				break;
-			}	
+				if (!HitPlayers.Contains(Player))
+				{
+					float Damage = 10.f;
+					FDamageEvent DamageEvent;
+					Player->TakeDamage(Damage, DamageEvent, nullptr, this);
+					HitPlayers.Add(Player);
+				}
+			}
 		}
 	}
 }
@@ -98,16 +100,21 @@ void AEQBerserkerOrc::CheckAttack_L()
 void AEQBerserkerOrc::CheckAttack_R()
 {
 	TArray<FHitResult> OutHitArray;
-	if (UKismetSystemLibrary::SphereTraceMulti(GetWorld(), StartPos_L->GetComponentLocation(), EndPos_R->GetComponentLocation(), 10.f, UEngineTypes::ConvertToTraceType(ECC_Visibility), false, {}, 
+	if (UKismetSystemLibrary::SphereTraceMulti(GetWorld(), StartPos_R->GetComponentLocation(), EndPos_R->GetComponentLocation(), 10.f, UEngineTypes::ConvertToTraceType(ECC_Visibility), false, {}, 
 			EDrawDebugTrace::Persistent, OutHitArray, true))
 	{
-		for(FHitResult Iter : OutHitArray)
+		TArray<AEQCharacterPlayer*> HitPlayers;
+		for (FHitResult Iter : OutHitArray)
 		{
-			if(auto Player = Cast<AEQCharacterPlayer>(Iter.GetActor()))
+			if (auto Player = Cast<AEQCharacterPlayer>(Iter.GetActor()))
 			{
-				float Damage = 10.f;
-				FDamageEvent DamageEvent;
-				Player->TakeDamage(Damage,DamageEvent,nullptr,this);
+				if (!HitPlayers.Contains(Player))
+				{
+					float Damage = 10.f;
+					FDamageEvent DamageEvent;
+					Player->TakeDamage(Damage, DamageEvent, nullptr, this);
+					HitPlayers.Add(Player);
+				}
 			}
 		}
 	}
