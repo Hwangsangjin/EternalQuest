@@ -5,11 +5,16 @@
 
 #include "EQWidgetInventory.h"
 #include "EQWidgetMainUI.h"
+#include "EQWidgetMinimap.h"
+#include "EQWidgetPostBox.h"
 #include "EQWidgetQuestList.h"
 #include "EQWidgetSettings.h"
 #include "EQWidgetSkill.h"
+#include "EQWidgetStateUI.h"
 #include "EQWidgetStatus.h"
+#include "Component/EQComponentMenuManager.h"
 #include "Components/Button.h"
+#include "GameFramework/Character.h"
 #include "Player/EQPlayerController.h"
 
 void UEQWidgetIconBar::NativeConstruct()
@@ -31,11 +36,21 @@ void UEQWidgetIconBar::NativeConstruct()
 	Btn_Quest->OnUnhovered.AddDynamic(this, &UEQWidgetIconBar::OnUnhoverQuest);
 	Btn_Quest->OnClicked.AddDynamic(this, &UEQWidgetIconBar::OnClickQuest);
 
+	Btn_PostBox->OnHovered.AddDynamic(this, &UEQWidgetIconBar::OnHoverPostBox);
+	Btn_PostBox->OnUnhovered.AddDynamic(this, &UEQWidgetIconBar::OnUnhoverPostBox);
+	Btn_PostBox->OnClicked.AddDynamic(this, &UEQWidgetIconBar::OnClickPostBox);
+
 	Btn_Settings->OnHovered.AddDynamic(this, &UEQWidgetIconBar::OnHoverSettings);
 	Btn_Settings->OnUnhovered.AddDynamic(this, &UEQWidgetIconBar::OnUnhoverSettings);
 	Btn_Settings->OnClicked.AddDynamic(this, &UEQWidgetIconBar::OnClickSettings);
 
 	EQPlayerController = Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController());
+	MenuManager = GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentMenuManager>();
+}
+
+void UEQWidgetIconBar::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
 }
 
 void UEQWidgetIconBar::OnHoverStatus()
@@ -61,6 +76,7 @@ void UEQWidgetIconBar::OnClickStatus()
 		bOpenStatus = false;
 		ClearIconFlag();
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStatus->SetVisibility(ESlateVisibility::Hidden);
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Visible);
 	}
 	else
 	{
@@ -68,6 +84,19 @@ void UEQWidgetIconBar::OnClickStatus()
 		OnHoverStatus();
 		bOpenStatus = true;
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStatus->SetVisibility(ESlateVisibility::Visible);
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Hidden);
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetMinimap->SetVisibility(ESlateVisibility::Visible);
+	}
+
+	
+	if (MenuManager->bStateFlag)
+	{
+		MenuManager->bStateFlag = false;
+	}
+	else
+	{
+		MenuManager->ClearPos();
+		MenuManager->bStateFlag = true;
 	}
 }
 
@@ -94,6 +123,7 @@ void UEQWidgetIconBar::OnClickInventory()
 		bOpenInventory = false;
 		OnUnhoverInventory();
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetInventory->OpenCloseInventoryWidget();
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetMinimap->SetVisibility(ESlateVisibility::Visible);
 	}
 	else
 	{
@@ -101,6 +131,18 @@ void UEQWidgetIconBar::OnClickInventory()
 		OnHoverInventory();
 		bOpenInventory = true;
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetInventory->OpenCloseInventoryWidget();
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetMinimap->SetVisibility(ESlateVisibility::Hidden);
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Visible);
+	}
+
+	if (MenuManager->bInventoryFlag)
+	{
+		MenuManager->bInventoryFlag = false;
+	}
+	else
+	{
+		MenuManager->ClearPos();
+		MenuManager->bInventoryFlag = true;
 	}
 }
 
@@ -127,6 +169,7 @@ void UEQWidgetIconBar::OnClickSkill()
 		bOpenSkill = false;
 		ClearIconFlag();
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetSkill->SetVisibility(ESlateVisibility::Hidden);
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetMinimap->SetVisibility(ESlateVisibility::Visible);
 	}
 	else
 	{
@@ -134,6 +177,17 @@ void UEQWidgetIconBar::OnClickSkill()
 		OnHoverSkill();
 		bOpenSkill = true;
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetSkill->SetVisibility(ESlateVisibility::Visible);
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetMinimap->SetVisibility(ESlateVisibility::Hidden);
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Visible);
+	}
+	if (MenuManager->bSkillFlag)
+	{
+		MenuManager->bSkillFlag = false;
+	}
+	else
+	{
+		MenuManager->ClearPos();
+		MenuManager->bSkillFlag = true;
 	}
 }
 
@@ -160,6 +214,7 @@ void UEQWidgetIconBar::OnClickQuest()
 		bOpenQuest = false;
 		ClearIconFlag();
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetQuestList->SetVisibility(ESlateVisibility::Hidden);
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Visible);
 	}
 	else
 	{
@@ -167,6 +222,62 @@ void UEQWidgetIconBar::OnClickQuest()
 		OnHoverQuest();
 		bOpenQuest = true;
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetQuestList->SetVisibility(ESlateVisibility::Visible);
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Hidden);
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetMinimap->SetVisibility(ESlateVisibility::Visible);
+	}
+	if (MenuManager->bQuestFlag)
+	{
+		MenuManager->bQuestFlag = false;
+	}
+	else
+	{
+		MenuManager->ClearPos();
+		MenuManager->bQuestFlag = true;
+	}
+}
+
+void UEQWidgetIconBar::OnHoverPostBox()
+{
+	Btn_PostBox->SetBackgroundColor(FLinearColor(1,1,1,1));
+	Btn_PostBox->SetRenderScale(FVector2D(1.2));
+}
+
+void UEQWidgetIconBar::OnUnhoverPostBox()
+{
+	if (bOpenPostBox)
+	{
+		return;
+	}
+	Btn_PostBox->SetBackgroundColor(FLinearColor(1,1,1,0.5));
+	Btn_PostBox->SetRenderScale(FVector2D(1));
+}
+
+void UEQWidgetIconBar::OnClickPostBox()
+{
+	if (bOpenPostBox)
+	{
+		bOpenPostBox = false;
+		ClearIconFlag();
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetPostBox->SetVisibility(ESlateVisibility::Hidden); // 변경
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Visible);
+	}
+	else
+	{
+		ClearIconFlag();
+		OnHoverPostBox();
+		bOpenPostBox = true;
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetPostBox->SetVisibility(ESlateVisibility::Visible); // 변경
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Hidden);
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetMinimap->SetVisibility(ESlateVisibility::Visible);
+	}
+	if (MenuManager->bPostBoxFlag)
+	{
+		MenuManager->bPostBoxFlag = false;
+	}
+	else
+	{
+		MenuManager->ClearPos();
+		MenuManager->bPostBoxFlag = true;
 	}
 }
 
@@ -229,6 +340,12 @@ void UEQWidgetIconBar::ClearIconFlag()
 		OnUnhoverQuest();
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetQuestList->SetVisibility(ESlateVisibility::Hidden);
 	}
+	if (bOpenPostBox)
+	{
+		bOpenPostBox = false;
+		OnUnhoverPostBox();
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetPostBox->SetVisibility(ESlateVisibility::Hidden);
+	}
 	if (bOpenSettings)
 	{
 		bOpenSettings = false;
@@ -239,6 +356,9 @@ void UEQWidgetIconBar::ClearIconFlag()
 	OnUnhoverInventory();
 	OnUnhoverSkill();
 	OnUnhoverQuest();
+	OnUnhoverPostBox();
 	OnUnhoverSettings();
+	
+	MenuManager->ClearPos();
 }
 

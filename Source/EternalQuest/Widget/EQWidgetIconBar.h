@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "EQWidgetIconBar.generated.h"
 
+class UEQComponentMenuManager;
 class AEQPlayerController;
 class UButton;
 /**
@@ -19,6 +20,7 @@ class ETERNALQUEST_API UEQWidgetIconBar : public UUserWidget
 public:
 	
 	virtual void NativeConstruct() override;
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 	// ----- 함수 -----
 	UFUNCTION()
 	void OnHoverStatus();
@@ -57,6 +59,15 @@ public:
 	void OnClickQuest();
 
 	UFUNCTION()
+	void OnHoverPostBox();
+
+	UFUNCTION()
+	void OnUnhoverPostBox();
+
+	UFUNCTION()
+	void OnClickPostBox();
+	
+	UFUNCTION()
 	void OnHoverSettings();
 
 	UFUNCTION()
@@ -79,10 +90,17 @@ public:
 	UButton* Btn_Quest;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(BindWidget))
+	UButton* Btn_PostBox;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(BindWidget))
 	UButton* Btn_Settings;
 
 	UPROPERTY()
 	AEQPlayerController* EQPlayerController;
+
+	UPROPERTY()
+	UEQComponentMenuManager* MenuManager;
+	
 	// ----- Flag -----
 
 	void ClearIconFlag();
@@ -90,6 +108,7 @@ public:
 	bool bOpenInventory = false;
 	bool bOpenSkill = false;
 	bool bOpenQuest = false;
+	bool bOpenPostBox = false;
 	bool bOpenSettings = false;
 	// ----- Flag -----
 };
