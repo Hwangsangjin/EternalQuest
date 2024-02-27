@@ -57,7 +57,7 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Berserker")
 	float BerserkerSmashDamage = 50.f;
 	
-	FTimerHandle TimerHandle;
+	FTimerHandle RecoveryTimerHandle;
 	float RecoveryInterval = 1.5f;
 	UPROPERTY(EditAnywhere,Replicated,Category="AI")
 	bool bIsHit = false;

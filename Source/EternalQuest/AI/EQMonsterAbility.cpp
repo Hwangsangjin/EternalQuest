@@ -33,7 +33,7 @@ void UEQMonsterAbility::BeginPlay()
 		Owner->OnTakeAnyDamage.AddDynamic(this,&UEQMonsterAbility::TakeDamage);
 		if(Owner->IsA<AEQBossEnemy>())
 		{
-			GetWorld()->GetTimerManager().SetTimer(TimerHandle,this,&UEQMonsterAbility::StaminaRecovery,1.0f,true);
+			GetWorld()->GetTimerManager().SetTimer(RecoveryTimerHandle,this,&UEQMonsterAbility::StaminaRecovery,1.0f,true);
 		}
 	}
 	
@@ -88,7 +88,7 @@ void UEQMonsterAbility::TakeDamage(AActor* DamagedActor, float Damage, const UDa
 		SaveDamage(Damage);
 		if(CurrentHealth <= 0)
 		{
-			
+			GetWorld()->GetGameInstance()->GetTimerManager().ClearTimer(RecoveryTimerHandle);
 			IsDead = true;
 			auto Orc = Cast<AEQBerserkerOrc>(DamagedActor);
 			Orc->SetActorEnableCollision(ECollisionEnabled::NoCollision);

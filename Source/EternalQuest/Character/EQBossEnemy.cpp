@@ -45,7 +45,7 @@ void AEQBossEnemy::ShowBossHPBar()
 	UI->AddToViewport();
 	UI->SetVisibility(ESlateVisibility::Visible);
 	BossHp = Cast<UEQBossMonsterHPUI>(UI);
-	UI->UpdateHP(Ability->CurrentHealth/Ability->MaxHealth);
+	UI->UpdateHP(Ability->CurrentHealth,Ability->MaxHealth);
 }
 
 void AEQBossEnemy::RemoveBossHPBar()
