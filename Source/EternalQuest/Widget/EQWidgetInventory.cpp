@@ -96,7 +96,13 @@ void UEQWidgetInventory::AddItemInventory()
 		Cast<UEQWidgetItemSlot>(temp)->EQSlot = &e;
 		WrapBox_QuestItem->AddChildToWrapBox(temp);
 	}
-	for (auto& e : EQComponentInventory->EQAllItem.Equipping)
+	for (auto& e : EQComponentInventory->EQAllItem.EquippingSword)
+	{
+		auto temp = CreateWidget(GetWorld(), ItemSlotFactory);
+		Cast<UEQWidgetItemSlot>(temp)->EQSlot = &e;
+		WrapBox_Equipping->AddChildToWrapBox(temp);
+	}
+	for (auto& e : EQComponentInventory->EQAllItem.EquippingShield)
 	{
 		auto temp = CreateWidget(GetWorld(), ItemSlotFactory);
 		Cast<UEQWidgetItemSlot>(temp)->EQSlot = &e;

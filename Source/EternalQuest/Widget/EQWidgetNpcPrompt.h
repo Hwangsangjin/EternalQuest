@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "EQWidgetNpcPrompt.generated.h"
 
+class AEQPlayerController;
 class UBorder;
 class UHorizontalBox;
 class AEQCharacterNeutralPlayer;
@@ -24,6 +25,7 @@ public:
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 	void PullNPCInfomation(AEQCharacterNeutralPlayer* InNPC);
+	void AllWidgetDisable();
 	
 	UFUNCTION()
 	void NextPrompt();
@@ -63,8 +65,7 @@ public:
 
 	void TypeWritingText();
 	float CurrentTime;
-
-
+	
 	UPROPERTY(EditDefaultsOnly, meta=(BindWidget))
 	TObjectPtr<UBorder> Border_Base;
 
@@ -73,6 +74,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, meta=(BindWidget))
 	TObjectPtr<UBorder> Border_NPCPrompt;
+
+	UPROPERTY()
+	TObjectPtr<AEQPlayerController> PC;
 
 	float RenderOpacityValue = 0;
 };
