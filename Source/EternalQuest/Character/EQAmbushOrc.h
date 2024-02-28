@@ -4,18 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "Character/EQNormalEnemy.h"
-#include "EQMush.generated.h"
+#include "EQAmbushOrc.generated.h"
 
-class UEQMeleeFSM;
 /**
  * 
  */
 UCLASS()
-class ETERNALQUEST_API AEQMush : public AEQNormalEnemy
+class ETERNALQUEST_API AEQAmbushOrc : public AEQNormalEnemy
 {
 	GENERATED_BODY()
 
-public:
-	AEQMush();
-	virtual FString SetName() override;
+	AEQAmbushOrc();
+	
 };

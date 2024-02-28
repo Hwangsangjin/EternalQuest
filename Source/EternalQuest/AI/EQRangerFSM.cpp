@@ -13,6 +13,7 @@
 #include "Character/EQCharacterPlayer.h"
 #include "Components/ArrowComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Projectile/EQRangerOrcArrow.h"
 #include "Projectile/EQSpiderWeb.h"
 
 void UEQRangerFSM::BeginPlay()
@@ -112,9 +113,20 @@ void UEQRangerFSM::ShootWeb()
 		AI->SetFocus(Target,EAIFocusPriority::Gameplay);
 	}
 	FTransform ShootPoint = Self->GetMesh()->GetSocketTransform(FName("WebPoint"));
-	GetWorld()->SpawnActor<AEQSpiderWeb>(WebFactory,ShootPoint);
+	GetWorld()->SpawnActor<AEQSpiderWeb>(PrjFactory,ShootPoint);
 }
 
+void UEQRangerFSM::ShootArrow()
+{
+	Super::ShootArrow();
+	
+	if(Self->HasAuthority())
+	{
+		AI->SetFocus(Target,EAIFocusPriority::Gameplay);
+	}
+	FTransform ShootPoint = Self->GetMesh()->GetSocketTransform(FName("ArrowPoint"));
+	GetWorld()->SpawnActor<AEQRangerOrcArrow>(PrjFactory,ShootPoint);
+}
 
 
 void UEQRangerFSM::ServerRPC_SpiderAttack_Implementation()

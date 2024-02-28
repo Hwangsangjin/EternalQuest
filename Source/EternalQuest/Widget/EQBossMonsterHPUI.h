@@ -24,11 +24,11 @@ public:
 	UPROPERTY(EditDefaultsOnly,meta=(BindWidget))
 	UTextBlock* Txt_BarCount;
 
-public:
-	
+private:
 	int32 BarIdx = 0;
 	int32 BarLimit = 1000;
 
+public:
 	virtual void NativeConstruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 	void UpdateHP(float CurrentHealth, float MaxHealth);

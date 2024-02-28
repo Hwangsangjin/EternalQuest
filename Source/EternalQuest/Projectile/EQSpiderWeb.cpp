@@ -15,17 +15,6 @@ AEQSpiderWeb::AEQSpiderWeb()
 {
  	
 	PrimaryActorTick.bCanEverTick = true;
-	SphereComp = CreateDefaultSubobject<USphereComponent>("SphereComp");
-	SetRootComponent(SphereComp);
-	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>("MeshComp");
-	MeshComp -> SetupAttachment(SphereComp);
-	
-
-	NiagaraComp = CreateDefaultSubobject<UNiagaraComponent>("NiagaraComp");
-	NiagaraComp->SetupAttachment(MeshComp);
-
-	bReplicates = true;
-		
 }
 
 
@@ -36,7 +25,6 @@ void AEQSpiderWeb::BeginPlay()
 	auto Temp = UGameplayStatics::GetActorOfClass(GetWorld(),AEQSpider::StaticClass());
 	Self = Cast<AEQSpider>(Temp);
 	SphereComp->OnComponentBeginOverlap.AddDynamic(this,&AEQSpiderWeb::OverLapBegin);
-	
 }
 
 
@@ -61,11 +49,4 @@ void AEQSpiderWeb::OverLapBegin(UPrimitiveComponent* OverlappedComponent, AActor
 
 	Self->MonsterProjectileHit(OtherActor);
 	this->Destroy();
-}
-
-void AEQSpiderWeb::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME( AEQSpiderWeb, Speed);
 }
