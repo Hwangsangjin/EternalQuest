@@ -7,6 +7,7 @@
 #include "EQNormalEnemy.generated.h"
 
 
+class UEQNormalMonsterHPBar;
 class AEQCharacterPlayer;
 class UWidgetComponent;
 class UEQMonsterAbility;
@@ -38,15 +39,14 @@ public:
 	void ActivateEnemy(const FVector& SpawnLocation);
 	bool IsActive();
 	void Deactivate();
-	
+	FString virtual SetName();
 private:
+	
 	bool bIsActive;
 
 protected:
-	
 	virtual void MonsterProjectileHit(AActor* OtherActor); 
-	
-	
+	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
-	
+	FString MonsterName;
 };

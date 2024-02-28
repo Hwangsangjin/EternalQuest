@@ -10,8 +10,6 @@
 void UEQBossMonsterHPUI::NativeConstruct()
 {
 	Super::NativeConstruct();
-	
-	
 }
 
 void UEQBossMonsterHPUI::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)

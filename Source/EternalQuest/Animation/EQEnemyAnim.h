@@ -42,6 +42,7 @@ public:
 	 void AnimNotify_BK_Dodge();
 
 public:
-	bool IsDieDone = false;
+	UPROPERTY(Replicated)
+	bool IsDieDone;
 	
 };

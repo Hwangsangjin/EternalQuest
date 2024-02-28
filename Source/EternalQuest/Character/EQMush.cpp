@@ -15,4 +15,11 @@ AEQMush::AEQMush()
 	}
 }
 
+FString AEQMush::SetName()
+{
+	Super::SetName();
+	MonsterName = TEXT("버섯커");
+	return MonsterName;
+}
+
 

@@ -33,3 +33,10 @@ void AEQScorpion::MonsterProjectileHit(AActor* OtherActor)
 		OtherActor -> TakeDamage(Ability->SpiderWebDamage,DamageEvent,nullptr,Skill);
 	}
 }
+
+FString AEQScorpion::SetName()
+{
+	Super::SetName();
+	MonsterName = "스콜피";
+	return MonsterName;
+}

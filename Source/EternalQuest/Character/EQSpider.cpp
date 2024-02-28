@@ -37,6 +37,13 @@ void AEQSpider::MonsterProjectileHit(AActor* OtherActor)
 	}
 }
 
+FString AEQSpider::SetName()
+{
+	Super::SetName();
+	MonsterName = "스파이더";
+	return MonsterName;
+}
+
 
 
 

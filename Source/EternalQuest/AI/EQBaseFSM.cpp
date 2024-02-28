@@ -156,6 +156,7 @@ void UEQBaseFSM::ServerRPC_TickIdle_Implementation()
 
 void UEQBaseFSM::ServerRPC_TickDie_Implementation()
 {
+	//if(AnimInst->IsDieDone == true) return;
 	CurrentTime += GetWorld()->GetDeltaSeconds();
 	Self->SetActorEnableCollision(ECollisionEnabled::NoCollision);
 	bCanAttack = false;
@@ -218,6 +219,7 @@ void UEQBaseFSM::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifeti
 	DOREPLIFETIME(UEQBaseFSM, DieTime);
 	DOREPLIFETIME(UEQBaseFSM, RandomLoc);
 	DOREPLIFETIME(UEQBaseFSM, bCanAttack);
+	
 }
 
 

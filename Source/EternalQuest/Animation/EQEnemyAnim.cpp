@@ -80,5 +80,6 @@ void UEQEnemyAnim::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	
 	DOREPLIFETIME(UEQEnemyAnim, State);
+	DOREPLIFETIME(UEQEnemyAnim, IsDieDone);
 	
 }
