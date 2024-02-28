@@ -35,7 +35,8 @@ enum EEQItemType
 	Consumtion,
 	Material,
 	Questitem,
-	Equipping
+	EquippingWeapon,
+	EquippingShield
 };
 
 
@@ -72,13 +73,13 @@ struct FEQItem : public FTableRowBase
 	float STR;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float DEX;
+	float DEF;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float INT;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float LUK;
+	int32 Grade;
 };
 
 USTRUCT(BlueprintType, Atomic)
@@ -113,6 +114,9 @@ struct FEQAllItem : public FTableRowBase
 	TArray<FEQSlot> QuestItem;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FEQSlot> Equipping;
+	TArray<FEQSlot> EquippingSword;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FEQSlot> EquippingShield;
 };
 
