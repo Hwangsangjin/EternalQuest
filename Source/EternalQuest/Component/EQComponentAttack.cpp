@@ -8,12 +8,14 @@
 #include "Animation/AnimMontage.h"
 #include "Character/EQCharacterPlayer.h"
 #include "Character/EQCharacterComboAttackData.h"
+#include "Character/EQCharacterEnemy.h"
 #include "Component/EQComponentMove.h"
 #include "Component/EQComponentStat.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Game/EQGameInstance.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/DamageEvents.h"
+#include "Projectile/EQProjectileBase.h"
 
 UEQComponentAttack::UEQComponentAttack()
 {
@@ -21,6 +23,12 @@ UEQComponentAttack::UEQComponentAttack()
 	if (InputActionAttackRef.Object)
 	{
 		AttackAction = InputActionAttackRef.Object;
+	}
+
+	static ConstructorHelpers::FClassFinder<AEQProjectileBase> FireBallRef(TEXT("/Game/Blueprints/Projectile/BP_FireArrow.BP_FireArrow_C"));
+	if (FireBallRef.Succeeded())
+	{
+		FireBall = FireBallRef.Class;
 	}
 }
 
@@ -42,7 +50,7 @@ void UEQComponentAttack::Attack()
 	Server_Attack();
 }
 
-void UEQComponentAttack::HitCheck()
+void UEQComponentAttack::AttackHitCheck()
 {
 	FHitResult OutHitResult;
 	FCollisionQueryParams Params(SCENE_QUERY_STAT(Attack), false, Player);
@@ -60,7 +68,11 @@ void UEQComponentAttack::HitCheck()
 	if (bHitDetected)
 	{
 		FDamageEvent DamageEvent;
-		OutHitResult.GetActor()->TakeDamage(AttackDamage, DamageEvent, Player->GetController(), Player);
+		AEQCharacterEnemy* Enemy = Cast<AEQCharacterEnemy>(OutHitResult.GetActor());
+		if (Enemy)
+		{
+			Enemy->TakeDamage(AttackDamage, DamageEvent, Player->GetController(), Player);
+		}
 	}
 
 //#if ENABLE_DRAW_DEBUG
@@ -107,7 +119,7 @@ void UEQComponentAttack::DefaultAttack()
 		return;
 	}
 
-	if (bIsDefaultAttacking)
+	if (bIsAttacking)
 	{
 		return;
 	}
@@ -117,8 +129,11 @@ void UEQComponentAttack::DefaultAttack()
 
 void UEQComponentAttack::DefaultAttackBegin()
 {
-	bIsDefaultAttacking = true;
+	bIsAttacking = true;
 	Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+
+	const FTransform ProjectilePosition = Player->GetTransform();
+	GetWorld()->SpawnActor<AEQProjectileBase>(FireBall, ProjectilePosition);
 
 	//const float AttackSpeedRate = Player->GetStatComponent()->GetTotalStat().AttackSpeed;
 	const float AttackSpeedRate = 1.0f;
@@ -132,7 +147,7 @@ void UEQComponentAttack::DefaultAttackBegin()
 
 void UEQComponentAttack::DefaultAttackEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded)
 {
-	bIsDefaultAttacking = false;
+	bIsAttacking = false;
 	Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 }
 
@@ -157,8 +172,9 @@ void UEQComponentAttack::ComboAttack()
 
 void UEQComponentAttack::ComboAttackBegin()
 {
+	bIsAttacking = true;
 	CurrentCombo = 1;
-	Player->GetCharacterMovement()->MaxWalkSpeed = 400.0f;
+	Player->GetCharacterMovement()->MaxWalkSpeed = 300.0f;
 
 	//const float AttackSpeedRate = Player->GetStatComponent()->GetTotalStat().AttackSpeed;
 	const float AttackSpeedRate = 1.0f;
@@ -177,6 +193,7 @@ void UEQComponentAttack::ComboAttackEnd(UAnimMontage* TargetMontage, bool bIsPro
 {
 	ensure(CurrentCombo != 0);
 	CurrentCombo = 0;
+	bIsAttacking = false;
 	Player->GetCharacterMovement()->MaxWalkSpeed = 450.0f;
 }
 

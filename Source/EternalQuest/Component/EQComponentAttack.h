@@ -9,6 +9,7 @@
 class UInputAction;
 class UAnimMontage;
 class UEQCharacterComboAttackData;
+class AEQProjectileBase;
 
 UCLASS()
 class ETERNALQUEST_API UEQComponentAttack : public UEQComponentBase
@@ -26,8 +27,10 @@ public:
 
 // Attack
 public:
+	void AttackHitCheck();
+
+protected:
 	void Attack();
-	void HitCheck();
 
 	UFUNCTION(Server, Reliable, WithValidation)
 	void Server_Attack();
@@ -40,16 +43,22 @@ private:
 	TObjectPtr<UInputAction> AttackAction;
 
 // Default Attack
+public:
+	FORCEINLINE bool IsAttack() const { return bIsAttacking; }
+
 protected:
 	void DefaultAttack();
 	void DefaultAttackBegin();
 	void DefaultAttackEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded);
 
 private:
+	bool bIsAttacking = false;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UAnimMontage> DefaultAttackMontage;
 
-	bool bIsDefaultAttacking = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+	TSubclassOf<AEQProjectileBase> FireBall;
 
 // Combo Attack
 protected:
