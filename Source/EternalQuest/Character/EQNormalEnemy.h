@@ -43,9 +43,11 @@ public:
 private:
 	
 	bool bIsActive;
-
-protected:
+public:
 	virtual void MonsterProjectileHit(AActor* OtherActor); 
+	
+protected:
+	
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 	FString MonsterName;

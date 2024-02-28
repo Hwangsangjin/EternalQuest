@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class ETERNALQUEST_API AEQScorpionSkill : public AEQSpiderWeb
+class ETERNALQUEST_API AEQScorpionSkill : public AEQEnemyProjectile
 {
 	GENERATED_BODY()
 
@@ -27,8 +27,5 @@ private:
 private:
 	float CurrentTime;
 	float FixedTime = 2.0f;
-	
-
-	
 	
 };

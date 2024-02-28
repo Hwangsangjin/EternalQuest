@@ -101,6 +101,8 @@ void UEQBaseFSM::PlayerDie()
 
 void UEQBaseFSM::ShootWeb() {}
 
+void UEQBaseFSM::ShootArrow() {}
+
 void UEQBaseFSM::ScorpionPrj() {}
 
 

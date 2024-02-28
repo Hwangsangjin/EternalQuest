@@ -21,8 +21,8 @@ void UEQBossMonsterHPUI::NativeTick(const FGeometry& MyGeometry, float InDeltaTi
 void UEQBossMonsterHPUI::UpdateHP(float CurrentHealth, float MaxHealth)
 {
 	
-	const int32 LineCount = MaxHealth / BarLimit;
-	Txt_BarCount->SetText(FText::FromString(FString::Printf(TEXT("X%d"),LineCount)));
+	int32 LineCount = MaxHealth / BarLimit;
+	
 	if(!(MaxHealth/BarLimit) == 0)
 	{
 		//반올림한 값이 줄의 개수
@@ -35,9 +35,11 @@ void UEQBossMonsterHPUI::UpdateHP(float CurrentHealth, float MaxHealth)
 	}
 	else
 	{
+		LineCount--;
 		BossHPBar_1->SetPercent(0.f);
 		BossHPBar->SetPercent(CurrentHealth/LimitHealth);
 	}
+	Txt_BarCount->SetText(FText::FromString(FString::Printf(TEXT("X%d"),LineCount)));
 }
 
 

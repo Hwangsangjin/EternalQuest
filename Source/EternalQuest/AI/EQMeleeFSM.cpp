@@ -19,7 +19,7 @@ void UEQMeleeFSM::BeginPlay()
 	Super::BeginPlay();
 
 	AttackRange = 100.f;
-	DetectionRange = 500.f;
+	DetectionRange = 800.f;
 }
 
 void UEQMeleeFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -193,6 +193,9 @@ void UEQMeleeFSM::ServerRPC_MushMove_Implementation()
 		if(Self->HasAuthority())
 		{
 			AI->StopMovement();
+
+
+
 			
 		}
 	}

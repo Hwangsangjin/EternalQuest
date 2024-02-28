@@ -29,14 +29,13 @@ void AEQScorpion::MonsterProjectileHit(AActor* OtherActor)
 	auto Player = Cast<AEQCharacterPlayer>(OtherActor);
 	if(OtherActor == Player)
 	{
-		UE_LOG(LogTemp,Warning,TEXT("%f"),Ability->SpiderWebDamage);
-		OtherActor -> TakeDamage(Ability->SpiderWebDamage,DamageEvent,nullptr,Skill);
+		Player -> TakeDamage(Ability->SpiderWebDamage,DamageEvent,nullptr,Skill);
 	}
 }
 
 FString AEQScorpion::SetName()
 {
 	Super::SetName();
-	MonsterName = "스콜피";
+	MonsterName = TEXT("스콜피");
 	return MonsterName;
 }

@@ -5,6 +5,7 @@
 
 #include "AI/EQBaseFSM.h"
 #include "AI/EQMonsterAbility.h"
+#include "Character/EQArcherOrc.h"
 #include "Character/EQBerserkerOrc.h"
 #include "Character/EQMush.h"
 #include "Character/EQScorpion.h"
@@ -72,6 +73,17 @@ void UEQEnemyAnim::AnimNotify_BK_Dodge()
 		FVector SelfPos = BerserkerOrc->GetActorLocation();
 		FVector DodgePos = SelfPos + FVector(-0.000221,0,0);
 		BerserkerOrc->SetActorLocation(DodgePos);
+	}
+}
+
+void UEQEnemyAnim::AnimNotify_ShootArrow()
+{
+	UE_LOG(LogTemp,Warning,TEXT("ShootArrow"));
+	AEQArcherOrc* ArcherOrc = Cast<AEQArcherOrc>(TryGetPawnOwner());
+	if(ArcherOrc != nullptr)
+	{
+		UE_LOG(LogTemp,Warning,TEXT("22222222222222"));
+		ArcherOrc->BaseFsm->ShootArrow();
 	}
 }
 
