@@ -11,6 +11,7 @@
 #include "Character/EQCharacterPlayer.h"
 #include "Character/EQNormalEnemy.h"
 #include "Component/EQComponentInventory.h"
+#include "Component/EQComponentStat.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/DamageEvents.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -83,9 +84,24 @@ void UEQBaseFSM::TickDie()
 	ServerRPC_TickDie();
 }
 
+void UEQBaseFSM::PlayerDie()
+{
+	// TArray<AActor*> AllPlayers;
+	// UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEQCharacterPlayer::StaticClass(), AllPlayers);
+	// for(int32 i = 0; i<AllPlayers.Num(); i++)
+	// {
+	// 	Target = Cast<AEQCharacterPlayer>(AllPlayers[i]);
+	// 	if(Target->GetStatComponent()->CurrentHp == 0)
+	// 	{
+	// 		SetState(EMonsterState::Move);
+	// 	}
+	// }
+}
 
 
 void UEQBaseFSM::ShootWeb() {}
+
+void UEQBaseFSM::ShootArrow() {}
 
 void UEQBaseFSM::ScorpionPrj() {}
 
@@ -93,15 +109,6 @@ void UEQBaseFSM::ScorpionPrj() {}
 
 void UEQBaseFSM::SetState(EMonsterState Next)
 {
-	// if(Next == EMonsterState::Move)
-	// {
-	// 	
-	// 	UpdateRandLoc(Self->GetActorLocation(),500,RandomLoc);
-	//
-	// }
-	// AnimInst->State = Next;
-	// State = Next;
-	// CurrentTime = 0;
 	ServerRPC_SetState(Next);
 }
 
@@ -132,9 +139,7 @@ void UEQBaseFSM::ServerRPC_SetState_Implementation(EMonsterState Next)
 {
 	if(Next == EMonsterState::Move)
 	{
-		
 		UpdateRandLoc(Self->GetActorLocation(),500,RandomLoc);
-	
 	}
 	AnimInst->State = Next;
 	State = Next;
@@ -147,13 +152,13 @@ void UEQBaseFSM::ServerRPC_TickIdle_Implementation()
 	Target = Cast<AEQCharacterPlayer>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	if(Target != nullptr)
 	{
-		
 		SetState(EMonsterState::Move);
 	}
 }
 
 void UEQBaseFSM::ServerRPC_TickDie_Implementation()
 {
+	//if(AnimInst->IsDieDone == true) return;
 	CurrentTime += GetWorld()->GetDeltaSeconds();
 	Self->SetActorEnableCollision(ECollisionEnabled::NoCollision);
 	bCanAttack = false;
@@ -175,7 +180,6 @@ void UEQBaseFSM::ServerRPC_TickDie_Implementation()
 		SetState(EMonsterState::Idle);
 		Pool->ReturnEnemyToPool(Self);
 	}
-	
 }
 
 void UEQBaseFSM::MultiRPC_TickDie_Implementation()
@@ -217,6 +221,7 @@ void UEQBaseFSM::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifeti
 	DOREPLIFETIME(UEQBaseFSM, DieTime);
 	DOREPLIFETIME(UEQBaseFSM, RandomLoc);
 	DOREPLIFETIME(UEQBaseFSM, bCanAttack);
+	
 }
 
 

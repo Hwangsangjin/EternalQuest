@@ -6,9 +6,8 @@
 #include "Animation/EQAnimInstance.h"
 #include "EQEnemyAnim.generated.h"
 
-/**
- * 
- */
+enum class EMonsterState : uint8;
+
 UCLASS()
 class ETERNALQUEST_API UEQEnemyAnim : public UEQAnimInstance
 {
@@ -29,6 +28,8 @@ public:
 	UFUNCTION()
 	void AnimNotify_ScorAttack();
 	UFUNCTION()
+	void AnimNotify_SuperAmorEnd();
+	UFUNCTION()
 	void AnimNotify_DieEnd();
 
 	// Mush //
@@ -39,7 +40,12 @@ public:
 	 UFUNCTION()
 	 void AnimNotify_BK_Dodge();
 
+	// ArcherOrc //
+	UFUNCTION()
+	void AnimNotify_ShootArrow();
+
 public:
-	bool IsDieDone = false;
+	UPROPERTY(Replicated)
+	bool IsDieDone;
 	
 };

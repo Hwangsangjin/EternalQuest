@@ -5,6 +5,7 @@
 
 #include "InputBehavior.h"
 #include "ToolContextInterfaces.h"
+#include "AI/EQMonsterAbility.h"
 #include "Character/EQBerserkerOrc.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -15,7 +16,8 @@ void UAnimNotifyState_BasicAttack::NotifyTick(USkeletalMeshComponent* MeshComp, 
 {
 	if(AEQBerserkerOrc* Temp = Cast<AEQBerserkerOrc>(MeshComp->GetOwner()))
 	{
-		Temp->CheckAttack_L();
-		Temp->CheckAttack_R();
+		
+		Temp->CheckAttack_L(Temp->Ability->BerserkerBasicAttackDamage);
+		Temp->CheckAttack_R(Temp->Ability->BerserkerBasicAttackDamage);
 	}
 }
