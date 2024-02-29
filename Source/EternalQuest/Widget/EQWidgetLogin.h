@@ -7,6 +7,9 @@
 #include "Interfaces/OnlineSessionInterface.h"
 #include "EQWidgetLogin.generated.h"
 
+class UTextBlock;
+class UBorder;
+class UBackgroundBlur;
 class UButton;
 class UEQGameInstance;
 
@@ -21,19 +24,41 @@ public:
 
 protected:
 	virtual bool Initialize() override;
+	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 private:
 	void LoginSetoff();
 
 // Session
 public:
+	
+	// 호스트 버튼 //
 	UFUNCTION()
 	void HostButtonClicked();
+	UFUNCTION()
+	void HostButtonHovered();
+	UFUNCTION()
+	void HostButtonUnhovered();
+	// 호스트 버튼 //
 
+	// 조인 버튼 //
 	UFUNCTION()
 	void JoinButtonClicked();
+	UFUNCTION()
+	void JoinButtonHovered();
+	UFUNCTION()
+	void JoinButtonUnhovered();
+	// 조인 버튼 //
 
+	
+	UFUNCTION()
+	void OpenCharacterSelect();
+	
+	UFUNCTION()
+	void CloseCharacterSelect();
+// Session End
 protected:
 	UFUNCTION()
 	void OnCreateSession(bool bWasSuccessful);
@@ -63,11 +88,23 @@ private:
 
 // Character Class
 public:
+	// 메이지 선택 버튼 //
 	UFUNCTION()
 	void MageButtonClicked();
+	UFUNCTION()
+	void MageButtonHovered();
+	UFUNCTION()
+	void MageButtonUnhovered();
+	// 메이지 선택 버튼 //
 
+	// 워리어 선택 버튼 //
 	UFUNCTION()
 	void WarriorButtonClicked();
+	UFUNCTION()
+	void WarriorButtonHovered();
+	UFUNCTION()
+	void WarriorButtonUnhovered();
+	// 워리어 선택 버튼 //
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Player, Meta = (BindWidget), Meta = (AllowPrivateAccess = true))
@@ -75,4 +112,32 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Player, Meta = (BindWidget), Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UButton> Button_Warrior;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Player, Meta = (BindWidget), Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UBackgroundBlur> Blur_CharacterSelect;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Player, Meta = (BindWidget), Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UButton> Button_Cancel;
+
+	bool bIsCreateSession = false;
+
+	// 로딩창 UI //
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Player, Meta = (BindWidget), Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UBorder> Border_Loading;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Player, Meta = (BindWidget), Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UTextBlock> Txt_Loading;
+	
+	float LoadingCurrTime;
+	float BtnHostScale = 1;
+	bool BtnHostHovered = false;
+	float BtnJoinScale = 1;
+	bool BtnJoinHovered = false;
+	float BtnMageScale = 1;
+	bool BtnMageHovered = false;
+	float BtnWarriorScale = 1;
+	bool BtnWarriorHovered = false;
+	
+	void LoadingEffect();
+	// 로딩창 UI //
 };
