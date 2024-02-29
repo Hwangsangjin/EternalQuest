@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "EQWidgetStateUI.generated.h"
 
+class UEQComponentStat;
 class UTextBlock;
 class UProgressBar;
 /**
@@ -20,7 +21,7 @@ public:
 
 	virtual void NativeConstruct() override;
 
-	void UpdateStateUI(float InCurrentHP);
+	void UpdateStateUI(float InCurrentHP, float InMaxHP);
 	void SetMaxHP();
 
 	float MaxHP;
@@ -39,4 +40,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(BindWidget))
 	TObjectPtr<UTextBlock> Txt_UserName;
+
+	UPROPERTY()
+	TObjectPtr<UEQComponentStat> StatComp;
 };

@@ -8,6 +8,7 @@
 #include "EQWidgetItemActionMenu.h"
 #include "EQWidgetItemInfo.h"
 #include "EQWidgetMainUI.h"
+#include "EQWidgetStatus.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Components/Border.h"
@@ -83,6 +84,7 @@ bool UEQWidgetItemSlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDro
 	{
 		Swap(HangItem->EQWidgetItemSlot->EQSlot->Quantity, EQSlot->Quantity);
 		Swap(HangItem->EQWidgetItemSlot->EQSlot->ItemID.RowName, EQSlot->ItemID.RowName);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStatus->UpdateAdditionalStat();
 		EQWidgetInventory->UpdateItemInInventoryUI();
 		return true;
 	}
@@ -96,6 +98,7 @@ bool UEQWidgetItemSlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDro
 	{
 		Swap(HangItem->EQWidgetItemSlot->EQSlot->Quantity, EQSlot->Quantity);
 		Swap(HangItem->EQWidgetItemSlot->EQSlot->ItemID.RowName, EQSlot->ItemID.RowName);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStatus->UpdateAdditionalStat();
 		EQWidgetInventory->UpdateItemInInventoryUI();
 		return true;
 	}
@@ -109,6 +112,7 @@ bool UEQWidgetItemSlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDro
 	{
 		Swap(HangItem->EQWidgetItemSlot->EQSlot->Quantity, EQSlot->Quantity);
 		Swap(HangItem->EQWidgetItemSlot->EQSlot->ItemID.RowName, EQSlot->ItemID.RowName);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStatus->UpdateAdditionalStat();
 		EQWidgetInventory->UpdateItemInInventoryUI();
 		return true;
 	}
@@ -121,6 +125,7 @@ bool UEQWidgetItemSlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDro
 	if (HangItem->EQSlot->ItemID.RowName == EQSlot->ItemID.RowName) //장비의 이름이 같을 때
 	{
 		Swap(HangItem->EQSlot->Quantity, EQSlot->Quantity);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStatus->UpdateAdditionalStat();
 		EQWidgetInventory->UpdateItemInInventoryUI();
 		return true;
 	}
@@ -128,6 +133,7 @@ bool UEQWidgetItemSlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDro
 	{
 		Swap(HangItem->EQWidgetItemSlot->EQSlot->Quantity, EQSlot->Quantity);
 		Swap(HangItem->EQWidgetItemSlot->EQSlot->ItemID.RowName, EQSlot->ItemID.RowName);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStatus->UpdateAdditionalStat();
 		EQWidgetInventory->UpdateItemInInventoryUI();
 		return true;
 	}
