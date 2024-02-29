@@ -10,6 +10,7 @@ class UInputAction;
 class UAnimMontage;
 class UEQCharacterComboAttackData;
 class AEQProjectileBase;
+class UNiagaraSystem;
 
 UCLASS()
 class ETERNALQUEST_API UEQComponentAttack : public UEQComponentBase
@@ -74,6 +75,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Data, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UEQCharacterComboAttackData> ComboAttackData;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Effect, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UNiagaraSystem> ComboEffect;
 
 	int32 CurrentCombo = 0;
 	FTimerHandle ComboTimerHandle;

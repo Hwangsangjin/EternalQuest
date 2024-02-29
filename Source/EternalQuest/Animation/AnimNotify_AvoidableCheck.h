@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotify.h"
-#include "AnimNotify_AttackHitCheck.generated.h"
+#include "AnimNotify_AvoidableCheck.generated.h"
 
 UCLASS()
-class ETERNALQUEST_API UAnimNotify_AttackHitCheck : public UAnimNotify
+class ETERNALQUEST_API UAnimNotify_AvoidableCheck : public UAnimNotify
 {
 	GENERATED_BODY()
 	

@@ -3,14 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "InputAction.h"
 #include "Component/EQComponentBase.h"
 #include "EQComponentMove.generated.h"
+
+class UInputComponent;
+struct FInputActionValue;
+class UInputAction;
 
 UCLASS()
 class ETERNALQUEST_API UEQComponentMove : public UEQComponentBase
 {
 	GENERATED_BODY()
+
 public:
 	UEQComponentMove();
 
@@ -53,35 +57,6 @@ protected:
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UInputAction> LookAction;
-
-// Avoid
-public:
-	FORCEINLINE bool IsAvoiding() const { return bIsAvoiding; }
-
-protected:
-	void Avoid(const FInputActionValue& Value);
-
-	UFUNCTION(Server, Reliable, WithValidation)
-	void Server_Avoid();
-
-	UFUNCTION(NetMulticast, Reliable)
-	void NetMulticast_Avoid();
-
-private:
-	bool bIsAvoiding = false;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
-	TObjectPtr<UInputAction> AvoidAction;
-
-// Roll
-protected:
-	void Roll();
-	void RollBegin();
-	void RollEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded);
-
-private:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = true))
-	TObjectPtr<UAnimMontage> RollMontage;
 
 // Sprint
 public:

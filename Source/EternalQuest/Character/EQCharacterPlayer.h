@@ -6,6 +6,7 @@
 #include "Character/EQCharacterBase.h"
 #include "Game/EQGameInstance.h"
 #include "Interface/EQInterfaceAnimationAttack.h"
+#include "Interface/EQInterfaceAnimationAvoid.h"
 #include "Interface/EQInterfaceCharacterWidget.h"
 #include "EQCharacterPlayer.generated.h"
 
@@ -27,13 +28,15 @@ class UEQComponentMenuManager;
 class UEQComponentInventory;
 class UEQComponentQuest;
 class UEQComponentAttack;
+class UEQComponentAvoid;
 class UEQComponentStat;
 class UEQComponentWidget;
+class UNiagaraComponent;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FInputSignature, UInputComponent*)
 
 UCLASS(config = EternalQuest)
-class ETERNALQUEST_API AEQCharacterPlayer : public AEQCharacterBase, public IEQInterfaceAnimationAttack, public IEQInterfaceCharacterWidget
+class ETERNALQUEST_API AEQCharacterPlayer : public AEQCharacterBase, public IEQInterfaceAnimationAttack, public IEQInterfaceAnimationAvoid, public IEQInterfaceCharacterWidget
 {
 	GENERATED_BODY()
 
@@ -124,6 +127,14 @@ private:
 	TSharedPtr<FStreamableHandle> SwordMeshHandle;
 	TSharedPtr<FStreamableHandle> ShieldMeshHandle;
 
+// Effect
+public:
+	FORCEINLINE UNiagaraComponent* GetSwordEffect() const { return SwordEffect; }
+
+private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Niagara, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UNiagaraComponent> SwordEffect;
+
 // Camera
 public:
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
@@ -161,6 +172,10 @@ private:
 protected:
 	virtual void AttackHitCheck() override;
 
+// Avoidable Check
+protected:
+	virtual void AvoidableCheck() override;
+
 // Take Damage
 public:
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
@@ -197,6 +212,7 @@ public:
 	FORCEINLINE UEQComponentMove* GetMoveComponent() const { return MoveComp; }
 	FORCEINLINE UEQComponentStat* GetStatComponent() const { return StatComp; }
 	FORCEINLINE UEQComponentAttack* GetAttackComponent() const { return AttackComp; }
+	FORCEINLINE UEQComponentAvoid* GetAvoidComponent() const { return AvoidComp; }
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
@@ -213,6 +229,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UEQComponentAttack> AttackComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UEQComponentAvoid> AvoidComp;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UEQComponentStat> StatComp;

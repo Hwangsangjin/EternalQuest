@@ -13,6 +13,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/BoxComponent.h"
+#include "NiagaraComponent.h"
 #include "InputActionValue.h"
 #include "InputMappingContext.h"
 #include "EnhancedInputComponent.h"
@@ -22,6 +23,7 @@
 #include "Component/EQComponentInventory.h"
 #include "Component/EQComponentMenuManager.h"
 #include "Component/EQComponentAttack.h"
+#include "Component/EQComponentAvoid.h"
 #include "Component/EQComponentQuest.h"
 #include "Component/EQComponentStat.h"
 #include "Component/EQComponentWidget.h"
@@ -61,6 +63,12 @@ AEQCharacterPlayer::AEQCharacterPlayer()
 	ShieldMesh->SetupAttachment(GetMesh(), TEXT("Shield_Socket"));
 	ShieldMesh->SetHiddenInGame(true);
 
+	// Effect
+	SwordEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara"));
+	SwordEffect->SetRelativeLocation(FVector(0, 0, 60));
+	SwordEffect->SetupAttachment(SwordMesh);
+	SwordEffect->SetHiddenInGame(true);
+
 	// Camera
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
@@ -90,6 +98,7 @@ AEQCharacterPlayer::AEQCharacterPlayer()
 	InventoryComp = CreateDefaultSubobject<UEQComponentInventory>(TEXT("Inventory Component"));
 	MenuManagerComp = CreateDefaultSubobject<UEQComponentMenuManager>(TEXT("MenuManager Component"));
 	AttackComp = CreateDefaultSubobject<UEQComponentAttack>(TEXT("Attack Component"));
+	AvoidComp = CreateDefaultSubobject<UEQComponentAvoid>(TEXT("Avoid Component"));
 	StatComp = CreateDefaultSubobject<UEQComponentStat>(TEXT("Stat Component"));
 	UserNameComp = CreateDefaultSubobject<UEQComponentWidget>(TEXT("UserName Component"));
 	HpBarComp = CreateDefaultSubobject<UEQComponentWidget>(TEXT("HpBar Component"));
@@ -216,6 +225,11 @@ void AEQCharacterPlayer::Tick(float DeltaSeconds)
 void AEQCharacterPlayer::AttackHitCheck()
 {
 	AttackComp->AttackHitCheck();
+}
+
+void AEQCharacterPlayer::AvoidableCheck()
+{
+	AvoidComp->AvoidableCheck();
 }
 
 float AEQCharacterPlayer::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)

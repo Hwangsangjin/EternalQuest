@@ -2,33 +2,50 @@
 
 
 #include "Component/EQComponentAttack.h"
-#include "EternalQuest.h"
-#include "Net/UnrealNetwork.h"
 #include "EnhancedInputComponent.h"
 #include "Animation/AnimMontage.h"
 #include "Character/EQCharacterPlayer.h"
 #include "Character/EQCharacterComboAttackData.h"
 #include "Character/EQCharacterEnemy.h"
-#include "Component/EQComponentMove.h"
+#include "Component/EQComponentAvoid.h"
 #include "Component/EQComponentStat.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Game/EQGameInstance.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/DamageEvents.h"
 #include "Projectile/EQProjectileBase.h"
+#include "NiagaraComponent.h"
 
 UEQComponentAttack::UEQComponentAttack()
 {
-	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionAttackRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/Input/Actions/IA_Attack.IA_Attack'"));
-	if (InputActionAttackRef.Object)
+	static ConstructorHelpers::FObjectFinder<UInputAction> AttackActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/Input/Actions/IA_Attack.IA_Attack'"));
+	if (AttackActionRef.Succeeded())
 	{
-		AttackAction = InputActionAttackRef.Object;
+		AttackAction = AttackActionRef.Object;
 	}
 
-	static ConstructorHelpers::FClassFinder<AEQProjectileBase> FireBallRef(TEXT("/Game/Blueprints/Projectile/BP_FireArrow.BP_FireArrow_C"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> DefaultAttackMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Assets/StylizedCharactersPack/Common/Animation/Montage/AM_DefaultAttack.AM_DefaultAttack'"));
+	if (DefaultAttackMontageRef.Succeeded())
+	{
+		DefaultAttackMontage = DefaultAttackMontageRef.Object;
+	}
+
+	static ConstructorHelpers::FClassFinder<AEQProjectileBase> FireBallRef(TEXT("/Script/Engine.Blueprint'/Game/Blueprints/Effect/BP_FireBall.BP_FireBall_C'"));
 	if (FireBallRef.Succeeded())
 	{
 		FireBall = FireBallRef.Class;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> ComboAttackMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Assets/StylizedCharactersPack/Common/Animation/Montage/AM_ComboAttack.AM_ComboAttack'"));
+	if (ComboAttackMontageRef.Succeeded())
+	{
+		ComboAttackMontage = ComboAttackMontageRef.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UEQCharacterComboAttackData> ComboAttackDataRef(TEXT("/Script/EternalQuest.EQCharacterComboAttackData'/Game/Blueprints/Data/DA_ComboAttack.DA_ComboAttack'"));
+	if (ComboAttackDataRef.Succeeded())
+	{
+		ComboAttackData = ComboAttackDataRef.Object;
 	}
 }
 
@@ -47,6 +64,11 @@ void UEQComponentAttack::SetupPlayerInput(UInputComponent* PlayerInputComponent)
 
 void UEQComponentAttack::Attack()
 {
+	if (Player->GetAvoidComponent()->IsAvoiding())
+	{
+		return;
+	}
+
 	Server_Attack();
 }
 
@@ -132,13 +154,12 @@ void UEQComponentAttack::DefaultAttackBegin()
 	bIsAttacking = true;
 	Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 
-	const FTransform ProjectilePosition = Player->GetTransform();
-	GetWorld()->SpawnActor<AEQProjectileBase>(FireBall, ProjectilePosition);
+	const FTransform Transform = Player->GetTransform();
+	GetWorld()->SpawnActor<AEQProjectileBase>(FireBall, Transform);
 
-	//const float AttackSpeedRate = Player->GetStatComponent()->GetTotalStat().AttackSpeed;
-	const float AttackSpeedRate = 1.0f;
+	constexpr float PlayRate = 1.0f;
 	UAnimInstance* AnimInstance = Player->GetMesh()->GetAnimInstance();
-	AnimInstance->Montage_Play(DefaultAttackMontage, AttackSpeedRate);
+	AnimInstance->Montage_Play(DefaultAttackMontage, PlayRate);
 
 	FOnMontageEnded EndDelegate;
 	EndDelegate.BindUObject(this, &ThisClass::DefaultAttackEnd);
@@ -153,7 +174,6 @@ void UEQComponentAttack::DefaultAttackEnd(UAnimMontage* TargetMontage, bool bIsP
 
 void UEQComponentAttack::ComboAttack()
 {
-
 	if (CurrentCombo == 0)
 	{
 		ComboAttackBegin();
@@ -175,11 +195,12 @@ void UEQComponentAttack::ComboAttackBegin()
 	bIsAttacking = true;
 	CurrentCombo = 1;
 	Player->GetCharacterMovement()->MaxWalkSpeed = 300.0f;
+	Player->GetSwordEffect()->SetHiddenInGame(false);
 
-	//const float AttackSpeedRate = Player->GetStatComponent()->GetTotalStat().AttackSpeed;
-	const float AttackSpeedRate = 1.0f;
+	//const float PlayRate = Player->GetStatComponent()->GetTotalStat().AttackSpeed;
+	const float PlayRate = 1.0f;
 	UAnimInstance* AnimInstance = Player->GetMesh()->GetAnimInstance();
-	AnimInstance->Montage_Play(ComboAttackMontage, AttackSpeedRate);
+	AnimInstance->Montage_Play(ComboAttackMontage, PlayRate);
 
 	FOnMontageEnded EndDelegate;
 	EndDelegate.BindUObject(this, &ThisClass::ComboAttackEnd);
@@ -195,6 +216,7 @@ void UEQComponentAttack::ComboAttackEnd(UAnimMontage* TargetMontage, bool bIsPro
 	CurrentCombo = 0;
 	bIsAttacking = false;
 	Player->GetCharacterMovement()->MaxWalkSpeed = 450.0f;
+	Player->GetSwordEffect()->SetHiddenInGame(true);
 }
 
 void UEQComponentAttack::SetComboCheckTimer()
@@ -203,8 +225,8 @@ void UEQComponentAttack::SetComboCheckTimer()
 	ensure(ComboAttackData->GetEffectiveFrameCount().IsValidIndex(ComboIndex));
 
 	//const float AttackSpeedRate = Player->GetStatComponent()->GetTotalStat().AttackSpeed;
-	const float AttackSpeedRate = 1.0f;
-	const float EffectiveComboTime = (ComboAttackData->GetEffectiveFrameCount()[ComboIndex] / ComboAttackData->GetFrameRate()) / AttackSpeedRate;
+	constexpr float PlayRate = 1.0f;
+	const float EffectiveComboTime = (ComboAttackData->GetEffectiveFrameCount()[ComboIndex] / ComboAttackData->GetFrameRate()) / PlayRate;
 	if (EffectiveComboTime > 0.0f)
 	{
 		GetWorld()->GetGameInstance()->GetTimerManager().SetTimer(ComboTimerHandle, this, &ThisClass::ComboCheck, EffectiveComboTime, false);
