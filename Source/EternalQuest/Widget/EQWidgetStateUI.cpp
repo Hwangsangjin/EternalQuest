@@ -11,19 +11,20 @@
 void UEQWidgetStateUI::NativeConstruct()
 {
 	Super::NativeConstruct();
+	StatComp = GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>();
+	StatComp->OnHpChanged.AddUObject(this, &ThisClass::UpdateStateUI);
 	SetMaxHP();
 }
 
-void UEQWidgetStateUI::UpdateStateUI(float InCurrentHP)
+void UEQWidgetStateUI::UpdateStateUI(float InCurrentHP, float InMaxHP)
 {
 	if (Prog_HP)
 	{
-		Prog_HP->SetPercent(InCurrentHP/MaxHP);
+		Prog_HP->SetPercent(InCurrentHP/InMaxHP);
 	}
 }
 
 void UEQWidgetStateUI::SetMaxHP()
 {
-	auto StatComp = Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->GetCharacter()->FindComponentByClass<UEQComponentStat>();
 	MaxHP = StatComp->GetMaxHp();
 }
