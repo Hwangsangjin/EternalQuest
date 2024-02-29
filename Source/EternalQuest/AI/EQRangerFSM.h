@@ -7,7 +7,7 @@
 #include "EQRangerFSM.generated.h"
 
 
-class AEQSpiderWeb;
+class AEQEnemyProjectile;
 /**
  * 
  */
@@ -22,9 +22,10 @@ public:
 	virtual void TickAttack() override;
 	
 	virtual void ShootWeb() override;
+	virtual void ShootArrow() override;
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<AEQSpiderWeb> WebFactory;
+	TSubclassOf<AEQEnemyProjectile> PrjFactory;
 
 	
 	UFUNCTION(Server,Reliable)

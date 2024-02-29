@@ -7,6 +7,7 @@
 #include "EQNormalEnemy.generated.h"
 
 
+class UEQNormalMonsterHPBar;
 class AEQCharacterPlayer;
 class UWidgetComponent;
 class UEQMonsterAbility;
@@ -27,7 +28,6 @@ public:
 	UPROPERTY(EditAnywhere,Category="NPC")
 	AEQCharacterNonPlayer* NPC;
 	
-
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Ability")
 	UWidgetComponent* HPComp;
 
@@ -38,15 +38,17 @@ public:
 	void ActivateEnemy(const FVector& SpawnLocation);
 	bool IsActive();
 	void Deactivate();
+	FString virtual SetName();
+	void DieEffect();
 	
 private:
 	bool bIsActive;
-
-protected:
-	
+public:
 	virtual void MonsterProjectileHit(AActor* OtherActor); 
 	
+protected:
 	
+	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
-	
+	FString MonsterName;
 };

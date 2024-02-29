@@ -29,7 +29,7 @@ public:
 
 	UPROPERTY(EditAnywhere,Category="Pool")
 	AEQEnemyPool* Pool;
-
+	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AEQNormalEnemy> EnemyType;
 

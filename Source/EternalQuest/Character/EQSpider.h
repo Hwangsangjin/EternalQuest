@@ -18,5 +18,6 @@ class ETERNALQUEST_API AEQSpider : public AEQNormalEnemy
 
 public:
 	virtual void MonsterProjectileHit(AActor* OtherActor) override;
+	virtual FString SetName() override;
 
 };

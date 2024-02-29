@@ -10,10 +10,6 @@
 #include "Character/EQCharacterBase.h"
 #include "Character/EQCharacterPlayer.h"
 #include "Character/EQNormalEnemy.h"
-#include "Component/EQComponentInventory.h"
-#include "Component/EQComponentStat.h"
-#include "Components/CapsuleComponent.h"
-#include "Engine/DamageEvents.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
@@ -101,6 +97,8 @@ void UEQBaseFSM::PlayerDie()
 
 void UEQBaseFSM::ShootWeb() {}
 
+void UEQBaseFSM::ShootArrow() {}
+
 void UEQBaseFSM::ScorpionPrj() {}
 
 
@@ -128,10 +126,8 @@ bool UEQBaseFSM::UpdateRandLoc(FVector OldLoc, float Radius, FVector& NewLoc)
 	return false;
 }
 
-void UEQBaseFSM::MeleeAttackCheck()
-{
-	
-}
+void UEQBaseFSM::MeleeAttackCheck() {}
+
 
 void UEQBaseFSM::ServerRPC_SetState_Implementation(EMonsterState Next)
 {
@@ -156,8 +152,8 @@ void UEQBaseFSM::ServerRPC_TickIdle_Implementation()
 
 void UEQBaseFSM::ServerRPC_TickDie_Implementation()
 {
+	if(AnimInst->IsDieDone == false) return;
 	CurrentTime += GetWorld()->GetDeltaSeconds();
-	Self->SetActorEnableCollision(ECollisionEnabled::NoCollision);
 	bCanAttack = false;
 	// 아이템 드롭
 	// 이름
@@ -168,10 +164,6 @@ void UEQBaseFSM::ServerRPC_TickDie_Implementation()
 	// Self->EQSlot.ItemType = EEQItemType::Consumtion;
 	// // 드랍 아이템 매개변수 안데 EQSLot을 
 	//Target->FindComponentByClass<UEQComponentInventory>()->;
-	if(bIsDead ==  true)
-	{
-		MultiRPC_TickDie();
-	}
 	if(CurrentTime>DieTime)
 	{
 		SetState(EMonsterState::Idle);
@@ -218,6 +210,7 @@ void UEQBaseFSM::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifeti
 	DOREPLIFETIME(UEQBaseFSM, DieTime);
 	DOREPLIFETIME(UEQBaseFSM, RandomLoc);
 	DOREPLIFETIME(UEQBaseFSM, bCanAttack);
+	
 }
 
 

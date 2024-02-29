@@ -5,6 +5,7 @@
 
 #include "AI/EQBaseFSM.h"
 #include "AI/EQMonsterAbility.h"
+#include "Character/EQArcherOrc.h"
 #include "Character/EQBerserkerOrc.h"
 #include "Character/EQMush.h"
 #include "Character/EQScorpion.h"
@@ -52,7 +53,12 @@ void UEQEnemyAnim::AnimNotify_SuperAmorEnd()
 
 void UEQEnemyAnim::AnimNotify_DieEnd()
 {
-	IsDieDone = true;
+	AEQNormalEnemy* NormalEnemy = Cast<AEQNormalEnemy>(TryGetPawnOwner());
+	if(NormalEnemy != nullptr)
+	{
+		NormalEnemy->DieEffect();
+		IsDieDone = true;
+	}
 }
 
 void UEQEnemyAnim::AnimNotify_MushAttack()
@@ -75,10 +81,22 @@ void UEQEnemyAnim::AnimNotify_BK_Dodge()
 	}
 }
 
+void UEQEnemyAnim::AnimNotify_ShootArrow()
+{
+	UE_LOG(LogTemp,Warning,TEXT("ShootArrow"));
+	AEQArcherOrc* ArcherOrc = Cast<AEQArcherOrc>(TryGetPawnOwner());
+	if(ArcherOrc != nullptr)
+	{
+		UE_LOG(LogTemp,Warning,TEXT("22222222222222"));
+		ArcherOrc->BaseFsm->ShootArrow();
+	}
+}
+
 void UEQEnemyAnim::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	
 	DOREPLIFETIME(UEQEnemyAnim, State);
+	DOREPLIFETIME(UEQEnemyAnim, IsDieDone);
 	
 }

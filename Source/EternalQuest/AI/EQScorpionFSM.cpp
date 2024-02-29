@@ -7,6 +7,7 @@
 #include "AITypes.h"
 #include "EQMonsterAbility.h"
 #include "NavigationSystem.h"
+#include "Animation/EQEnemyAnim.h"
 #include "Character/EQCharacterPlayer.h"
 #include "Character/EQNormalEnemy.h"
 #include "Components/ArrowComponent.h"
@@ -172,6 +173,8 @@ void UEQScorpionFSM::MultiRPC_ScopionDie_Implementation()
 
 void UEQScorpionFSM::ServerRPC_ScorpionDie_Implementation()
 {
+	if(AnimInst->IsDieDone == false) return;
+	
 	CurrentTime += GetWorld()->GetDeltaSeconds();
 	MultiRPC_ScopionDie();
 	Self->SetActorEnableCollision(ECollisionEnabled::NoCollision);

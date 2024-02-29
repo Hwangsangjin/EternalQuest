@@ -8,6 +8,7 @@
 #include "EQWidgetItemActionMenu.h"
 #include "EQWidgetItemInfo.h"
 #include "EQWidgetMainUI.h"
+#include "EQWidgetStatus.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Components/Border.h"
@@ -67,31 +68,74 @@ bool UEQWidgetItemSlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDro
 	UDragDropOperation* InOperation)
 {
 	auto HangItem = Cast<UEQItemDragDropOperation>(InOperation);
-	if (HangItem->EQSlot->ItemType != EEQItemType::Equipment && EQSlot->ItemType == EEQItemType::Equipping) // 소비->장비창으로 옮길 때
+	
+	if (HangItem->EQSlot->ItemType != EEQItemType::Equipment && EQSlot->ItemType == EEQItemType::EquippingWeapon) // 장비 외,->장비창으로 옮길 때
 	{
 		EQWidgetInventory->UpdateItemInInventoryUI();
-		GEngine->AddOnScreenDebugMessage(-1,3,FColor::Magenta, TEXT("123"));
 		return true;
 	}
-	
-	if (EQSlot->ItemType == EEQItemType::Equipping) // 장비->장비창으로 옮길 떄
+	if (HangItem->EQSlot->ItemType != EEQItemType::Equipment && EQSlot->ItemType == EEQItemType::EquippingShield) // 장비 외,->장비창으로 옮길 때
+	{
+		EQWidgetInventory->UpdateItemInInventoryUI();
+		return true;
+	}
+	///////////////////////////////////
+	if (HangItem->EQSlot->ItemID.RowName.ToString().Contains(TEXT("Wand")) && EQSlot->ItemType == EEQItemType::EquippingWeapon) // 완드->무기창으로 옮길 떄
 	{
 		Swap(HangItem->EQWidgetItemSlot->EQSlot->Quantity, EQSlot->Quantity);
 		Swap(HangItem->EQWidgetItemSlot->EQSlot->ItemID.RowName, EQSlot->ItemID.RowName);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStatus->UpdateAdditionalStat();
+		EQWidgetInventory->UpdateItemInInventoryUI();
+		return true;
+	}
+	else if (HangItem->EQSlot->ItemID.RowName.ToString().Contains(TEXT("Wand")) && EQSlot->ItemType == EEQItemType::EquippingShield)
+	{
 		EQWidgetInventory->UpdateItemInInventoryUI();
 		return true;
 	}
 	
-	if (HangItem->EQSlot->ItemID.RowName == EQSlot->ItemID.RowName)
+	if (HangItem->EQSlot->ItemID.RowName.ToString().Contains(TEXT("Sword")) && EQSlot->ItemType == EEQItemType::EquippingWeapon) // 소드->무기창으로 옮길 떄
+	{
+		Swap(HangItem->EQWidgetItemSlot->EQSlot->Quantity, EQSlot->Quantity);
+		Swap(HangItem->EQWidgetItemSlot->EQSlot->ItemID.RowName, EQSlot->ItemID.RowName);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStatus->UpdateAdditionalStat();
+		EQWidgetInventory->UpdateItemInInventoryUI();
+		return true;
+	}
+	else if (HangItem->EQSlot->ItemID.RowName.ToString().Contains(TEXT("Sword")) && EQSlot->ItemType == EEQItemType::EquippingShield)
+	{
+		EQWidgetInventory->UpdateItemInInventoryUI();
+		return true;
+	}
+	
+	if (HangItem->EQSlot->ItemID.RowName.ToString().Contains(TEXT("Shield")) && EQSlot->ItemType == EEQItemType::EquippingShield) // 방어구->방어구창으로 옮길 떄
+	{
+		Swap(HangItem->EQWidgetItemSlot->EQSlot->Quantity, EQSlot->Quantity);
+		Swap(HangItem->EQWidgetItemSlot->EQSlot->ItemID.RowName, EQSlot->ItemID.RowName);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStatus->UpdateAdditionalStat();
+		EQWidgetInventory->UpdateItemInInventoryUI();
+		return true;
+	}
+	else if (HangItem->EQSlot->ItemID.RowName.ToString().Contains(TEXT("Shield")) && EQSlot->ItemType == EEQItemType::EquippingWeapon)
+	{
+		EQWidgetInventory->UpdateItemInInventoryUI();
+		return true;
+	}
+	///////////////////////////////////
+	if (HangItem->EQSlot->ItemID.RowName == EQSlot->ItemID.RowName) //장비의 이름이 같을 때
 	{
 		Swap(HangItem->EQSlot->Quantity, EQSlot->Quantity);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStatus->UpdateAdditionalStat();
 		EQWidgetInventory->UpdateItemInInventoryUI();
+		return true;
 	}
-	else
+	else // 아닐 때
 	{
 		Swap(HangItem->EQWidgetItemSlot->EQSlot->Quantity, EQSlot->Quantity);
 		Swap(HangItem->EQWidgetItemSlot->EQSlot->ItemID.RowName, EQSlot->ItemID.RowName);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStatus->UpdateAdditionalStat();
 		EQWidgetInventory->UpdateItemInInventoryUI();
+		return true;
 	}
 	return true;
 }

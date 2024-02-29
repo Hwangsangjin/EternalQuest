@@ -9,6 +9,7 @@
 #include "Components/WidgetComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Widget/EQNormalMonsterHPBar.h"
 
 
 AEQNormalEnemy::AEQNormalEnemy()
@@ -16,17 +17,17 @@ AEQNormalEnemy::AEQNormalEnemy()
 	BaseFsm = CreateDefaultSubobject<UEQBaseFSM>("BasFSM");
 	HPComp = CreateDefaultSubobject<UWidgetComponent>("HPComp");
 	HPComp -> SetupAttachment(RootComponent);
-	ConstructorHelpers::FClassFinder<UUserWidget>WidgetTemp(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blueprints/UI/WBP_MonsterHPBar.WBP_MonsterHPBar_C'"));
+	ConstructorHelpers::FClassFinder<UEQNormalMonsterHPBar>WidgetTemp(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blueprints/UI/WBP_MonsterHPBar.WBP_MonsterHPBar_C'"));
 	if(WidgetTemp.Succeeded())
 	{
 		HPComp->SetWidgetClass(WidgetTemp.Class);
-		HPComp->SetDrawSize(FVector2D(150,20));
+		HPComp->SetDrawSize(FVector2D(150,50));
 		HPComp->SetRelativeLocation(FVector(0,0,120));
 		HPComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		HPComp->SetVisibility(false);
 		HPComp->SetCastShadow(false);
 	}
-
+	MonsterName = TEXT("Default Monster Name");
 	bIsActive = false;
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 	bReplicates = true;
@@ -54,10 +55,18 @@ void AEQNormalEnemy::Deactivate()
 	bIsActive = false;
 }
 
-
-
-void AEQNormalEnemy::MonsterProjectileHit(AActor* OtherActor)
+FString AEQNormalEnemy::SetName()
 {
+	return MonsterName;
+}
+
+
+void AEQNormalEnemy::MonsterProjectileHit(AActor* OtherActor) {}
+
+void AEQNormalEnemy::BeginPlay()
+{
+	Super::BeginPlay();
+	SetName();
 }
 
 void AEQNormalEnemy::Tick(float DeltaSeconds)
@@ -75,3 +84,11 @@ void AEQNormalEnemy::Tick(float DeltaSeconds)
 	
 }
 
+void AEQNormalEnemy::DieEffect()
+{
+	// bool DieStart = true;
+	// bool DieEnd = false;
+	// bool VisibilityLerp = FMath::Lerp(DieStart,DieEnd,CheckTime*0.5);
+	// GetMesh()->SetVisibility(VisibilityLerp);
+	
+}

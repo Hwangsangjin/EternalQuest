@@ -3,13 +3,15 @@
 
 #include "Widget/EQWidgetNpcPrompt.h"
 
+#include "EQWidgetChattingSystem.h"
+#include "EQWidgetMainUI.h"
 #include "Character/EQCharacterNeutralPlayer.h"
 #include "Component/EQComponentInteraction.h"
 #include "Components/Button.h"
 #include "Components/HorizontalBox.h"
 #include "Components/TextBlock.h"
-#include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetStringLibrary.h"
+#include "Player/EQPlayerController.h"
 
 void UEQWidgetNpcPrompt::NativeOnInitialized()
 {
@@ -18,6 +20,8 @@ void UEQWidgetNpcPrompt::NativeOnInitialized()
 	Btn_Click->OnClicked.AddDynamic(this, &UEQWidgetNpcPrompt::NextPrompt);
 	Btn_QuestAccept->OnClicked.AddDynamic(this, &UEQWidgetNpcPrompt::AcceptQuest);
 	Btn_QuestDeny->OnClicked.AddDynamic(this, &UEQWidgetNpcPrompt::DenyQuest);
+
+	PC = Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController());
 }
 
 void UEQWidgetNpcPrompt::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -31,6 +35,9 @@ void UEQWidgetNpcPrompt::NativeTick(const FGeometry& MyGeometry, float InDeltaTi
 
 void UEQWidgetNpcPrompt::PullNPCInfomation(AEQCharacterNeutralPlayer* InNPC)
 {
+	// 모든 UI 없애기 //
+	PC->EQWidgetMainUI->SetVisibility(ESlateVisibility::Hidden);
+	//
 	RenderOpacityValue = 0;
 	SetRenderOpacity(RenderOpacityValue);
 	DisplayText = TEXT("");
@@ -91,6 +98,7 @@ void UEQWidgetNpcPrompt::AcceptQuest()
 	GetWorld()->GetFirstPlayerController()->SetShowMouseCursor(false);
 	NPC->QuestAccepted();
 	bQuestPromptCond = false;
+	PC->EQWidgetMainUI->SetVisibility(ESlateVisibility::Visible);
 }
 
 void UEQWidgetNpcPrompt::DenyQuest()
@@ -104,6 +112,7 @@ void UEQWidgetNpcPrompt::DenyQuest()
 	NPC->QuestDenied();
 	NPC->NPCPrompt[PromptCurrent].Append(TEXT("QuestTag"), QuestTagIdx);
 	bQuestPromptCond = false;
+	PC->EQWidgetMainUI->SetVisibility(ESlateVisibility::Visible);
 }
 
 void UEQWidgetNpcPrompt::TypeWritingText()

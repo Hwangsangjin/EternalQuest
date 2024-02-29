@@ -26,6 +26,8 @@ AEQItemBase::AEQItemBase()
 		ItemDataTable = DT_Ref.Object;
 		Slot.ItemID.DataTable = ItemDataTable;
 	}
+
+	MeshComp->SetSimulatePhysics(true);
 	
 	bReplicates = true;
 }

@@ -6,6 +6,8 @@
 #include "Blueprint/UserWidget.h"
 #include "EQWidgetStateUI.generated.h"
 
+class UImage;
+class UEQComponentStat;
 class UTextBlock;
 class UProgressBar;
 /**
@@ -17,10 +19,10 @@ class ETERNALQUEST_API UEQWidgetStateUI : public UUserWidget
 	GENERATED_BODY()
 
 public:
-
+	UEQWidgetStateUI(const FObjectInitializer& ObjectInitializer);
 	virtual void NativeConstruct() override;
 
-	void UpdateStateUI(float InCurrentHP);
+	void UpdateStateUI(float InCurrentHP, float InMaxHP);
 	void SetMaxHP();
 
 	float MaxHP;
@@ -39,4 +41,16 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(BindWidget))
 	TObjectPtr<UTextBlock> Txt_UserName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(BindWidget))
+	TObjectPtr<UImage> Img_JobClass;
+
+	UPROPERTY()
+	TObjectPtr<UEQComponentStat> StatComp;
+
+	UPROPERTY()
+	TObjectPtr<UTexture2D> T_WarriorIcon;
+
+	UPROPERTY()
+	TObjectPtr<UTexture2D> T_MageIcon;
 };

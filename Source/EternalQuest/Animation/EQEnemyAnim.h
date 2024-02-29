@@ -40,7 +40,12 @@ public:
 	 UFUNCTION()
 	 void AnimNotify_BK_Dodge();
 
+	// ArcherOrc //
+	UFUNCTION()
+	void AnimNotify_ShootArrow();
+
 public:
+	UPROPERTY(Replicated)
 	bool IsDieDone = false;
 	
 };

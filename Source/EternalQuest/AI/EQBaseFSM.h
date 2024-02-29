@@ -82,7 +82,7 @@ protected:
 	UPROPERTY(Replicated)
 	float DetectionRange = 450;
 	UPROPERTY(Replicated)
-	float DieTime = 5.0f;
+	float DieTime = 2.0f;
 	UPROPERTY(Replicated)
 	FVector RandomLoc;
 	UPROPERTY(Replicated)
@@ -90,7 +90,7 @@ protected:
 public:
 	UPROPERTY(Replicated)
 	bool bIsDead = false;
-
+	
 	UPROPERTY(Replicated)
 	bool SuperAmor = false;
 	
@@ -107,6 +107,7 @@ protected:
 
 public:
 	virtual void ShootWeb();
+	virtual void ShootArrow();
 	virtual void ScorpionPrj();
 	void SetState(EMonsterState Next);
 	bool UpdateRandLoc(FVector OldLoc, float Radius, FVector& NewLoc);
