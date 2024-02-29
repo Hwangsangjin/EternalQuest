@@ -46,8 +46,8 @@ void UEQMeleeFSM::TickAttack()
 			}
 			else
 			{
-				UE_LOG(LogTemp,Warning,TEXT("Attack!!!!!!!!!!!"));
 				AI->SetFocus(Target,EAIFocusPriority::Gameplay);
+				SetState(EMonsterState::Attack);
 				MultiRPC_MushAttack();
 			}
 		}
@@ -193,10 +193,6 @@ void UEQMeleeFSM::ServerRPC_MushMove_Implementation()
 		if(Self->HasAuthority())
 		{
 			AI->StopMovement();
-
-
-
-			
 		}
 	}
 }
@@ -212,13 +208,13 @@ void UEQMeleeFSM::ServerRPC_MushAttack_Implementation()
 			if(Dist > AttackRange)
 			{
 				SetState(EMonsterState::Move);
-				
 			}
 			else
 			{
 				if(Self->HasAuthority())
 				{
 					AI->SetFocus(Target,EAIFocusPriority::Gameplay);
+					SetState(EMonsterState::Attack);
 				}
 				MultiRPC_MushAttack();
 			}

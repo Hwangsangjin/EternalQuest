@@ -77,6 +77,7 @@ void AEQEnemyPool::ReturnEnemyToPool(AEQNormalEnemy* Enemy)
 	{
 		Enemy->BaseFsm->bIsDead = false;
 		Enemy->Ability->CurrentHealth = 100.f;
+		Enemy->StopAnimMontage();
 		Enemy->Deactivate();
 	}
 }

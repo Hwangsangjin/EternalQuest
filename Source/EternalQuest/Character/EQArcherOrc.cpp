@@ -69,6 +69,6 @@ void AEQArcherOrc::MonsterProjectileHit(AActor* OtherActor)
 	auto Player = Cast<AEQCharacterPlayer>(OtherActor);
 	if(OtherActor == Player)
 	{
-		Player -> TakeDamage(Ability->ScorpionAttackDamage,DamageEvent,nullptr,OrcArrow);
+		Player -> TakeDamage(Ability->OrcArrowDamage,DamageEvent,nullptr,OrcArrow);
 	}
 }

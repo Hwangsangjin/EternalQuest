@@ -4,7 +4,9 @@
 #include "AI/EQEnemySpawnManager.h"
 
 #include "EngineUtils.h"
+#include "EQBaseFSM.h"
 #include "EQEnemyPool.h"
+#include "Animation/EQEnemyAnim.h"
 #include "Character/EQMush.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -39,7 +41,7 @@ void AEQEnemySpawnManager::SeverRPC_Spawn_Implementation()
 	{
 		AEQNormalEnemy* PoolActor = Pool->GetInActiveEnemy();
 		FVector SpawnPoint = this->GetActorLocation();
-		FVector RandomLoc = FVector(FMath::RandRange(-1000,1000),FMath::RandRange(-1000,1000),0.f);
+		FVector RandomLoc = FVector(FMath::RandRange(-1500.f,1500.f),FMath::RandRange(-1500.f,1500.f),0.f);
 		if(PoolActor == nullptr)
 		{
 			UE_LOG(LogTemp,Warning,TEXT("CannotSpawn"));

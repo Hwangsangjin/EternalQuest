@@ -173,7 +173,7 @@ void UEQScorpionFSM::MultiRPC_ScopionDie_Implementation()
 
 void UEQScorpionFSM::ServerRPC_ScorpionDie_Implementation()
 {
-	//if(AnimInst->IsDieDone == false) return;
+	if(AnimInst->IsDieDone == false) return;
 	
 	CurrentTime += GetWorld()->GetDeltaSeconds();
 	MultiRPC_ScopionDie();

@@ -37,14 +37,19 @@ public:
 	float CurrentHealth;
 	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Spider")
-	float SpiderWebDamage = 20.f;
+	float SpiderWebDamage = 10.f;
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Mush")
-	float MushAttackDamage = 10.f;
+	float MushAttackDamage = 8.f;
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Scorpion")
 	float ScorpionAttackDamage = 25.f;
+	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Orc")
+	float OrcArrowDamage = 15.f;
 
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Orc")
+	float OrcAxeDamage = 13.f;
 	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Berserker")
 	float BerserkerBasicAttackDamage = 10.f;
@@ -80,7 +85,6 @@ public:
 	UFUNCTION(Server,Reliable)
 	void ServerRPC_UpdateHP(float UpdateHealth);
 	
-
 	float CurrentTime = 0;
 	float DieTime = 5.0f;
 	

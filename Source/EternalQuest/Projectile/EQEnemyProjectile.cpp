@@ -13,8 +13,8 @@
 
 AEQEnemyProjectile::AEQEnemyProjectile()
 {
-	
 	PrimaryActorTick.bCanEverTick = true;
+	
 	SphereComp = CreateDefaultSubobject<USphereComponent>("SphereComp");
 	SetRootComponent(SphereComp);
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>("MeshComp");
@@ -24,7 +24,6 @@ AEQEnemyProjectile::AEQEnemyProjectile()
 	bReplicates = true;
 
 }
-
 
 void AEQEnemyProjectile::BeginPlay()
 {
@@ -53,7 +52,6 @@ void AEQEnemyProjectile::OverLapBegin(UPrimitiveComponent* OverlappedComponent, 
 {
 	
 }
-
 void AEQEnemyProjectile::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);

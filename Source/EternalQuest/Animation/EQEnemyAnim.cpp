@@ -53,7 +53,12 @@ void UEQEnemyAnim::AnimNotify_SuperAmorEnd()
 
 void UEQEnemyAnim::AnimNotify_DieEnd()
 {
-	IsDieDone = true;
+	AEQNormalEnemy* NormalEnemy = Cast<AEQNormalEnemy>(TryGetPawnOwner());
+	if(NormalEnemy != nullptr)
+	{
+		NormalEnemy->DieEffect();
+		IsDieDone = true;
+	}
 }
 
 void UEQEnemyAnim::AnimNotify_MushAttack()
