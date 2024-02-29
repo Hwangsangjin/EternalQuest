@@ -46,6 +46,6 @@ public:
 
 public:
 	UPROPERTY(Replicated)
-	bool IsDieDone;
+	bool IsDieDone = false;
 	
 };

@@ -61,9 +61,7 @@ FString AEQNormalEnemy::SetName()
 }
 
 
-void AEQNormalEnemy::MonsterProjectileHit(AActor* OtherActor)
-{
-}
+void AEQNormalEnemy::MonsterProjectileHit(AActor* OtherActor) {}
 
 void AEQNormalEnemy::BeginPlay()
 {
@@ -86,3 +84,11 @@ void AEQNormalEnemy::Tick(float DeltaSeconds)
 	
 }
 
+void AEQNormalEnemy::DieEffect()
+{
+	// bool DieStart = true;
+	// bool DieEnd = false;
+	// bool VisibilityLerp = FMath::Lerp(DieStart,DieEnd,CheckTime*0.5);
+	// GetMesh()->SetVisibility(VisibilityLerp);
+	
+}

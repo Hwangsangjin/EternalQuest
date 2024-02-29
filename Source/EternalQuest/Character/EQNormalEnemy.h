@@ -28,7 +28,6 @@ public:
 	UPROPERTY(EditAnywhere,Category="NPC")
 	AEQCharacterNonPlayer* NPC;
 	
-
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Ability")
 	UWidgetComponent* HPComp;
 
@@ -40,8 +39,9 @@ public:
 	bool IsActive();
 	void Deactivate();
 	FString virtual SetName();
-private:
+	void DieEffect();
 	
+private:
 	bool bIsActive;
 public:
 	virtual void MonsterProjectileHit(AActor* OtherActor); 
