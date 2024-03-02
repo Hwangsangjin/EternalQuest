@@ -13,5 +13,11 @@ UCLASS()
 class ETERNALQUEST_API UEQWidgetSkill : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
+public:
+	UEQWidgetSkill(const FObjectInitializer& ObjectInitializer);
+	virtual void NativeConstruct() override;
+
+	UPROPERTY()
+	TObjectPtr<USoundWave> SkillPointClickSound;
 };

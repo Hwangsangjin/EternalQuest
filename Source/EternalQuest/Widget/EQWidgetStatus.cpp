@@ -20,6 +20,12 @@ UEQWidgetStatus::UEQWidgetStatus(const FObjectInitializer& ObjectInitializer)
 
 	static ConstructorHelpers::FObjectFinder<UTexture2D> T_MageRef(TEXT("/Game/Assets/StylizedCharactersPack/Common/Texture/T_Mage_Circle.T_Mage_Circle"));
 	if (T_MageRef.Succeeded()) T_Mage = T_MageRef.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundWave> StatPointClickSoundRef(TEXT("/Script/Engine.SoundWave'/Game/Assets/RPG_Interface_SFX/WAV/UI_Menu_05.UI_Menu_05'"));
+	if (StatPointClickSoundRef.Succeeded())
+	{
+		StatPointClickSound = StatPointClickSoundRef.Object;
+	}
 }
 
 void UEQWidgetStatus::NativeConstruct()
@@ -138,6 +144,8 @@ void UEQWidgetStatus::OnClickedIncreaseHP()
 	Txt_OriginHP->SetText(FText::FromString(FString::Printf(TEXT("%.f"), CurrentPointHP)));
 	//
 	UpdateStatUp();
+	PlaySound(StatPointClickSound);
+
 }
 
 void UEQWidgetStatus::OnClickedIncreaseMP()
@@ -148,6 +156,8 @@ void UEQWidgetStatus::OnClickedIncreaseMP()
 	Txt_OriginMP->SetText(FText::FromString(FString::Printf(TEXT("%.f"), CurrentPointMP)));
 	//
 	UpdateStatUp();
+	PlaySound(StatPointClickSound);
+
 }
 
 void UEQWidgetStatus::OnClickedIncreaseSTR()
@@ -158,6 +168,8 @@ void UEQWidgetStatus::OnClickedIncreaseSTR()
 	Txt_OriginSTR->SetText(FText::FromString(FString::Printf(TEXT("%.f"), CurrentPointSTR)));
 	//
 	UpdateStatUp();
+	PlaySound(StatPointClickSound);
+
 }
 
 void UEQWidgetStatus::OnClickedIncreaseINT()
@@ -169,6 +181,8 @@ void UEQWidgetStatus::OnClickedIncreaseINT()
 
 	//
 	UpdateStatUp();
+	PlaySound(StatPointClickSound);
+
 }
 
 void UEQWidgetStatus::OnClickedIncreaseDEF()
@@ -179,4 +193,5 @@ void UEQWidgetStatus::OnClickedIncreaseDEF()
 	Txt_OriginDEF->SetText(FText::FromString(FString::Printf(TEXT("%.f"), CurrentPointDEF)));
 	//
 	UpdateStatUp();
+	PlaySound(StatPointClickSound);
 }

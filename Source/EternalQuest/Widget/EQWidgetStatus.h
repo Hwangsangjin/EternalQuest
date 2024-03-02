@@ -140,4 +140,7 @@ public:
 
 	float MaxPoint = 10;
 	int32 StatPoint = 100; // 레벨을 올릴 수 있는 포인트
+
+	UPROPERTY()
+	TObjectPtr<USoundWave> StatPointClickSound;
 };

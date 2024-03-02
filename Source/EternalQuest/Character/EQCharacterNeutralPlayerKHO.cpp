@@ -23,7 +23,7 @@ AEQCharacterNeutralPlayerKHO::AEQCharacterNeutralPlayerKHO()
 void AEQCharacterNeutralPlayerKHO::BeginPlay()
 {
 	Super::BeginPlay();
-	NPCName = TEXT("새싹 매니저");
+	NPCName = TEXT("새싹 매니저님");
 	NPCPrompt.PushLast(TEXT("안녕? 나는 새싹 길드를 운영하고 있는 매니저라고해."));
 	NPCPrompt.PushLast(TEXT("실은 내가 소중하게 여기던 새싹 수료증을 오크무리들한테 뺏겨버렸지 뭐야?"));
 	NPCPrompt.PushLast(TEXT("오크무리들은 깊은 던전속으로 들어가서 나혼자서는 도저히 들어갈수가 없었어..."));

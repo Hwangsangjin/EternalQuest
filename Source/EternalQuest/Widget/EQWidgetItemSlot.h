@@ -71,4 +71,13 @@ public:
 	void OnUnhoverBtnSlot();
 	UFUNCTION()
 	void OnClickedBtnSlot();
+
+	UPROPERTY()
+	TObjectPtr<USoundWave> WeaponEquipSound;
+
+	UPROPERTY()
+	TObjectPtr<USoundWave> ArmorEquipSound;
+
+	UPROPERTY()
+	TObjectPtr<USoundWave> ItemSwapSound;
 };
