@@ -8,6 +8,8 @@
 #include "EnhancedInputComponent.h"
 #include "Character/EQCharacterPlayer.h"
 #include "Component/EQComponentAttack.h"
+#include "Component/EQComponentAvoid.h"
+#include "Component/EQComponentSkill.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -26,39 +28,45 @@ UEQComponentMove::UEQComponentMove()
 	PrimaryComponentTick.bCanEverTick = true;
 
 	static ConstructorHelpers::FObjectFinder<UInputAction> JumpActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/Input/Actions/IA_Jump.IA_Jump'"));
-	if (JumpActionRef.Object)
+	if (JumpActionRef.Succeeded())
 	{
 		JumpAction = JumpActionRef.Object;
 	}
 
 	static ConstructorHelpers::FObjectFinder<UInputAction> MoveActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/Input/Actions/IA_Move.IA_Move'"));
-	if (MoveActionRef.Object)
+	if (MoveActionRef.Succeeded())
 	{
 		MoveAction = MoveActionRef.Object;
 	}
 
 	static ConstructorHelpers::FObjectFinder<UInputAction> TurnActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/Input/Actions/IA_Turn.IA_Turn'"));
-	if (TurnActionRef.Object)
+	if (TurnActionRef.Succeeded())
 	{
 		TurnAction = TurnActionRef.Object;
 	}
 
 	static ConstructorHelpers::FObjectFinder<UInputAction> LookActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/Input/Actions/IA_Look.IA_Look'"));
-	if (LookActionRef.Object)
+	if (LookActionRef.Succeeded())
 	{
 		LookAction = LookActionRef.Object;
 	}
 
 	static ConstructorHelpers::FObjectFinder<UInputAction> SprintActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/Input/Actions/IA_Sprint.IA_Sprint'"));
-	if (SprintActionRef.Object)
+	if (SprintActionRef.Succeeded())
 	{
 		SprintAction = SprintActionRef.Object;
 	}
 
 	static ConstructorHelpers::FObjectFinder<UInputAction> EnterActionrRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/Input/Actions/IA_Enter.IA_Enter'"));
-	if (EnterActionrRef.Object)
+	if (EnterActionrRef.Succeeded())
 	{
 		EnterAction = EnterActionrRef.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> ParkourMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Assets/StylizedCharactersPack/Common/Animation/Montage/AM_Parkour.AM_Parkour'"));
+	if (ParkourMontageRef.Succeeded())
+	{
+		ParkourMontage = ParkourMontageRef.Object;
 	}
 }
 
@@ -98,7 +106,62 @@ void UEQComponentMove::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 void UEQComponentMove::Jump(const FInputActionValue& Value)
 {
-	Player->Jump();
+	if (Player->GetCharacterMovement()->IsFalling())
+	{
+		return;
+	}
+
+	if (Player->GetAvoidComponent()->IsAvoid())
+	{
+		return;
+	}
+
+	if (Player->GetSkillComponent()->IsSkill())
+	{
+		return;
+	}
+
+	switch (Player->GetClassType())
+	{
+	case EClassType::ECT_Mage:
+		Player->Jump();
+		break;
+	case EClassType::ECT_Paladin:
+		break;
+	case EClassType::ECT_Priest:
+		break;
+	case EClassType::ECT_Rogue:
+		break;
+	case EClassType::ECT_Warrior:
+		if (IsSprinting() && !Player->GetCharacterMovement()->GetCurrentAcceleration().IsZero())
+		{
+			Server_Jump();
+			Player->Jump();
+			break;
+		}
+		else
+		{
+			Player->Jump();
+			break;
+		}
+	}
+}
+
+bool UEQComponentMove::Server_Jump_Validate()
+{
+	return true;
+}
+
+void UEQComponentMove::Server_Jump_Implementation()
+{
+	NetMulticast_Jump();
+}
+
+void UEQComponentMove::NetMulticast_Jump_Implementation()
+{
+	constexpr float PlayRate = 1.0f;
+	UAnimInstance* AnimInstance = Player->GetMesh()->GetAnimInstance();
+	AnimInstance->Montage_Play(ParkourMontage, PlayRate);
 }
 
 void UEQComponentMove::StopJumping(const FInputActionValue& Value)

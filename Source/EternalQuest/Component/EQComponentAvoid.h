@@ -26,8 +26,7 @@ public:
 
 // Avoid
 public:
-	FORCEINLINE bool IsAvoiding() const { return bIsAvoiding; }
-
+	FORCEINLINE bool IsAvoid() const { return bIsAvoiding; }
 	void AvoidableCheck();
 
 protected:
@@ -46,16 +45,6 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UInputAction> AvoidAction;
 
-// Roll
-protected:
-	void Roll();
-	void RollBegin();
-	void RollEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded);
-
-private:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = true))
-	TObjectPtr<UAnimMontage> RollMontage;
-
 // Teleport
 protected:
 	void Teleport();
@@ -67,4 +56,14 @@ private:
 	TObjectPtr<UAnimMontage> TeleportMontage;
 
 	FVector_NetQuantize TeleportPoint;
+
+// Slide
+protected:
+	void Slide();
+	void SlideBegin();
+	void SlideEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded);
+
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UAnimMontage> SlideMontage;
 };

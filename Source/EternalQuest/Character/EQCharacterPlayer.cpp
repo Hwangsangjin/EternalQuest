@@ -8,7 +8,6 @@
 #include "Engine/AssetManager.h"
 #include "Player/EQPlayerController.h"
 #include "Player/EQPlayerState.h"
-#include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
@@ -19,13 +18,14 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Component/EQComponentMove.h"
+#include "Component/EQComponentAttack.h"
+#include "Component/EQComponentAvoid.h"
+#include "Component/EQComponentSkill.h"
+#include "Component/EQComponentStat.h"
 #include "Component/EQComponentInteraction.h"
 #include "Component/EQComponentInventory.h"
 #include "Component/EQComponentMenuManager.h"
-#include "Component/EQComponentAttack.h"
-#include "Component/EQComponentAvoid.h"
 #include "Component/EQComponentQuest.h"
-#include "Component/EQComponentStat.h"
 #include "Component/EQComponentWidget.h"
 #include "Widget/EQWidgetUserName.h"
 #include "Widget/EQWidgetHpBar.h"
@@ -87,22 +87,30 @@ AEQCharacterPlayer::AEQCharacterPlayer()
 
 	// Input
 	static ConstructorHelpers::FObjectFinder<UInputMappingContext> InputMappingContextRef(TEXT("/Script/EnhancedInput.InputMappingContext'/Game/Blueprints/Input/IMC_Default.IMC_Default'"));
-	if (InputMappingContextRef.Object)
+	if (InputMappingContextRef.Succeeded())
 	{
 		DefaultMappingContext = InputMappingContextRef.Object;
 	}
 
+	// Montage
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> DeadMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Assets/StylizedCharactersPack/Common/Animation/Montage/AM_Dead.AM_Dead'"));
+	if (DeadMontageRef.Succeeded())
+	{
+		DeadMontage = DeadMontageRef.Object;
+	}
+
 	// Component
 	MoveComp = CreateDefaultSubobject<UEQComponentMove>(TEXT("Move Component"));
+	AttackComp = CreateDefaultSubobject<UEQComponentAttack>(TEXT("Attack Component"));
+	AvoidComp = CreateDefaultSubobject<UEQComponentAvoid>(TEXT("Avoid Component"));
+	SkillComp = CreateDefaultSubobject<UEQComponentSkill>(TEXT("Skill Component"));
+	StatComp = CreateDefaultSubobject<UEQComponentStat>(TEXT("Stat Component"));
 	InteractionComp = CreateDefaultSubobject<UEQComponentInteraction>(TEXT("Interaction Component"));
 	InventoryComp = CreateDefaultSubobject<UEQComponentInventory>(TEXT("Inventory Component"));
 	MenuManagerComp = CreateDefaultSubobject<UEQComponentMenuManager>(TEXT("MenuManager Component"));
-	AttackComp = CreateDefaultSubobject<UEQComponentAttack>(TEXT("Attack Component"));
-	AvoidComp = CreateDefaultSubobject<UEQComponentAvoid>(TEXT("Avoid Component"));
-	StatComp = CreateDefaultSubobject<UEQComponentStat>(TEXT("Stat Component"));
+	QuestComp = CreateDefaultSubobject<UEQComponentQuest>(TEXT("Quest Component"));
 	UserNameComp = CreateDefaultSubobject<UEQComponentWidget>(TEXT("UserName Component"));
 	HpBarComp = CreateDefaultSubobject<UEQComponentWidget>(TEXT("HpBar Component"));
-	QuestComp = CreateDefaultSubobject<UEQComponentQuest>(TEXT("Quest Component"));
 
 	UserNameComp->SetupAttachment(GetMesh());
 	UserNameComp->SetRelativeLocation(FVector(0.0f, 0.0f, 200.0f));
@@ -230,6 +238,11 @@ void AEQCharacterPlayer::AttackHitCheck()
 void AEQCharacterPlayer::AvoidableCheck()
 {
 	AvoidComp->AvoidableCheck();
+}
+
+void AEQCharacterPlayer::SkillHitCheck()
+{
+	SkillComp->SkillHitCheck();
 }
 
 float AEQCharacterPlayer::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)

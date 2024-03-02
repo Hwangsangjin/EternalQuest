@@ -5,26 +5,30 @@
 #include "InputAction.h"
 #include "EnhancedInputComponent.h"
 #include "Character/EQCharacterPlayer.h"
+#include "Character/EQCharacterEnemy.h"
+#include "Engine/DamageEvents.h"
 #include "Component/EQComponentAttack.h"
 #include "Component/EQComponentMove.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "NiagaraComponent.h"
 
 UEQComponentAvoid::UEQComponentAvoid()
 {
 	static ConstructorHelpers::FObjectFinder<UInputAction> AvoidActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/Input/Actions/IA_Avoid.IA_Avoid'"));
-	if (AvoidActionRef.Object)
+	if (AvoidActionRef.Succeeded())
 	{
 		AvoidAction = AvoidActionRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> RollMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Assets/StylizedCharactersPack/Common/Animation/Montage/AM_Roll.AM_Roll'"));
-	if (RollMontageRef.Object)
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> SlideMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Assets/StylizedCharactersPack/Common/Animation/Montage/AM_Slide.AM_Slide'"));
+	if (SlideMontageRef.Succeeded())
 	{
-		RollMontage = RollMontageRef.Object;
+		SlideMontage = SlideMontageRef.Object;
 	}
 
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> TeleportMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Assets/StylizedCharactersPack/Common/Animation/Montage/AM_Teleport.AM_Teleport'"));
-	if (TeleportMontageRef.Object)
+	if (TeleportMontageRef.Succeeded())
 	{
 		TeleportMontage = TeleportMontageRef.Object;
 	}
@@ -62,15 +66,15 @@ void UEQComponentAvoid::AvoidableCheck()
 		TeleportPoint = OutHitResult.ImpactPoint - (Current + Player->GetActorForwardVector() * TraceOffset);
 	}
 
-//#if ENABLE_DRAW_DEBUG
-//	const FColor DrawColor = bHitDetected ? FColor::Green : FColor::Red;
-//	DrawDebugLine(GetWorld(), Start, End, DrawColor, false, 5.0f);
-//#endif
+#if ENABLE_DRAW_DEBUG
+	const FColor DrawColor = bHitDetected ? FColor::Green : FColor::Red;
+	DrawDebugLine(GetWorld(), Start, End, DrawColor, false, 5.0f);
+#endif
 }
 
 void UEQComponentAvoid::Avoid(const FInputActionValue& Value)
 {
-	if (IsAvoiding())
+	if (IsAvoid())
 	{
 		return;
 	}
@@ -107,46 +111,9 @@ void UEQComponentAvoid::NetMulticast_Avoid_Implementation()
 	case EClassType::ECT_Rogue:
 		break;
 	case EClassType::ECT_Warrior:
-		Roll();
+		Slide();
 		break;
 	}
-}
-
-void UEQComponentAvoid::Roll()
-{
-	if (Player->GetCharacterMovement()->GetCurrentAcceleration().IsZero())
-	{
-		return;
-	}
-
-	RollBegin();
-}
-
-void UEQComponentAvoid::RollBegin()
-{
-	bIsAvoiding = true;
-
-	constexpr float PlayRate = 1.0f;
-	UAnimInstance* AnimInstance = Player->GetMesh()->GetAnimInstance();
-	AnimInstance->Montage_Play(RollMontage, PlayRate);
-
-	if (Player->GetMoveComponent()->IsSprinting())
-	{
-		AnimInstance->Montage_JumpToSection(TEXT("Sprint"), RollMontage);
-	}
-	else
-	{
-		AnimInstance->Montage_JumpToSection(TEXT("Default"), RollMontage);
-	}
-
-	FOnMontageEnded EndDelegate;
-	EndDelegate.BindUObject(this, &ThisClass::RollEnd);
-	AnimInstance->Montage_SetEndDelegate(EndDelegate, RollMontage);
-}
-
-void UEQComponentAvoid::RollEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded)
-{
-	bIsAvoiding = false;
 }
 
 void UEQComponentAvoid::Teleport()
@@ -169,8 +136,6 @@ void UEQComponentAvoid::TeleportBegin()
 
 void UEQComponentAvoid::TeleportEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded)
 {
-	bIsAvoiding = false;
-
 	if (bHitDetected)
 	{
 		Player->AddActorLocalOffset(TeleportPoint, true);
@@ -180,4 +145,73 @@ void UEQComponentAvoid::TeleportEnd(UAnimMontage* TargetMontage, bool bIsProperl
 		TeleportPoint = FVector_NetQuantize(1000, 0, 50);
 		Player->AddActorLocalOffset(TeleportPoint, true);
 	}
+
+	bIsAvoiding = false;
+}
+
+void UEQComponentAvoid::Slide()
+{
+	if (Player->GetCharacterMovement()->IsFalling())
+	{
+		return;
+	}
+
+	SlideBegin();
+}
+
+void UEQComponentAvoid::SlideBegin()
+{
+	bIsAvoiding = true;
+	Player->GetSwordEffect()->SetHiddenInGame(false);
+
+	constexpr float PlayRate = 1.0f;
+	UAnimInstance* AnimInstance = Player->GetMesh()->GetAnimInstance();
+	AnimInstance->Montage_Play(SlideMontage, PlayRate);
+
+	FVector LaunchDirection = Player->GetActorForwardVector();
+	LaunchDirection.Z = 0.0f;
+	LaunchDirection.Normalize();
+	constexpr float ForwardSpeed = 2500.0f;
+	const FVector LaunchVelocity = LaunchDirection * ForwardSpeed;
+	Player->LaunchCharacter(LaunchVelocity, false, false);
+
+	TArray<FHitResult> OutHitResults;
+	FCollisionQueryParams Params(SCENE_QUERY_STAT(Skill), false, Player);
+
+	constexpr float AttackRange = 250.0f;
+	constexpr float AttackRadius = 50.0f;
+	constexpr float AttackDamage = 10.0f;
+	const FVector Start = Player->GetActorLocation();
+	const FVector End = Start + Player->GetActorForwardVector() * AttackRange;
+
+	bHitDetected = GetWorld()->SweepMultiByChannel(OutHitResults, Start, End, FQuat::Identity, ECC_GameTraceChannel1, FCollisionShape::MakeSphere(AttackRadius), Params);
+	if (bHitDetected)
+	{
+		FDamageEvent DamageEvent;
+		for (const auto& OutHitResult : OutHitResults)
+		{
+			AEQCharacterEnemy* Enemy = Cast<AEQCharacterEnemy>(OutHitResult.GetActor());
+			if (Enemy)
+			{
+				Enemy->TakeDamage(AttackDamage, DamageEvent, Player->GetController(), Player);
+			}
+		}
+	}
+
+//#if ENABLE_DRAW_DEBUG
+//	const FVector CapsuleOrigin = Start + (End - Start) * 0.5f;
+//	const float CapsuleHalfHeight = AttackRange * 0.5f;
+//	const FColor DrawColor = bHitDetected ? FColor::Green : FColor::Red;
+//	DrawDebugCapsule(GetWorld(), CapsuleOrigin, CapsuleHalfHeight, AttackRadius, FRotationMatrix::MakeFromZ(Player->GetActorForwardVector()).ToQuat(), DrawColor, false, 1.0f);
+//#endif
+
+	FOnMontageEnded EndDelegate;
+	EndDelegate.BindUObject(this, &ThisClass::SlideEnd);
+	AnimInstance->Montage_SetEndDelegate(EndDelegate, SlideMontage);
+}
+
+void UEQComponentAvoid::SlideEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded)
+{
+	Player->GetSwordEffect()->SetHiddenInGame(true);
+	bIsAvoiding = false;
 }
