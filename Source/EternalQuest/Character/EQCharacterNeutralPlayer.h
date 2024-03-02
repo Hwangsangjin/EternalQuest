@@ -8,6 +8,7 @@
 #include "Interface/EQInterfaceNPCPrompt.h"
 #include "EQCharacterNeutralPlayer.generated.h"
 
+class UNiagaraComponent;
 class UEQWidgetNpcPrompt;
 /**
  * 
@@ -30,5 +31,8 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<USkeletalMeshComponent> ClothComp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UNiagaraComponent> QuestIcon;
 	// ----- 변수 -----
 };

@@ -3,12 +3,18 @@
 
 #include "Character/EQCharacterNeutralPlayer.h"
 
+#include "NiagaraComponent.h"
 #include "Blueprint/UserWidget.h"
 
 AEQCharacterNeutralPlayer::AEQCharacterNeutralPlayer()
 {
 	ClothComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Cloth Component"));
 	ClothComp->SetupAttachment(GetMesh());
+
+	QuestIcon = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Quest Icon Component"));
+	QuestIcon->SetupAttachment(RootComponent);
+
+	QuestIcon->SetRelativeLocation(FVector(0,0,110));
 
 	GetMesh()->SetRelativeLocation(FVector(0,0,-90));
 	GetMesh()->SetRelativeRotation(FRotator(0,-90,0));
