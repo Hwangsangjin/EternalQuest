@@ -30,9 +30,18 @@ protected:
 	void Jump(const FInputActionValue& Value);
 	void StopJumping(const FInputActionValue& Value);
 
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_Jump();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticast_Jump();
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UInputAction> JumpAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UAnimMontage> ParkourMontage;
 
 // Move
 protected:
