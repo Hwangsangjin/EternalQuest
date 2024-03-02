@@ -225,4 +225,15 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UEQComponentQuest> QuestComp;
+
+
+	// 미니맵 변수
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<USpringArmComponent> MinimapSpringArmComponent;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<USceneCaptureComponent2D> MinimapCameraComponent;
+
+	UPROPERTY()
+	TObjectPtr<UTextureRenderTarget2D> MinimapPlayerRenderTarget2D;
 };

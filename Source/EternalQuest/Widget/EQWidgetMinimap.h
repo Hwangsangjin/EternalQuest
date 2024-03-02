@@ -15,5 +15,5 @@ class ETERNALQUEST_API UEQWidgetMinimap : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	
+	UEQWidgetMinimap(const FObjectInitializer& ObjectInitializer);
 };

@@ -25,6 +25,7 @@
 #include "Component/EQComponentQuest.h"
 #include "Component/EQComponentStat.h"
 #include "Component/EQComponentWidget.h"
+#include "Components/SceneCaptureComponent2D.h"
 #include "Widget/EQWidgetUserName.h"
 #include "Widget/EQWidgetHpBar.h"
 
@@ -71,6 +72,21 @@ AEQCharacterPlayer::AEQCharacterPlayer()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
 
+	// Minimap Spring Arm
+	MinimapSpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm Component"));
+	MinimapSpringArmComponent->SetupAttachment(RootComponent);
+	MinimapSpringArmComponent->SetRelativeRotation(FRotator(-90,0,0));
+	MinimapSpringArmComponent->TargetArmLength = 600;
+	MinimapSpringArmComponent->bInheritPitch = false;
+	MinimapSpringArmComponent->bInheritYaw = false;
+	MinimapSpringArmComponent->bInheritRoll = false;
+
+	// Minimap SceneCapture2D
+	MinimapCameraComponent = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("SceneCapture Component"));
+	MinimapCameraComponent->SetupAttachment(MinimapSpringArmComponent);
+	MinimapCameraComponent->ProjectionType = ECameraProjectionMode::Orthographic;
+	MinimapCameraComponent->OrthoWidth = 3072;
+
 	// Interaction Box
 	InteractionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionBox"));
 	InteractionBox->SetupAttachment(RootComponent);
@@ -94,7 +110,7 @@ AEQCharacterPlayer::AEQCharacterPlayer()
 	UserNameComp = CreateDefaultSubobject<UEQComponentWidget>(TEXT("UserName Component"));
 	HpBarComp = CreateDefaultSubobject<UEQComponentWidget>(TEXT("HpBar Component"));
 	QuestComp = CreateDefaultSubobject<UEQComponentQuest>(TEXT("Quest Component"));
-
+	
 	UserNameComp->SetupAttachment(GetMesh());
 	UserNameComp->SetRelativeLocation(FVector(0.0f, 0.0f, 200.0f));
 	UserNameComp->SetRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));

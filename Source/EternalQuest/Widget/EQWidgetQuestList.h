@@ -18,6 +18,7 @@ class ETERNALQUEST_API UEQWidgetQuestList : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	UEQWidgetQuestList(const FObjectInitializer& ObjectInitializer);
 	virtual void NativeConstruct() override;
 	UFUNCTION()
 	void OnClickedQuest1();
@@ -58,4 +59,7 @@ public:
 	bool bOpenQuest2;
 	bool bOpenQuest3;
 	bool bOpenQuest4;
+
+	UPROPERTY()
+	TObjectPtr<USoundWave> QuestIconClickSound;
 };

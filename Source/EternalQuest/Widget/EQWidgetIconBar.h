@@ -18,7 +18,7 @@ class ETERNALQUEST_API UEQWidgetIconBar : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	
+	UEQWidgetIconBar(const FObjectInitializer& ObjectInitializer);
 	virtual void NativeConstruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 	// ----- 함수 -----
@@ -111,4 +111,10 @@ public:
 	bool bOpenPostBox = false;
 	bool bOpenSettings = false;
 	// ----- Flag -----
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<USoundWave> UIOpenSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<USoundWave> UICloseSound;
 };

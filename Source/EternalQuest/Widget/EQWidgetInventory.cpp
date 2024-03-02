@@ -29,7 +29,7 @@ UEQWidgetInventory::UEQWidgetInventory(const FObjectInitializer& ObjectInitializ
 	static ConstructorHelpers::FObjectFinder<USoundWave> UIBaseSoundRef(TEXT("/Script/Engine.SoundWave'/Game/Assets/RPG_Interface_SFX/WAV/UI_Menu_02.UI_Menu_02'"));
 	if (OpenInventorySoundRef.Succeeded())
 	{
-		OpenInventorySound = OpenInventorySoundRef.Object;
+		UIBaseSound = UIBaseSoundRef.Object;
 	}
 }
 
@@ -58,14 +58,12 @@ void UEQWidgetInventory::OpenCloseInventoryWidget()
 	{
 		bVisibilityFlag = false;
 		SizeBox_Base->SetVisibility(ESlateVisibility::Hidden);
-		PlaySound(UIBaseSound);
 	}
 	else
 	{
 		bVisibilityFlag = true;
 		UpdateItemInInventoryUI();
 		SizeBox_Base->SetVisibility(ESlateVisibility::Visible);
-		PlaySound(OpenInventorySound);
 	}
 }
 
