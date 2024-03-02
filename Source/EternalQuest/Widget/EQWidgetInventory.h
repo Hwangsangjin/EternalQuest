@@ -95,6 +95,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=ABCSettings)
 	TSubclassOf<UUserWidget> ItemSlotFactory;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<USoundWave> OpenInventorySound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<USoundWave> UIBaseSound;
 	// ----- 변수 -----
 
 };

@@ -3,6 +3,7 @@
 
 #include "Character/EQCharacterNeutralPlayerPKB.h"
 
+#include "NiagaraComponent.h"
 #include "Component/EQComponentQuest.h"
 
 AEQCharacterNeutralPlayerPKB::AEQCharacterNeutralPlayerPKB()
@@ -41,6 +42,7 @@ void AEQCharacterNeutralPlayerPKB::QuestAccepted()
 		GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[1] = 1;
 	}
 	NPCPrompt.PushLast(TEXT("내 펭귄 소드..."));
+	QuestIcon->SetVisibility(false);
 }
 
 void AEQCharacterNeutralPlayerPKB::QuestDenied()
