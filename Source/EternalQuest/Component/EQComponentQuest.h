@@ -19,6 +19,13 @@ public:
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	void InspectingItem();
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TArray<uint8> QuestStateArray;
+
+	bool bQuestCond1 = false;
+	bool bQuestCond2 = false;
+	bool bQuestCond3 = false;
+	bool bQuestCond4 = false;
 };

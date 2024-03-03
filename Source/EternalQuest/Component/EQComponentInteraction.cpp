@@ -5,6 +5,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "EQComponentInventory.h"
+#include "EQComponentQuest.h"
 #include "Blueprint/UserWidget.h"
 #include "Character/EQCharacterNeutralPlayer.h"
 #include "Character/EQCharacterNonPlayer.h"
@@ -88,6 +89,7 @@ void UEQComponentInteraction::Interaction()
 	PromptWidget->DisplayText = TEXT("");
 	auto LookValue = UKismetMathLibrary::FindLookAtRotation(NPC->GetActorLocation(), GetOwner()->GetActorLocation());
 	NPC->SetActorRotation(LookValue);
+	
 	PromptWidget->PullNPCInfomation(NPC);
 	bCommunicationNPC = true;
 	FInputModeGameAndUI InData;
@@ -100,9 +102,11 @@ void UEQComponentInteraction::EatItem()
 {
 	if (IsValid(Item))
 	{
-		EQComponentInventory->AddToInventory(Item->Slot);
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetInventory->UpdateItemInInventoryUI();
-		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetItemLoger->SetItemLogMessage(Item->Slot);
+		EQComponentInventory->AddToInventory(Item->Slot); // 인벤토리에 추가하기
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetInventory->UpdateItemInInventoryUI(); // 인벤토리 업데이트
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetItemLoger->SetItemLogMessage(Item->Slot); // 아이템 로그 띄우기
+		auto QuestComp = GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>();
+		QuestComp->InspectingItem();
 		ServerRPC_EatItem();
 	}
 }
