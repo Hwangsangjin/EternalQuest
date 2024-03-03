@@ -14,6 +14,7 @@
 #include "Components/TextBlock.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Item/EQItemBase.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Net/UnrealNetwork.h"
 #include "Player/EQPlayerController.h"
 #include "Widget/EQWidgetInteract.h"
@@ -85,6 +86,8 @@ void UEQComponentInteraction::Interaction()
 {
 	if (!NPC || bCommunicationNPC) return;
 	PromptWidget->DisplayText = TEXT("");
+	auto LookValue = UKismetMathLibrary::FindLookAtRotation(NPC->GetActorLocation(), GetOwner()->GetActorLocation());
+	NPC->SetActorRotation(LookValue);
 	PromptWidget->PullNPCInfomation(NPC);
 	bCommunicationNPC = true;
 	FInputModeGameAndUI InData;
