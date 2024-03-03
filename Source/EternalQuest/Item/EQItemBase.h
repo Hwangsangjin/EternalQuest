@@ -8,6 +8,8 @@
 #include "EQItemBase.generated.h"
 
 
+class UNiagaraSystem;
+class UNiagaraComponent;
 struct FEQSlot;
 
 UCLASS()
@@ -53,5 +55,20 @@ public:
 	int32 ItemQuantity;
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UNiagaraComponent> ItemVFX;
+
+	UPROPERTY()
+	TObjectPtr<UNiagaraSystem> CommonVFX;
+
+	UPROPERTY()
+	TObjectPtr<UNiagaraSystem> UnCommonVFX;
+
+	UPROPERTY()
+	TObjectPtr<UNiagaraSystem> EpicVFX;
+
+	UPROPERTY()
+	TObjectPtr<UNiagaraSystem> LegendaryVFX;
 	// ----- 변수 -----
 };
