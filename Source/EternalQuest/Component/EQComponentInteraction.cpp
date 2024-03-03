@@ -18,6 +18,7 @@
 #include "Player/EQPlayerController.h"
 #include "Widget/EQWidgetInteract.h"
 #include "Widget/EQWidgetInventory.h"
+#include "Widget/EQWidgetItemLoger.h"
 #include "Widget/EQWidgetMainUI.h"
 #include "Widget/EQWidgetNpcPrompt.h"
 
@@ -98,6 +99,7 @@ void UEQComponentInteraction::EatItem()
 	{
 		EQComponentInventory->AddToInventory(Item->Slot);
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetInventory->UpdateItemInInventoryUI();
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetItemLoger->SetItemLogMessage(Item->Slot);
 		ServerRPC_EatItem();
 	}
 }
