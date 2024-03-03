@@ -23,4 +23,5 @@ class ETERNALQUEST_API IEQInterfaceNPCPrompt
 public:
 	virtual void QuestAccepted() = 0;
 	virtual void QuestDenied() = 0;
+	virtual void QuestSuccess() = 0;
 };
