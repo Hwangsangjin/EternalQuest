@@ -3,9 +3,12 @@
 
 #include "Projectile/EQAmbushTrigger.h"
 
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraSystem.h"
 #include "Character/EQAmbushOrc.h"
 #include "Character/EQCharacterPlayer.h"
 #include "Components/BoxComponent.h"
+#include "Net/UnrealNetwork.h"
 
 
 AEQAmbushTrigger::AEQAmbushTrigger()
@@ -25,6 +28,8 @@ AEQAmbushTrigger::AEQAmbushTrigger()
 	SpawnLoc3 = CreateDefaultSubobject<USceneComponent>(TEXT("SpawnLoc3"));
 	SpawnLoc3 -> SetupAttachment(Trigger);
 	SpawnLoc3 -> SetRelativeLocation(FVector(-300.f,-270.f,0.f));
+
+	bReplicates = true;
 }
 
 
@@ -33,7 +38,29 @@ void AEQAmbushTrigger::BeginPlay()
 	Super::BeginPlay();
 	Player = Cast<AEQCharacterPlayer>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	Trigger->OnComponentBeginOverlap.AddDynamic(this,&AEQAmbushTrigger::OverLapBegin);
-	Trigger->OnComponentEndOverlap.AddDynamic(this,&AEQAmbushTrigger::OverlapEnd);
+}
+
+
+
+
+void AEQAmbushTrigger::OverLapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	ServerRPC_OverLapBegin(OtherActor);
+}
+
+void AEQAmbushTrigger::ServerRPC_OverLapBegin_Implementation(AActor* OtherActor)
+{
+	if(OtherActor == Player && IsOverlapped == false)
+	{
+		const FTransform SpawnPoint1 = SpawnLoc1->GetComponentTransform();
+		const FTransform SpawnPoint2 = SpawnLoc2->GetComponentTransform();
+		const FTransform SpawnPoint3 = SpawnLoc3->GetComponentTransform();
+		GetWorld()->SpawnActor<AEQAmbushOrc>(OrcFactory,SpawnPoint1);
+		GetWorld()->SpawnActor<AEQAmbushOrc>(OrcFactory,SpawnPoint2);
+		GetWorld()->SpawnActor<AEQAmbushOrc>(OrcFactory,SpawnPoint3);
+		IsOverlapped = true;
+	}
 }
 
 
@@ -42,25 +69,10 @@ void AEQAmbushTrigger::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
-
-void AEQAmbushTrigger::OverLapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AEQAmbushTrigger::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
-	if(OtherActor == Player && !IsOverlapped == false)
-	{
-		const FTransform SpawnPoint1 = SpawnLoc1->GetComponentTransform();
-		const FTransform SpawnPoint2 = SpawnLoc2->GetComponentTransform();
-		const FTransform SpawnPoint3 = SpawnLoc3->GetComponentTransform();
-		GetWorld()->SpawnActor<AEQAmbushOrc>(OrcFactory,SpawnPoint1);
-		GetWorld()->SpawnActor<AEQAmbushOrc>(OrcFactory,SpawnPoint2);
-		GetWorld()->SpawnActor<AEQAmbushOrc>(OrcFactory,SpawnPoint3);
-		//IsOverlapped = true;
-	}
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	
+	DOREPLIFETIME(AEQAmbushTrigger, IsOverlapped);
+	
 }
-
-void AEQAmbushTrigger::OverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	IsOverlapped = false;
-}
-

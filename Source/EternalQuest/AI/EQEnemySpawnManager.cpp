@@ -42,7 +42,7 @@ void AEQEnemySpawnManager::SeverRPC_Spawn_Implementation()
 	if(Pool)
 	{
 		AEQNormalEnemy* PoolActor = Pool->GetInActiveEnemy();
-		FVector SpawnPoint = this->GetActorLocation();
+		//FVector SpawnPoint = this->GetActorLocation();
 		//FVector RandomLoc = FVector(FMath::RandRange(-1500.f,1500.f),FMath::RandRange(-1500.f,1500.f),0.f);
 		FVector RandomLoc = MakeRandomSpawnPos();
 		if(PoolActor == nullptr)
@@ -64,20 +64,20 @@ void AEQEnemySpawnManager::Spawn()
 	UE_LOG(LogTemp,Warning,TEXT("InitSpawn"));
 	SeverRPC_Spawn();
 }
-//int32 PrevIdx = -1;
+int32 PrevIdx = -1;
 FVector AEQEnemySpawnManager::MakeRandomSpawnPos()
 {
 	
 	int32 RandIdx = FMath::RandRange(0,SpawnPos->GetArrayNum()-1);
-	// 중복을 막는다.
-	// while(PrevIdx == RandIdx)
-	// {
-	// 	RandIdx ++;
-	// 	if(RandIdx>=SpawnPos->GetArrayNum())
-	// 	{
-	// 		RandIdx = 0;
-	// 	}
-	// }
+	//중복을 막는다.
+	while(PrevIdx == RandIdx)
+	{
+		RandIdx ++;
+		if(RandIdx>=SpawnPos->GetArrayNum())
+		{
+			RandIdx = 0;
+		}
+	}
 	FVector NewLocation = SpawnPos->GetSpawnPos(RandIdx);
 	return NewLocation;
 }
