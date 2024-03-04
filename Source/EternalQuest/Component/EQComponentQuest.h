@@ -27,5 +27,6 @@ public:
 	bool bQuestCond1 = false;
 	bool bQuestCond2 = false;
 	bool bQuestCond3 = false;
+	int32 bQuestCond3Quantity = 0;
 	bool bQuestCond4 = false;
 };
