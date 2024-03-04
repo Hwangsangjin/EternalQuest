@@ -17,4 +17,5 @@ class ETERNALQUEST_API AEQScorpion : public AEQNormalEnemy
 	AEQScorpion();
 	virtual void MonsterProjectileHit(AActor* OtherActor) override;
 	virtual FString SetName() override;
+	virtual void DropItem() override;
 };

@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "EQEnemySpawnManager.generated.h"
 
+class AEQMonsterSpawnPos;
 class AEQNormalEnemy;
 class AEQMush;
 class AEQEnemyPool;
@@ -33,6 +34,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AEQNormalEnemy> EnemyType;
 
+	UPROPERTY(EditAnywhere)
+	AEQMonsterSpawnPos* SpawnPos;
+
 private:
 	FTimerHandle SpawnTimerHandle;
 	float SpawnTime = 3.f;
@@ -42,8 +46,5 @@ public:
 	UFUNCTION(Server,Reliable)
 	void SeverRPC_Spawn();
 	void Spawn();
-	
-
-	
-	
+	FVector MakeRandomSpawnPos();
 };

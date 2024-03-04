@@ -107,6 +107,7 @@ void UEQEnemyAnim::AnimNotify_Teleport()
 	AEQWarlockOrc* WarlockOrc = Cast<AEQWarlockOrc>(TryGetPawnOwner());
 	if(WarlockOrc != nullptr)
 	{
+		UE_LOG(LogTemp,Warning,TEXT("Teleport!!!!!!!!!!!!!!!!!!!!"));
 		WarlockOrc->BaseFsm->WarlockTeleport();
 	}
 }
