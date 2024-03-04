@@ -24,7 +24,6 @@ void UEQWarlockOrcFSM::BeginPlay()
 	DetectionRange = 2000.f;
 	AttackTime = 2.0f;
 	BasicSpeed = 150.f;
-	//UGameplayStatics::GetActorOfClass(GetWorld(),AEQWarlockTeleportPoint::StaticClass());
 }
 
 void UEQWarlockOrcFSM::TickMove()
@@ -91,8 +90,6 @@ void UEQWarlockOrcFSM::TickAttack()
 	}
 }
 
-
-
 void UEQWarlockOrcFSM::MeleeAttackCheck()
 {
 	Super::MeleeAttackCheck();
@@ -121,7 +118,8 @@ void UEQWarlockOrcFSM::WarlockAttack()
 	if(!Self->HasAuthority()) return;
 	AI->MoveToLocation(Target->GetActorLocation());
 	SetFocus();
-	SuperAmor = true;
+	// Ability->HitCount = 0;
+	//SuperAmor = true;
 	float Dist = FVector::Dist(Target->GetActorLocation(),Self->GetActorLocation());
 	if(Dist < MeleeAttackRange)
 	{
@@ -149,6 +147,7 @@ void UEQWarlockOrcFSM::WarlockTeleport()
 	// 텔레포트 액터에 배열에 있는 값의 위치로 이동하게 한다.
 	if(TPPoint)
 	{
+		//Ability->HitCount = 0;
 		int32 RandNum = FMath::RandRange(0,2);
 		FVector NewLocation = TPPoint->GetTeleportPoint(RandNum);
 		GEngine->AddOnScreenDebugMessage(-1,5,FColor::Red,FString::Printf(TEXT("%f,%f,%f"),NewLocation.X,NewLocation.Y,NewLocation.Z));
@@ -180,6 +179,7 @@ void UEQWarlockOrcFSM::TickDie()
 void UEQWarlockOrcFSM::WarlockPrj()
 {
 	Super::ScorpionPrj();
+	SuperAmor = false;
 	FTransform ShootPoint = Self->GetMesh()->GetSocketTransform(FName("WarlockSkillPoint"));
 	GetWorld()->SpawnActor<AEQWarlockOrcSkill>(SkillFactory,ShootPoint);
 	bIsUsingSkill = false;

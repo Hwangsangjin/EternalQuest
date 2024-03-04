@@ -13,6 +13,7 @@
 #include "Component/EQComponentInventory.h"
 #include "Components/SlateWrapperTypes.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Item/EQItemBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
@@ -107,7 +108,6 @@ void UEQBaseFSM::WarlockPrj() {}
 
 void UEQBaseFSM::WarlockTeleport() {}
 
-
 void UEQBaseFSM::SetState(EMonsterState Next)
 {
 	ServerRPC_SetState(Next);
@@ -157,21 +157,14 @@ void UEQBaseFSM::ServerRPC_TickIdle_Implementation()
 
 void UEQBaseFSM::ServerRPC_TickDie_Implementation()
 {
+	
 	if(AnimInst->IsDieDone == false) return;
 	CurrentTime += GetWorld()->GetDeltaSeconds();
 	bCanAttack = false;
 	
 	if(CurrentTime>DieTime)
 	{
-		// // 아이템 드롭
-		// // 이름
-		Self->EQSlot.ItemID.RowName = TEXT("Apple");
-		// // // 갯수
-		Self->EQSlot.Quantity = 1;
-		// // // 타입
-		Self->EQSlot.ItemType = EEQItemType::Consumtion;
-		// // // 드랍 아이템 매개변수 안데 EQSLot을 
-		Target->FindComponentByClass<UEQComponentInventory>()->DropItem(&Self->EQSlot);
+		Self->DropItem();
 		SetState(EMonsterState::Idle);
 		Pool->ReturnEnemyToPool(Self);
 	}
@@ -185,6 +178,7 @@ void UEQBaseFSM::MultiRPC_TickDie_Implementation()
 
 void UEQBaseFSM::ServerRPC_TickHit_Implementation()
 {
+	UE_LOG(LogTemp,Warning,TEXT("Hit1111111111111111111111111111111"));
 	AActor* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 	if (PlayerCharacter)
 	{
@@ -197,6 +191,7 @@ void UEQBaseFSM::ServerRPC_TickHit_Implementation()
 }
 void UEQBaseFSM::MultiRPC_TickHit_Implementation()
 {
+	UE_LOG(LogTemp,Warning,TEXT("Hit222222222222222222222222222222222222222"));
 	Self->PlayAnimMontage(AnimMontage, 1, FName("Hit"));
 }
 

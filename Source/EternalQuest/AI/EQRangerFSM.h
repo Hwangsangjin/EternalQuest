@@ -23,6 +23,7 @@ public:
 	
 	virtual void ShootWeb() override;
 	virtual void ShootArrow() override;
+	
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AEQEnemyProjectile> PrjFactory;

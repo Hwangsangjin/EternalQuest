@@ -46,3 +46,5 @@ float AEQCharacterEnemy::TakeDamage(float DamageAmount, FDamageEvent const& Dama
 	Ability->TakeDamage(this,DamageAmount,Type,EventInstigator,DamageCauser);
 	return DamageAmount;
 }
+
+void AEQCharacterEnemy::DropItem() {}

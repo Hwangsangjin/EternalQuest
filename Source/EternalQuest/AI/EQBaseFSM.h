@@ -93,7 +93,7 @@ public:
 	
 	UPROPERTY(Replicated)
 	bool SuperAmor = false;
-	
+
 
 protected:
 	void TickIdle();
