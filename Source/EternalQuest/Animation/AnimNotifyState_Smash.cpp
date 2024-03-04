@@ -11,6 +11,6 @@ void UAnimNotifyState_Smash::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimS
 {
 	if(AEQBerserkerOrc* Temp = Cast<AEQBerserkerOrc>(MeshComp->GetOwner()))
 	{
-		Temp->CheckAttack_R(Temp->Ability->BerserkerSmashDamage);
+		Temp->CheckAttack_R(Temp->Ability->BerserkerSmashDamage,60.f);
 	}
 }

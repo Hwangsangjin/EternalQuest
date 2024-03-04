@@ -25,8 +25,8 @@ EBTNodeResult::Type UEQBTTask_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& O
 	{
 		//MonsterCheckHit(OwnerComp);
 		Orc->MultiRPC_Attack();
-		FinishLatentTask(OwnerComp,EBTNodeResult::Succeeded);
 		Orc->Ability->bIsHit = false;
+		FinishLatentTask(OwnerComp,EBTNodeResult::Succeeded);
 		return EBTNodeResult::Succeeded;	
 	}
 	return EBTNodeResult::Failed;

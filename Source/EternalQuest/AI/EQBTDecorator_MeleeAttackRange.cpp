@@ -22,7 +22,7 @@ bool UEQBTDecorator_MeleeAttackRange::CalculateRawConditionValue(UBehaviorTreeCo
 	if(Player)
 	{
 		float Dist = FVector::Dist(Player->GetActorLocation(),Orc->GetActorLocation());
-		if(BerserkerAttackRange > Dist)
+		if(BerserkerAttackRange >= Dist)
 		{
 			return true;
 		}

@@ -109,6 +109,8 @@ public:
 	virtual void ShootWeb();
 	virtual void ShootArrow();
 	virtual void ScorpionPrj();
+	virtual void WarlockPrj();
+	virtual void WarlockTeleport();
 	void SetState(EMonsterState Next);
 	bool UpdateRandLoc(FVector OldLoc, float Radius, FVector& NewLoc);
 	virtual void MeleeAttackCheck();

@@ -8,9 +8,9 @@
 #include "Character/EQBerserkerOrc.h"
 #include "Character/EQBossEnemy.h"
 #include "Character/EQNormalEnemy.h"
-#include "Kismet/GameplayStatics.h"
+#include "Components/WidgetComponent.h"
 #include "Net/UnrealNetwork.h"
-#include "Widget/EQBossMonsterHPUI.h"
+#include "Widget/EQDamageAmoutUI.h"
 
 
 UEQMonsterAbility::UEQMonsterAbility()
@@ -18,7 +18,6 @@ UEQMonsterAbility::UEQMonsterAbility()
 	
 	PrimaryComponentTick.bCanEverTick = true;
 	SetIsReplicated(true);
-	
 }
 
 
@@ -36,18 +35,18 @@ void UEQMonsterAbility::BeginPlay()
 			GetWorld()->GetTimerManager().SetTimer(RecoveryTimerHandle,this,&UEQMonsterAbility::StaminaRecovery,1.0f,true);
 		}
 	}
-	
 }
 
 void UEQMonsterAbility::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	CheckCanDodge();
-	
 }
 
+
+
 void UEQMonsterAbility::TakeDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
-	AController* InstigatedBy, AActor* DamageCauser)
+                                   AController* InstigatedBy, AActor* DamageCauser)
 {
 	UE_LOG(LogTemp,Warning,TEXT("CurrentHP : %f"),CurrentHealth);
 	UE_LOG(LogTemp,Warning,TEXT("MaxHP : %f"), MaxHealth);
@@ -56,6 +55,11 @@ void UEQMonsterAbility::TakeDamage(AActor* DamagedActor, float Damage, const UDa
 		return;
 	}
 	UpdateHP(-Damage);
+	if(auto Monster = Cast<AEQCharacterEnemy>(DamagedActor))
+	{
+		Monster->DamageComp->SetVisibility(true);
+		DamageUI->ShowDamageAmount(Damage);
+	}
 	
 	if(DamagedActor->IsA<AEQNormalEnemy>())
 	{
@@ -110,10 +114,7 @@ void UEQMonsterAbility::TakeDamage(AActor* DamagedActor, float Damage, const UDa
 
 void UEQMonsterAbility::UpdateHP(float UpdateHealth)
 {
-	//UE_LOG(LogTemp, Warning, TEXT("Current Health222: %f"), CurrentHealth);
-	//CurrentHealth = FMath::Max(0,CurrentHealth+UpdateHealth);
 	ServerRPC_UpdateHP(UpdateHealth);
-	//UE_LOG(LogTemp,Warning,TEXT("damage: %.1f, curent Health: %.1f"), UpdateHealth, CurrentHealth);
 }
 
 void UEQMonsterAbility::StaminaRecovery()
@@ -126,7 +127,6 @@ void UEQMonsterAbility::StaminaRecovery()
 		// 초당 체력 회복량 계산 및 적용
 		float RecoveryAmount = MaxHealth * RecoveryRate;
 		CurrentHealth += RecoveryAmount;
-
 		// 최대 체력을 넘지 않도록 보정
 		CurrentHealth = FMath::Min(CurrentHealth, MaxHealth);
 	}
@@ -155,6 +155,7 @@ void UEQMonsterAbility::CheckCanDodge()
 		bIsDamageOver = false;
 	}
 }
+
 
 void UEQMonsterAbility::ServerRPC_UpdateHP_Implementation(float UpdateHealth)
 {
