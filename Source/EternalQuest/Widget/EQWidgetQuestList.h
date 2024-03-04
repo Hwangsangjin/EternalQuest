@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "EQWidgetQuestList.generated.h"
 
+class UEQComponentQuest;
 class UTextBlock;
 class UButton;
 class USizeBox;
@@ -20,6 +21,7 @@ class ETERNALQUEST_API UEQWidgetQuestList : public UUserWidget
 public:
 	UEQWidgetQuestList(const FObjectInitializer& ObjectInitializer);
 	virtual void NativeConstruct() override;
+	
 	UFUNCTION()
 	void OnClickedQuest1();
 	UFUNCTION()
@@ -30,6 +32,7 @@ public:
 	void OnClickedQuest4();
 
 	void ClearQuestIcon();
+	void UpdateQuestIcon();
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(BindWidget))
 	TObjectPtr<UButton> Btn_Quest1;
@@ -53,6 +56,9 @@ public:
 	TObjectPtr<UTextBlock> Txt_QuestDetail;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(BindWidget))
+	TObjectPtr<UTextBlock> Txt_QuestProgress;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(BindWidget))
 	TObjectPtr<UTextBlock> Txt_QuestState;
 
 	bool bOpenQuest1;
@@ -62,4 +68,7 @@ public:
 
 	UPROPERTY()
 	TObjectPtr<USoundWave> QuestIconClickSound;
+
+	UPROPERTY()
+	TObjectPtr<UEQComponentQuest> QuestComp;
 };
