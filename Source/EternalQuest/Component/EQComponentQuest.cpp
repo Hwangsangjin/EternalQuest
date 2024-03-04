@@ -46,6 +46,10 @@ void UEQComponentQuest::InspectingItem()
 			bQuestCond3 = true;
 			GEngine->AddOnScreenDebugMessage(-1,5,FColor::Red, TEXT("퀘스트3 완료!"));
 		}
+		else
+		{
+			bQuestCond3Quantity = Inventory->EQAllItem.QuestItem[i].Quantity;
+		}
 
 		if (Inventory->EQAllItem.QuestItem[i].ItemID.RowName == TEXT("OrcTooth"))
 		{

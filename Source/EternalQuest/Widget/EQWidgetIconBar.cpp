@@ -244,6 +244,7 @@ void UEQWidgetIconBar::OnClickQuest()
 		OnHoverQuest();
 		bOpenQuest = true;
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetQuestList->SetVisibility(ESlateVisibility::Visible);
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetQuestList->UpdateQuestIcon();
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Hidden);
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetMinimap->SetVisibility(ESlateVisibility::Visible);
 		PlaySound(UIOpenSound);
