@@ -27,6 +27,7 @@
 #include "Component/EQComponentMenuManager.h"
 #include "Component/EQComponentQuest.h"
 #include "Component/EQComponentWidget.h"
+#include "Components/SceneCaptureComponent2D.h"
 #include "Widget/EQWidgetUserName.h"
 #include "Widget/EQWidgetHpBar.h"
 
@@ -82,8 +83,24 @@ AEQCharacterPlayer::AEQCharacterPlayer()
 	// Interaction Box
 	InteractionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionBox"));
 	InteractionBox->SetupAttachment(RootComponent);
-	InteractionBox->SetBoxExtent(FVector(50));
+	InteractionBox->SetBoxExtent(FVector(75));
 	InteractionBox->SetRelativeLocation(FVector(120, 0, -50));
+
+	// Minimap Spring Arm
+	MinimapSpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm Component"));
+	MinimapSpringArmComp->SetupAttachment(RootComponent);
+	MinimapSpringArmComp->SetRelativeRotation(FRotator(-90,0,0));
+	MinimapSpringArmComp->TargetArmLength = 600;
+	MinimapSpringArmComp->bInheritPitch = false;
+	MinimapSpringArmComp->bInheritYaw = false;
+	MinimapSpringArmComp->bInheritRoll = false;
+	MinimapSpringArmComp->bDoCollisionTest = false;
+
+	// Minimap SceneCapture2D
+	MinimapSceneCaptureComp = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("SceneCapture Component"));
+	MinimapSceneCaptureComp->SetupAttachment(MinimapSpringArmComp);
+	MinimapSceneCaptureComp->ProjectionType = ECameraProjectionMode::Orthographic;
+	MinimapSceneCaptureComp->OrthoWidth = 3072;
 
 	// Input
 	static ConstructorHelpers::FObjectFinder<UInputMappingContext> InputMappingContextRef(TEXT("/Script/EnhancedInput.InputMappingContext'/Game/Blueprints/Input/IMC_Default.IMC_Default'"));
