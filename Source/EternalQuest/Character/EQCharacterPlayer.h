@@ -255,9 +255,16 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UEQComponentWidget> HpBarComp;
 
+	// 미니맵 로직 //
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<USpringArmComponent> MinimapSpringArmComp;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<USceneCaptureComponent2D> MinimapSceneCaptureComp;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
+	TObjectPtr<UMaterialInterface> MinimapMaterialInterface;
+
+	UPROPERTY()
+	TObjectPtr<UTextureRenderTarget2D> RenderTarget;
 };

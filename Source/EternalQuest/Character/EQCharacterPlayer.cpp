@@ -4,7 +4,6 @@
 #include "Character/EQCharacterPlayer.h"
 #include "EternalQuest.h"
 #include "EngineUtils.h"
-#include "Net/UnrealNetwork.h"
 #include "Engine/AssetManager.h"
 #include "Player/EQPlayerController.h"
 #include "Player/EQPlayerState.h"
@@ -13,9 +12,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/BoxComponent.h"
 #include "NiagaraComponent.h"
-#include "InputActionValue.h"
 #include "InputMappingContext.h"
-#include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Component/EQComponentMove.h"
 #include "Component/EQComponentAttack.h"
@@ -27,9 +24,14 @@
 #include "Component/EQComponentMenuManager.h"
 #include "Component/EQComponentQuest.h"
 #include "Component/EQComponentWidget.h"
+#include "Components/Border.h"
+#include "Components/Image.h"
 #include "Components/SceneCaptureComponent2D.h"
-#include "Widget/EQWidgetUserName.h"
+#include "Engine/TextureRenderTarget2D.h"
+#include "Kismet/KismetRenderingLibrary.h"
 #include "Widget/EQWidgetHpBar.h"
+#include "Widget/EQWidgetMainUI.h"
+#include "Widget/EQWidgetMinimap.h"
 
 AEQCharacterPlayer::AEQCharacterPlayer()
 {
@@ -95,12 +97,19 @@ AEQCharacterPlayer::AEQCharacterPlayer()
 	MinimapSpringArmComp->bInheritYaw = false;
 	MinimapSpringArmComp->bInheritRoll = false;
 	MinimapSpringArmComp->bDoCollisionTest = false;
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MinimapMaterialInterfaceRef(TEXT("/Script/Engine.Material'/Game/Blueprints/RenderTarget/M_RTPlayer.M_RTPlayer'"));
+	if (MinimapMaterialInterfaceRef.Succeeded())
+	{
+		MinimapMaterialInterface = MinimapMaterialInterfaceRef.Object;
+	}
 
 	// Minimap SceneCapture2D
 	MinimapSceneCaptureComp = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("SceneCapture Component"));
 	MinimapSceneCaptureComp->SetupAttachment(MinimapSpringArmComp);
 	MinimapSceneCaptureComp->ProjectionType = ECameraProjectionMode::Orthographic;
 	MinimapSceneCaptureComp->OrthoWidth = 3072;
+	MinimapSceneCaptureComp->PrimitiveRenderMode = ESceneCapturePrimitiveRenderMode::PRM_LegacySceneCapture;
+
 
 	// Input
 	static ConstructorHelpers::FObjectFinder<UInputMappingContext> InputMappingContextRef(TEXT("/Script/EnhancedInput.InputMappingContext'/Game/Blueprints/Input/IMC_Default.IMC_Default'"));
@@ -135,7 +144,7 @@ AEQCharacterPlayer::AEQCharacterPlayer()
 	static ConstructorHelpers::FClassFinder<UUserWidget> UserNameWidgetRef(TEXT("/Game/Blueprints/Widget/WBP_UserName.WBP_UserName_C"));
 	if (UserNameWidgetRef.Succeeded())
 	{
-		UserNameComp->SetWidgetClass(UserNameWidgetRef.Class);
+		UserNameComp->SetWidgetClass(UserNameWidgetRef.Class); 
 		UserNameComp->SetWidgetSpace(EWidgetSpace::Screen);
 		UserNameComp->SetDrawSize(FVector2D(150.0f, 15.0f));
 		UserNameComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -173,6 +182,7 @@ void AEQCharacterPlayer::PostInitializeComponents()
 
 	StatComp->OnHpZero.AddUObject(this, &ThisClass::SetDead);
 	//StatComp->OnStatChanged.AddUObject(this, &ThisClass::ApplyStat);
+	
 }
 
 void AEQCharacterPlayer::PossessedBy(AController* NewController)
@@ -238,6 +248,19 @@ void AEQCharacterPlayer::BeginPlay()
 	}
 
 	SetPlayerController();
+
+	if (IsLocallyControlled())
+	{
+		RenderTarget = NewObject<UTextureRenderTarget2D>();
+		RenderTarget->InitCustomFormat(256, 256, EPixelFormat::PF_FloatRGBA, false);
+		MinimapSceneCaptureComp->TextureTarget = RenderTarget;
+
+		// MinimapMaterialInterface->SetTextureParameterValue(RenderTex)
+		UMaterialInstanceDynamic* FrameMaterial = UMaterialInstanceDynamic::Create(MinimapMaterialInterface, this);
+		FrameMaterial->SetTextureParameterValue("RenderTexture", RenderTarget);
+	
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetMinimap->Minimap_Mask->SetBrushFromMaterial(FrameMaterial);
+	}
 }
 
 void AEQCharacterPlayer::Tick(float DeltaSeconds)

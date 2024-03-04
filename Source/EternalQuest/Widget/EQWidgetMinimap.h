@@ -6,6 +6,8 @@
 #include "Blueprint/UserWidget.h"
 #include "EQWidgetMinimap.generated.h"
 
+class UBorder;
+class UImage;
 /**
  * 
  */
@@ -16,4 +18,7 @@ class ETERNALQUEST_API UEQWidgetMinimap : public UUserWidget
 
 public:
 	UEQWidgetMinimap(const FObjectInitializer& ObjectInitializer);
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(BindWidget))
+	TObjectPtr<UImage> Minimap_Mask;
 };
