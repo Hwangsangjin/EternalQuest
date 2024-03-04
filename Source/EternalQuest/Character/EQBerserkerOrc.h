@@ -8,6 +8,7 @@
 
 class UEQMonsterAbility;
 class UBehaviorTree;
+class AEQCharacterPlayer;
 /**
  * 
  */
@@ -43,9 +44,9 @@ public:
 	UPROPERTY(EditAnywhere,Blueprintable,Category="Animaition")
 	UAnimMontage* Montage;
 
-	void CheckAttack_L(float Damage);
-	void CheckAttack_R(float Damage);
-	
+	void CheckAttack_L(float Damage, float Radius);
+	void CheckAttack_R(float Damage, float Radius);
+	void EndAttack();
 	
 	UFUNCTION(NetMulticast,Unreliable)
 	void MultiRPC_Attack();
@@ -58,4 +59,6 @@ public:
 	UFUNCTION(NetMulticast,Unreliable)
 	void MultiRPC_Die();
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat")
+	TArray<AEQCharacterPlayer*> DamagedPlayers;
 };

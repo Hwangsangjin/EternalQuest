@@ -6,6 +6,8 @@
 #include "Character/EQCharacterNonPlayer.h"
 #include "EQCharacterEnemy.generated.h"
 
+class UWidgetComponent;
+class UEQDamageAmoutUI;
 /**
  * 
  */
@@ -14,12 +16,18 @@ class ETERNALQUEST_API AEQCharacterEnemy : public AEQCharacterNonPlayer
 {
 	GENERATED_BODY()
 public:
-		AEQCharacterEnemy();
-		UPROPERTY(EditAnywhere,BlueprintReadWrite)
-    	UEQMonsterAbility* Ability;
+	AEQCharacterEnemy();
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+    UEQMonsterAbility* Ability;
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
     
-    public:
-    	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)override;
-    	UPROPERTY()
-    	UDamageType* Type;
+public:
+    virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)override;
+    UPROPERTY()
+    UDamageType* Type;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UEQDamageAmoutUI> DamageFactory;
+	UPROPERTY(EditAnywhere)
+	UWidgetComponent* DamageComp;
 };

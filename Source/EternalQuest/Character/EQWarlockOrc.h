@@ -4,17 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "Character/EQNormalEnemy.h"
-#include "EQAmbushOrc.generated.h"
+#include "EQWarlockOrc.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ETERNALQUEST_API AEQAmbushOrc : public AEQNormalEnemy
+class ETERNALQUEST_API AEQWarlockOrc : public AEQNormalEnemy
 {
 	GENERATED_BODY()
 
-	AEQAmbushOrc();
+public:
+	AEQWarlockOrc();
 	UPROPERTY(EditAnywhere)
 	USkeletalMeshComponent* HelmetComp;
 	UPROPERTY(EditAnywhere)
@@ -24,6 +25,7 @@ class ETERNALQUEST_API AEQAmbushOrc : public AEQNormalEnemy
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* WeaponComp_R;
 	
+
+	virtual void MonsterProjectileHit(AActor* OtherActor) override;
 	virtual FString SetName() override;
-	
 };

@@ -1,38 +1,35 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "AI/EQScorpionFSM.h"
+#include "AI/EQWarlockOrcFSM.h"
 
 #include "AIController.h"
 #include "AITypes.h"
 #include "EQMonsterAbility.h"
 #include "NavigationSystem.h"
-#include "Animation/EQEnemyAnim.h"
 #include "Character/EQCharacterPlayer.h"
 #include "Character/EQNormalEnemy.h"
-#include "Components/ArrowComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/DamageEvents.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Navigation/PathFollowingComponent.h"
-#include "Projectile/EQScorpionSkill.h"
+#include "Projectile/EQWarlockOrcSkill.h"
+#include "Projectile/EQWarlockTeleportPoint.h"
 
 
-void UEQScorpionFSM::BeginPlay()
+void UEQWarlockOrcFSM::BeginPlay()
 {
 	Super::BeginPlay();
-	
 	DetectionRange = 2000.f;
 	AttackTime = 2.0f;
-	BasicSpeed = 300.f;
-	
+	BasicSpeed = 150.f;
+	//UGameplayStatics::GetActorOfClass(GetWorld(),AEQWarlockTeleportPoint::StaticClass());
 }
 
-void UEQScorpionFSM::TickMove()
+void UEQWarlockOrcFSM::TickMove()
 {
 	Super::TickMove();
-	
 	if(!Self->HasAuthority()) return;
 	TArray<AActor*> allPlayer;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEQCharacterPlayer::StaticClass(), allPlayer);
@@ -61,20 +58,17 @@ void UEQScorpionFSM::TickMove()
    
 	if(Result.IsSuccessful() && Direction.Length() < DetectionRange && Self->HasAuthority())
 	{
-		ChaseSpeed = Self->GetCharacterMovement()->MaxWalkSpeed = 400.f;
+		ChaseSpeed = Self->GetCharacterMovement()->MaxWalkSpeed = 200.f;
 		AI->MoveToLocation(Target->GetActorLocation());
-		//UE_LOG(LogTemp,Warning,TEXT("%f"),ChaseSpeed);
 		Self->GetCharacterMovement()->MaxWalkSpeed = ChaseSpeed;
-		if(Direction.Length() < MinRangeAttackRange)
+		if(Direction.Length() < MaxRangeAttackRange)
 		{
 			SetState(EMonsterState::Attack);
 			CurrentTime = AttackTime;
 		}
 	}
-	// 플레이어와거리가 탐지 범위보다 작을때  
 	else if(Result.IsSuccessful() || Direction.Length() > DetectionRange && Self->HasAuthority())
 	{
-      
 		Self->GetCharacterMovement()->MaxWalkSpeed = BasicSpeed;
 		FPathFollowingRequestResult R;
 		R.Code = AI -> MoveToLocation(RandomLoc);
@@ -87,10 +81,9 @@ void UEQScorpionFSM::TickMove()
 
 }
 
-void UEQScorpionFSM::TickAttack()
+void UEQWarlockOrcFSM::TickAttack()
 {
 	Super::TickAttack();
-	bCanAttack = true;
 	CurrentTime += GetWorld()->GetDeltaSeconds();
 	if(CurrentTime > AttackTime && Target != nullptr)
 	{
@@ -98,20 +91,16 @@ void UEQScorpionFSM::TickAttack()
 	}
 }
 
-void UEQScorpionFSM::TickDie()
-{
-	Super::TickDie();
-	ServerRPC_ScorpionDie();
-}
 
-void UEQScorpionFSM::MeleeAttackCheck()
+
+void UEQWarlockOrcFSM::MeleeAttackCheck()
 {
 	Super::MeleeAttackCheck();
 	FHitResult HitResult;
 	FCollisionQueryParams Params(SCENE_QUERY_STAT(Attack),false,Self);
 	float MeleeRange = 100.f;
 	float MeleeAttackRad = 50.f;
-	float Damage = 10;
+	float Damage = Ability->OrcKnifeDamage;
 	FVector StartLoc = Self->GetActorLocation() + Self->GetActorForwardVector() * Self->GetCapsuleComponent()->GetScaledCapsuleRadius();
 	FVector EndLoc = StartLoc + Self->GetActorForwardVector() * MeleeRange;
 
@@ -122,88 +111,87 @@ void UEQScorpionFSM::MeleeAttackCheck()
 		auto Player = Cast<AEQCharacterPlayer>(HitResult.GetActor());
 		if(Player)
 		{
-			Player ->TakeDamage(Damage,DamageEvent,nullptr,Self);
+			Player -> TakeDamage(Damage,DamageEvent,nullptr,Self);
 		}
 	}
 }
 
-
-void UEQScorpionFSM::ScorpionAttack()
+void UEQWarlockOrcFSM::WarlockAttack()
 {
-	ServerRPC_ScorpionAttack();
-}
-
-void UEQScorpionFSM::ScorpionSkill()
-{
-	if(!bIsUsingSkill)
-	{
-		UE_LOG(LogTemp,Warning,TEXT("RangeAttack!!!!!!!"));
-		SetFocus();
-		Self->GetCharacterMovement()->StopMovementImmediately();
-		bIsUsingSkill = true;
-		CurrentTime += GetWorld()->GetDeltaSeconds();
-		Self->PlayAnimMontage(AnimMontage,1,FName("Skill"));
-		SetState(EMonsterState::Attack);	
-	}
-	
-}
-
-void UEQScorpionFSM::CheckPlayerLoc()
-{
-	float Dist = FVector::Dist(Target->GetActorLocation(),Self->GetActorLocation());
-	if(Dist < MeleeAttackRange) ScorpionAttack();
-	else if(Dist > MinRangeAttackRange && Dist < MaxRangeAttackRange) ScorpionSkill();
-	else SetState(EMonsterState::Move);
-}
-
-void UEQScorpionFSM::SetFocus()
-{
-	FVector Direction = Target->GetActorLocation() - Self->GetActorLocation();
-	FRotator NewRotation = Direction.Rotation();
-	Self->SetActorRotation(NewRotation);
-}
-
-void UEQScorpionFSM::ScorpionPrj()
-{
-	Super::ScorpionPrj();
-	FTransform ShootPoint = Self->GetMesh()->GetSocketTransform(FName("SkillPoint"));
-	GetWorld()->SpawnActor<AEQScorpionSkill>(SkillFactory,ShootPoint);
-	bIsUsingSkill = false;
-}
-
-void UEQScorpionFSM::MultiRPC_ScopionDie_Implementation()
-{
-	Self->PlayAnimMontage(AnimMontage,1,FName("Die"));
-}
-
-void UEQScorpionFSM::ServerRPC_ScorpionDie_Implementation()
-{
-	if(AnimInst->IsDieDone == false) return;
-	bCanAttack = false;
-	bIsUsingSkill = true;
-	CurrentTime += GetWorld()->GetDeltaSeconds();
-	Self->SetActorEnableCollision(ECollisionEnabled::NoCollision);
-	if(CurrentTime>DieTime)
-	{
-		Self->Destroy();
-	}
-}
-
-void UEQScorpionFSM::ServerRPC_ScorpionAttack_Implementation()
-{
+	if(!Self->HasAuthority()) return;
 	AI->MoveToLocation(Target->GetActorLocation());
 	SetFocus();
 	SuperAmor = true;
 	float Dist = FVector::Dist(Target->GetActorLocation(),Self->GetActorLocation());
 	if(Dist < MeleeAttackRange)
 	{
-		MultiRPC_ScorpionAttack();
+		MultiRPC_OrcWarlockAttack();
 		SetState(EMonsterState::Attack);
 	}
 }
 
-void UEQScorpionFSM::MultiRPC_ScorpionAttack_Implementation()
+void UEQWarlockOrcFSM::WarlockSkill()
+{
+	if(!bIsUsingSkill)
+	{
+		SetFocus();
+		Self->GetCharacterMovement()->StopMovementImmediately();
+		bIsUsingSkill = true;
+		CurrentTime += GetWorld()->GetDeltaSeconds();
+		MultiRPC_OrcWarlockSkill();
+		SetState(EMonsterState::Attack);
+	}
+}
+
+void UEQWarlockOrcFSM::WarlockTeleport()
+{
+	// 피격시 맞은 위치로 이동하게 한다.
+	// 텔레포트 액터에 배열에 있는 값의 위치로 이동하게 한다.
+	if(TPPoint)
+	{
+		int32 RandNum = FMath::RandRange(0,2);
+		FVector NewLocation = TPPoint->GetTeleportPoint(RandNum);
+		GEngine->AddOnScreenDebugMessage(-1,5,FColor::Red,FString::Printf(TEXT("%f,%f,%f"),NewLocation.X,NewLocation.Y,NewLocation.Z));
+		Self->SetActorLocation(NewLocation);
+	}
+}
+
+void UEQWarlockOrcFSM::CheckPlayerLoc()
+{
+	float Dist = FVector::Dist(Target->GetActorLocation(),Self->GetActorLocation());
+	if(Dist < MeleeAttackRange) WarlockAttack();
+	else if(Dist > MinRangeAttackRange && Dist < MaxRangeAttackRange) WarlockSkill();
+	else SetState(EMonsterState::Move);
+}
+
+void UEQWarlockOrcFSM::SetFocus()
+{
+	FVector Direction = Target->GetActorLocation() - Self->GetActorLocation();
+	FRotator NewRotation = Direction.Rotation();
+	Self->SetActorRotation(NewRotation);
+}
+
+void UEQWarlockOrcFSM::TickDie()
+{
+	Super::TickDie();
+}
+
+
+void UEQWarlockOrcFSM::WarlockPrj()
+{
+	Super::ScorpionPrj();
+	FTransform ShootPoint = Self->GetMesh()->GetSocketTransform(FName("WarlockSkillPoint"));
+	GetWorld()->SpawnActor<AEQWarlockOrcSkill>(SkillFactory,ShootPoint);
+	bIsUsingSkill = false;
+}
+
+
+void UEQWarlockOrcFSM::MultiRPC_OrcWarlockAttack_Implementation()
 {
 	Self->PlayAnimMontage(AnimMontage,1,FName("Attack"));
 }
 
+void UEQWarlockOrcFSM::MultiRPC_OrcWarlockSkill_Implementation()
+{
+	Self->PlayAnimMontage(AnimMontage,1,FName("Skill"));
+}

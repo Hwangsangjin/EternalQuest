@@ -17,7 +17,7 @@ void UAnimNotifyState_BasicAttack::NotifyTick(USkeletalMeshComponent* MeshComp, 
 	if(AEQBerserkerOrc* Temp = Cast<AEQBerserkerOrc>(MeshComp->GetOwner()))
 	{
 		
-		Temp->CheckAttack_L(Temp->Ability->BerserkerBasicAttackDamage);
-		Temp->CheckAttack_R(Temp->Ability->BerserkerBasicAttackDamage);
+		Temp->CheckAttack_L(Temp->Ability->BerserkerBasicAttackDamage,50);
+		Temp->CheckAttack_R(Temp->Ability->BerserkerBasicAttackDamage,50);
 	}
 }

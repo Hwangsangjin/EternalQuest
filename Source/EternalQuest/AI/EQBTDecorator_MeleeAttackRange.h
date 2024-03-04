@@ -19,6 +19,6 @@ class ETERNALQUEST_API UEQBTDecorator_MeleeAttackRange : public UBTDecorator_Bla
 
 private:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="AI",meta=(AllowPrivateAccess = "true"))
-	float BerserkerAttackRange = 250.f;
+	float BerserkerAttackRange = 400.f;
 	
 };

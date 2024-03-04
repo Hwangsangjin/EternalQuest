@@ -11,6 +11,6 @@ void UAnimNotifyState_ComboAttack2::NotifyTick(USkeletalMeshComponent* MeshComp,
 {
 	if(AEQBerserkerOrc* Temp = Cast<AEQBerserkerOrc>(MeshComp->GetOwner()))
 	{
-		Temp->CheckAttack_L(Temp->Ability->BerserkerComboAttackDamage_2);
+		Temp->CheckAttack_L(Temp->Ability->BerserkerComboAttackDamage_2,60.f);
 	}
 }

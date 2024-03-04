@@ -10,6 +10,8 @@
 #include "Character/EQCharacterBase.h"
 #include "Character/EQCharacterPlayer.h"
 #include "Character/EQNormalEnemy.h"
+#include "Component/EQComponentInventory.h"
+#include "Components/SlateWrapperTypes.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
@@ -101,6 +103,9 @@ void UEQBaseFSM::ShootArrow() {}
 
 void UEQBaseFSM::ScorpionPrj() {}
 
+void UEQBaseFSM::WarlockPrj() {}
+
+void UEQBaseFSM::WarlockTeleport() {}
 
 
 void UEQBaseFSM::SetState(EMonsterState Next)
@@ -155,17 +160,18 @@ void UEQBaseFSM::ServerRPC_TickDie_Implementation()
 	if(AnimInst->IsDieDone == false) return;
 	CurrentTime += GetWorld()->GetDeltaSeconds();
 	bCanAttack = false;
-	// 아이템 드롭
-	// 이름
-	// Self->EQSlot.ItemID.RowName = TEXT("Apple")
-	// // 갯수
-	// Self->EQSlot.Quantity = 1;
-	// // 타입
-	// Self->EQSlot.ItemType = EEQItemType::Consumtion;
-	// // 드랍 아이템 매개변수 안데 EQSLot을 
-	//Target->FindComponentByClass<UEQComponentInventory>()->;
+	
 	if(CurrentTime>DieTime)
 	{
+		// // 아이템 드롭
+		// // 이름
+		Self->EQSlot.ItemID.RowName = TEXT("Apple");
+		// // // 갯수
+		Self->EQSlot.Quantity = 1;
+		// // // 타입
+		Self->EQSlot.ItemType = EEQItemType::Consumtion;
+		// // // 드랍 아이템 매개변수 안데 EQSLot을 
+		Target->FindComponentByClass<UEQComponentInventory>()->DropItem(&Self->EQSlot);
 		SetState(EMonsterState::Idle);
 		Pool->ReturnEnemyToPool(Self);
 	}

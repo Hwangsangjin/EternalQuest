@@ -7,6 +7,7 @@
 #include "EQMonsterAbility.generated.h"
 
 
+class UEQDamageAmoutUI;
 class AEQBerserkerOrc;
 class UEQBossMonsterHPUI;
 
@@ -29,6 +30,9 @@ public:
 	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="UI")
 	UEQBossMonsterHPUI* BossMonsterHPUI;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="UI")
+	UEQDamageAmoutUI* DamageUI;
 	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Monster")
 	float MaxHealth;
@@ -50,6 +54,15 @@ public:
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Orc")
 	float OrcAxeDamage = 13.f;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Orc")
+	float OrcKnifeDamage = 9.f;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Orc")
+	float OrcSkillDamage = 10.f;
+
+	
+	
 	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Berserker")
 	float BerserkerBasicAttackDamage = 10.f;
@@ -81,7 +94,6 @@ public:
 	void StaminaRecovery();
 	UFUNCTION()
 	void TakeDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser);
-
 	UFUNCTION(Server,Reliable)
 	void ServerRPC_UpdateHP(float UpdateHealth);
 	

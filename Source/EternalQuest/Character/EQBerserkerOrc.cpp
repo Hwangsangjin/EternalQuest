@@ -74,50 +74,54 @@ UBehaviorTree* AEQBerserkerOrc::GetBehaviorTree()
 }
 
 
-void AEQBerserkerOrc::CheckAttack_L(float Damage)
+void AEQBerserkerOrc::CheckAttack_L(float Damage, float Radius)
 {
 	TArray<FHitResult> OutHitArray;
-	if (UKismetSystemLibrary::SphereTraceMulti(GetWorld(), StartPos_L->GetComponentLocation(), EndPos_L->GetComponentLocation(), 50.f, UEngineTypes::ConvertToTraceType(ECC_Visibility), false, {}, 
+	if (UKismetSystemLibrary::SphereTraceMulti(GetWorld(), StartPos_L->GetComponentLocation(), EndPos_L->GetComponentLocation(), Radius, UEngineTypes::ConvertToTraceType(ECC_Visibility), false, {}, 
 			EDrawDebugTrace::None, OutHitArray, true))
 	{
-		TArray<AEQCharacterPlayer*> HitPlayers;
 		for (FHitResult Iter : OutHitArray)
 		{
 			if (auto Player = Cast<AEQCharacterPlayer>(Iter.GetActor()))
 			{
-				if (!HitPlayers.Contains(Player))
+				if (!DamagedPlayers.Contains(Player))
 				{
 					FDamageEvent DamageEvent;
 					Player->TakeDamage(Damage, DamageEvent, nullptr, this);
-					HitPlayers.Add(Player);
+					DamagedPlayers.Add(Player);
 				}
 			}
 		}
 	}
 }
 
-void AEQBerserkerOrc::CheckAttack_R(float Damage)
+void AEQBerserkerOrc::CheckAttack_R(float Damage, float Radius)
 {
 	TArray<FHitResult> OutHitArray;
-	if (UKismetSystemLibrary::SphereTraceMulti(GetWorld(), StartPos_R->GetComponentLocation(), EndPos_R->GetComponentLocation(), 50.f, UEngineTypes::ConvertToTraceType(ECC_Visibility), false, {}, 
+	if (UKismetSystemLibrary::SphereTraceMulti(GetWorld(), StartPos_R->GetComponentLocation(), EndPos_R->GetComponentLocation(), Radius, UEngineTypes::ConvertToTraceType(ECC_Visibility), false, {}, 
 			EDrawDebugTrace::None, OutHitArray, true))
 	{
-		TArray<AEQCharacterPlayer*> HitPlayers;
 		for (FHitResult Iter : OutHitArray)
 		{
 			if (auto Player = Cast<AEQCharacterPlayer>(Iter.GetActor()))
 			{
-				if (!HitPlayers.Contains(Player))
+				if (!DamagedPlayers.Contains(Player))
 				{
 					FDamageEvent DamageEvent;
 					Player->TakeDamage(Damage, DamageEvent, nullptr, this);
-					HitPlayers.Add(Player);
+					DamagedPlayers.Add(Player);
 				}
 			}
 		}
 	}
 	
 }
+
+void AEQBerserkerOrc::EndAttack()
+{
+	DamagedPlayers.Empty();
+}
+
 
 void AEQBerserkerOrc::MultiRPC_Die_Implementation()
 {
@@ -131,6 +135,7 @@ void AEQBerserkerOrc::MultiRPC_Combo_Implementation()
 
 void AEQBerserkerOrc::MultiRPC_Dodge_Implementation()
 {
+	UE_LOG(LogTemp,Warning,TEXT("DodgeAnimation!!!!!!!!!!!!!!!!"));
 	PlayAnimMontage(Montage,1,FName("Dodge"));
 }
 

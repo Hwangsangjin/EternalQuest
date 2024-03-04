@@ -37,12 +37,23 @@ public:
 	void AnimNotify_MushAttack();
 
 	// Berserker //
-	 UFUNCTION()
-	 void AnimNotify_BK_Dodge();
+	UFUNCTION()
+	void AnimNotify_BK_Dodge();
+	UFUNCTION()
+	void AnimNotify_DamageEnd();
 
 	// ArcherOrc //
 	UFUNCTION()
 	void AnimNotify_ShootArrow();
+
+	// WarlockOrc //
+	UFUNCTION()
+	void AnimNotify_WarlockSkill();
+
+	UFUNCTION()
+	void AnimNotify_Teleport();
+
+	
 
 public:
 	UPROPERTY(Replicated)

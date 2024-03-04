@@ -10,6 +10,7 @@
 #include "Character/EQMush.h"
 #include "Character/EQScorpion.h"
 #include "Character/EQSpider.h"
+#include "Character/EQWarlockOrc.h"
 #include "Net/UnrealNetwork.h"
 
 
@@ -83,12 +84,39 @@ void UEQEnemyAnim::AnimNotify_BK_Dodge()
 
 void UEQEnemyAnim::AnimNotify_ShootArrow()
 {
-	UE_LOG(LogTemp,Warning,TEXT("ShootArrow"));
+	
 	AEQArcherOrc* ArcherOrc = Cast<AEQArcherOrc>(TryGetPawnOwner());
 	if(ArcherOrc != nullptr)
 	{
-		UE_LOG(LogTemp,Warning,TEXT("22222222222222"));
+		
 		ArcherOrc->BaseFsm->ShootArrow();
+	}
+}
+
+void UEQEnemyAnim::AnimNotify_WarlockSkill()
+{
+	AEQWarlockOrc* WarlockOrc = Cast<AEQWarlockOrc>(TryGetPawnOwner());
+	if(WarlockOrc != nullptr)
+	{
+		WarlockOrc->BaseFsm->WarlockPrj();
+	}
+}
+
+void UEQEnemyAnim::AnimNotify_Teleport()
+{
+	AEQWarlockOrc* WarlockOrc = Cast<AEQWarlockOrc>(TryGetPawnOwner());
+	if(WarlockOrc != nullptr)
+	{
+		WarlockOrc->BaseFsm->WarlockTeleport();
+	}
+}
+
+void UEQEnemyAnim::AnimNotify_DamageEnd()
+{
+	AEQBerserkerOrc* BerserkerOrc = Cast<AEQBerserkerOrc>(TryGetPawnOwner());
+	if(BerserkerOrc != nullptr)
+	{
+		BerserkerOrc->EndAttack();
 	}
 }
 
