@@ -3,8 +3,10 @@
 
 #include "Character/EQCharacterNeutralPlayerSeungTae.h"
 
+#include "NiagaraComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Component/EQComponentQuest.h"
+#include "Item/EQItemBase.h"
 
 AEQCharacterNeutralPlayerSeungTae::AEQCharacterNeutralPlayerSeungTae()
 {
@@ -39,9 +41,47 @@ void AEQCharacterNeutralPlayerSeungTae::QuestAccepted()
 		GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[0] = 1;
 	}
 	NPCPrompt.PushLast(TEXT("혹시 내 일기장을 못봤니?"));
+	QuestIcon->SetVisibility(false);
 }
 
 void AEQCharacterNeutralPlayerSeungTae::QuestDenied()
 {
 	GEngine->AddOnScreenDebugMessage(-1,3,FColor::Red, TEXT("퀘스트를 거절했습니다."));
+}
+
+void AEQCharacterNeutralPlayerSeungTae::QuestSuccess()
+{
+	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[0] == 2)
+	{
+		NPCPrompt.Reset();
+		NPCPrompt.PushLast(TEXT("역시 햄버거보다는 국밥이지~"));
+	}
+	
+	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[0] != 1)
+	{
+		Super::QuestSuccess();
+		return;
+	}
+	
+	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->bQuestCond1 != true)
+	{
+		Super::QuestSuccess();
+		return;
+	}
+	
+	NPCPrompt.Reset();
+	NPCPrompt.PushLast(TEXT("내 일기장을 찾아주었구나! 고마워, 보상으로 너에게 어울리는 무기를 줄게."));
+	auto CurrItem = GetWorld()->SpawnActorDeferred<AEQItemBase>(SpawnItemFactory, GetActorTransform());
+	if (CurrItem)
+	{
+		CurrItem->ItemName.DataTable = ItemDataTable;
+		CurrItem->ItemName.RowName = TEXT("Forsaken_Wand");
+		CurrItem->ItemType = EEQItemType::Equipment;
+		CurrItem->ItemQuantity = 1;
+	}
+	CurrItem->FinishSpawning(GetActorTransform());
+
+	GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[0] = 2;
+	
+	Super::QuestSuccess();
 }

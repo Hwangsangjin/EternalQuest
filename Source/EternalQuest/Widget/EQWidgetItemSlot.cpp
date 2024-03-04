@@ -8,6 +8,7 @@
 #include "EQWidgetItemActionMenu.h"
 #include "EQWidgetItemInfo.h"
 #include "EQWidgetMainUI.h"
+#include "EQWidgetStatus.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Components/Border.h"
@@ -26,6 +27,24 @@ UEQWidgetItemSlot::UEQWidgetItemSlot(const FObjectInitializer& ObjectInitializer
 	if (EQWidgetDragItemRef.Succeeded())
 	{
 		EQWidgetDragItem = EQWidgetDragItemRef.Class;
+	}
+
+	static ConstructorHelpers::FObjectFinder<USoundWave> WeaponEquipSoundRef(TEXT("/Script/Engine.SoundWave'/Game/Assets/RPG_Interface_SFX/WAV/Interaction_With_Weapon_03.Interaction_With_Weapon_03'"));
+	if (WeaponEquipSoundRef.Succeeded())
+	{
+		WeaponEquipSound = WeaponEquipSoundRef.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<USoundWave> ArmorEquipSoundRef(TEXT("/Script/Engine.SoundWave'/Game/Assets/RPG_Interface_SFX/WAV/Interaction_With_Mail_Armor.Interaction_With_Mail_Armor'"));
+	if (ArmorEquipSoundRef.Succeeded())
+	{
+		ArmorEquipSound = ArmorEquipSoundRef.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<USoundWave> ItemSwapSoundRef(TEXT("/Script/Engine.SoundWave'/Game/Assets/RPG_Interface_SFX/WAV/UI_Button_High_Pitch_05.UI_Button_High_Pitch_05'"));
+	if (ItemSwapSoundRef.Succeeded())
+	{
+		ItemSwapSound = ItemSwapSoundRef.Object;
 	}
 	
 	DragDropOperation = UEQItemDragDropOperation::StaticClass();
@@ -83,7 +102,9 @@ bool UEQWidgetItemSlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDro
 	{
 		Swap(HangItem->EQWidgetItemSlot->EQSlot->Quantity, EQSlot->Quantity);
 		Swap(HangItem->EQWidgetItemSlot->EQSlot->ItemID.RowName, EQSlot->ItemID.RowName);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStatus->UpdateAdditionalStat();
 		EQWidgetInventory->UpdateItemInInventoryUI();
+		PlaySound(WeaponEquipSound);
 		return true;
 	}
 	else if (HangItem->EQSlot->ItemID.RowName.ToString().Contains(TEXT("Wand")) && EQSlot->ItemType == EEQItemType::EquippingShield)
@@ -96,7 +117,9 @@ bool UEQWidgetItemSlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDro
 	{
 		Swap(HangItem->EQWidgetItemSlot->EQSlot->Quantity, EQSlot->Quantity);
 		Swap(HangItem->EQWidgetItemSlot->EQSlot->ItemID.RowName, EQSlot->ItemID.RowName);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStatus->UpdateAdditionalStat();
 		EQWidgetInventory->UpdateItemInInventoryUI();
+		PlaySound(WeaponEquipSound);
 		return true;
 	}
 	else if (HangItem->EQSlot->ItemID.RowName.ToString().Contains(TEXT("Sword")) && EQSlot->ItemType == EEQItemType::EquippingShield)
@@ -109,7 +132,9 @@ bool UEQWidgetItemSlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDro
 	{
 		Swap(HangItem->EQWidgetItemSlot->EQSlot->Quantity, EQSlot->Quantity);
 		Swap(HangItem->EQWidgetItemSlot->EQSlot->ItemID.RowName, EQSlot->ItemID.RowName);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStatus->UpdateAdditionalStat();
 		EQWidgetInventory->UpdateItemInInventoryUI();
+		PlaySound(ArmorEquipSound);
 		return true;
 	}
 	else if (HangItem->EQSlot->ItemID.RowName.ToString().Contains(TEXT("Shield")) && EQSlot->ItemType == EEQItemType::EquippingWeapon)
@@ -121,14 +146,18 @@ bool UEQWidgetItemSlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDro
 	if (HangItem->EQSlot->ItemID.RowName == EQSlot->ItemID.RowName) //장비의 이름이 같을 때
 	{
 		Swap(HangItem->EQSlot->Quantity, EQSlot->Quantity);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStatus->UpdateAdditionalStat();
 		EQWidgetInventory->UpdateItemInInventoryUI();
+		PlaySound(ItemSwapSound);
 		return true;
 	}
 	else // 아닐 때
 	{
 		Swap(HangItem->EQWidgetItemSlot->EQSlot->Quantity, EQSlot->Quantity);
 		Swap(HangItem->EQWidgetItemSlot->EQSlot->ItemID.RowName, EQSlot->ItemID.RowName);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStatus->UpdateAdditionalStat();
 		EQWidgetInventory->UpdateItemInInventoryUI();
+		PlaySound(ItemSwapSound);
 		return true;
 	}
 	return true;

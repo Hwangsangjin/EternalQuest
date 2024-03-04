@@ -10,6 +10,7 @@ class UInputAction;
 class UAnimMontage;
 class UEQCharacterComboAttackData;
 class AEQProjectileBase;
+class UNiagaraSystem;
 
 UCLASS()
 class ETERNALQUEST_API UEQComponentAttack : public UEQComponentBase
@@ -27,6 +28,7 @@ public:
 
 // Attack
 public:
+	FORCEINLINE bool IsAttack() const { return bIsAttacking; }
 	void AttackHitCheck();
 
 protected:
@@ -39,38 +41,38 @@ protected:
 	void NetMulticast_Attack();
 
 private:
+	bool bIsAttacking = false;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UInputAction> AttackAction;
 
-// Default Attack
-public:
-	FORCEINLINE bool IsAttack() const { return bIsAttacking; }
-
+// Mage Attack
 protected:
-	void DefaultAttack();
-	void DefaultAttackBegin();
-	void DefaultAttackEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded);
+	void MageAttack();
+	void MageAttackBegin();
+	void MageAttackEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded);
 
 private:
-	bool bIsAttacking = false;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = true))
-	TObjectPtr<UAnimMontage> DefaultAttackMontage;
+	TObjectPtr<UAnimMontage> MageAttackMontage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
 	TSubclassOf<AEQProjectileBase> FireBall;
 
-// Combo Attack
+// Warrior Attack
 protected:
-	void ComboAttack();
-	void ComboAttackBegin();
-	void ComboAttackEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded);
+	void WarriorAttack();
+	void WarriorAttackBegin();
+	void WarriorAttackEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded);
 	void SetComboCheckTimer();
 	void ComboCheck();
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = true))
-	TObjectPtr<UAnimMontage> ComboAttackMontage;
+	TObjectPtr<UAnimMontage> WarriorAttackMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Effect, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UNiagaraSystem> AttackHitEffect;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Data, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UEQCharacterComboAttackData> ComboAttackData;

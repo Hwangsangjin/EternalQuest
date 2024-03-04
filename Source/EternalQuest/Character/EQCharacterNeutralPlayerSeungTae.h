@@ -20,6 +20,7 @@ public:
 	virtual void BeginPlay() override;
 	virtual void QuestAccepted() override;
 	virtual void QuestDenied() override;
+	virtual void QuestSuccess() override;
 	// ----- 오버라이드 함수 -----
 
 	

@@ -6,6 +6,8 @@
 #include "Character/EQCharacterBase.h"
 #include "Game/EQGameInstance.h"
 #include "Interface/EQInterfaceAnimationAttack.h"
+#include "Interface/EQInterfaceAnimationAvoid.h"
+#include "Interface/EQInterfaceAnimationSkill.h"
 #include "Interface/EQInterfaceCharacterWidget.h"
 #include "EQCharacterPlayer.generated.h"
 
@@ -22,18 +24,21 @@ class UInputComponent;
 class UBoxComponent;
 class UEQComponentBase;
 class UEQComponentMove;
+class UEQComponentAttack;
+class UEQComponentAvoid;
+class UEQComponentSkill;
+class UEQComponentStat;
 class UEQComponentInteraction;
 class UEQComponentMenuManager;
 class UEQComponentInventory;
 class UEQComponentQuest;
-class UEQComponentAttack;
-class UEQComponentStat;
 class UEQComponentWidget;
+class UNiagaraComponent;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FInputSignature, UInputComponent*)
 
 UCLASS(config = EternalQuest)
-class ETERNALQUEST_API AEQCharacterPlayer : public AEQCharacterBase, public IEQInterfaceAnimationAttack, public IEQInterfaceCharacterWidget
+class ETERNALQUEST_API AEQCharacterPlayer : public AEQCharacterBase, public IEQInterfaceAnimationAttack, public IEQInterfaceAnimationAvoid, public IEQInterfaceAnimationSkill, public IEQInterfaceCharacterWidget
 {
 	GENERATED_BODY()
 
@@ -124,6 +129,14 @@ private:
 	TSharedPtr<FStreamableHandle> SwordMeshHandle;
 	TSharedPtr<FStreamableHandle> ShieldMeshHandle;
 
+// Effect
+public:
+	FORCEINLINE UNiagaraComponent* GetSwordEffect() const { return SwordEffect; }
+
+private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Niagara, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UNiagaraComponent> SwordEffect;
+
 // Camera
 public:
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
@@ -157,9 +170,17 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement, Meta = (AllowPrivateAccess = true))
 	float GroundSpeed;
 
-// Attack Hit
+// Attack
 protected:
 	virtual void AttackHitCheck() override;
+
+// Avoid
+protected:
+	virtual void AvoidableCheck() override;
+
+// Skill
+protected:
+	virtual void SkillHitCheck() override;
 
 // Take Damage
 public:
@@ -197,10 +218,24 @@ public:
 	FORCEINLINE UEQComponentMove* GetMoveComponent() const { return MoveComp; }
 	FORCEINLINE UEQComponentStat* GetStatComponent() const { return StatComp; }
 	FORCEINLINE UEQComponentAttack* GetAttackComponent() const { return AttackComp; }
+	FORCEINLINE UEQComponentAvoid* GetAvoidComponent() const { return AvoidComp; }
+	FORCEINLINE UEQComponentSkill* GetSkillComponent() const { return SkillComp; }
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UEQComponentMove> MoveComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UEQComponentAttack> AttackComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UEQComponentAvoid> AvoidComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UEQComponentSkill> SkillComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UEQComponentStat> StatComp;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UEQComponentInteraction> InteractionComp;
@@ -211,18 +246,12 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UEQComponentMenuManager> MenuManagerComp;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
-	TObjectPtr<UEQComponentAttack> AttackComp;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = true))
-	TObjectPtr<UEQComponentStat> StatComp;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UEQComponentQuest> QuestComp;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UEQComponentWidget> UserNameComp;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UEQComponentWidget> HpBarComp;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = true))
-	TObjectPtr<UEQComponentQuest> QuestComp;
 };

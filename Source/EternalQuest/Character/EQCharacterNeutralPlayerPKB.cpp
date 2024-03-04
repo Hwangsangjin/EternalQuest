@@ -3,7 +3,9 @@
 
 #include "Character/EQCharacterNeutralPlayerPKB.h"
 
+#include "NiagaraComponent.h"
 #include "Component/EQComponentQuest.h"
+#include "Item/EQItemBase.h"
 
 AEQCharacterNeutralPlayerPKB::AEQCharacterNeutralPlayerPKB()
 {
@@ -41,9 +43,47 @@ void AEQCharacterNeutralPlayerPKB::QuestAccepted()
 		GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[1] = 1;
 	}
 	NPCPrompt.PushLast(TEXT("내 펭귄 소드..."));
+	QuestIcon->SetVisibility(false);
 }
 
 void AEQCharacterNeutralPlayerPKB::QuestDenied()
 {
 	Super::QuestDenied();
+}
+
+void AEQCharacterNeutralPlayerPKB::QuestSuccess()
+{
+	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[1] == 2)
+	{
+		NPCPrompt.Reset();
+		NPCPrompt.PushLast(TEXT("역시 고양이보단 펭귄이지~"));
+	}
+	
+	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[1] != 1)
+	{
+		Super::QuestSuccess();
+		return;
+	}
+	
+	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->bQuestCond2 != true)
+	{
+		Super::QuestSuccess();
+		return;
+	}
+	
+	NPCPrompt.Reset();
+	NPCPrompt.PushLast(TEXT("내 펭귄소드 찾아주었구나! 고마워, 이건 내 혼이 담긴 새싹혼 무기야."));
+	auto CurrItem = GetWorld()->SpawnActorDeferred<AEQItemBase>(SpawnItemFactory, GetActorTransform());
+	if (CurrItem)
+	{
+		CurrItem->ItemName.DataTable = ItemDataTable;
+		CurrItem->ItemName.RowName = TEXT("SeSacSoulWand");
+		CurrItem->ItemType = EEQItemType::Equipment;
+		CurrItem->ItemQuantity = 1;
+	}
+	CurrItem->FinishSpawning(GetActorTransform());
+
+	GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[1] = 2;
+
+	Super::QuestSuccess();
 }

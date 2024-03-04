@@ -37,14 +37,20 @@ void UEQWidgetNpcPrompt::PullNPCInfomation(AEQCharacterNeutralPlayer* InNPC)
 {
 	// 모든 UI 없애기 //
 	PC->EQWidgetMainUI->SetVisibility(ESlateVisibility::Hidden);
-	//
+	
+	// UI 연출
 	RenderOpacityValue = 0;
 	SetRenderOpacity(RenderOpacityValue);
 	DisplayText = TEXT("");
-	Txt_NPCPrompt->SetText(FText::FromString(FString::Printf(TEXT("%s"), *DisplayText))); // 읽어주는 동작을 바꾸어야 함.
+	Txt_NPCPrompt->SetText(FText::FromString(FString::Printf(TEXT("%s"), *DisplayText)));
+	// UI 연출
+	
 	NPC = InNPC;
 	PromptLast = NPC->NPCPrompt.Num()-1;
 	PromptCurrent = 0;
+
+	// NPC 퀘스트를 클리어했는지 점검하기
+	NPC->QuestSuccess();
 
 	// NPC 대본 읽기 시작
 	Txt_NPCName->SetText(FText::FromString(FString::Printf(TEXT("%s"), *NPC->NPCName)));
@@ -53,7 +59,7 @@ void UEQWidgetNpcPrompt::PullNPCInfomation(AEQCharacterNeutralPlayer* InNPC)
 
 void UEQWidgetNpcPrompt::NextPrompt()
 {
-	if (bQuestPromptCond)
+	if (bQuestPromptCond) // 퀘스트 창이 떴을 때 클릭으로 스킵되는 현상을 막아줌
 	{
 		return;
 	}
@@ -61,10 +67,11 @@ void UEQWidgetNpcPrompt::NextPrompt()
 	if (PromptLast == PromptCurrent)
 	{
 		RemoveFromParent();
-		GetOwningPlayer()->GetCharacter()->FindComponentByClass<UEQComponentInteraction>()->bCommunicationNPC = true;
+		GetOwningPlayer()->GetCharacter()->FindComponentByClass<UEQComponentInteraction>()->bCommunicationNPC = false;
 		const FInputModeGameOnly InData;
 		GetWorld()->GetFirstPlayerController()->SetInputMode(InData);
 		GetWorld()->GetFirstPlayerController()->SetShowMouseCursor(false);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->SetVisibility(ESlateVisibility::Visible);
 		return;
 	}
 	
@@ -80,12 +87,6 @@ void UEQWidgetNpcPrompt::NextPrompt()
 		bQuestPromptCond = true;
 		return;
 	}
-	else
-	{
-		// Txt_NPCPrompt->SetText(FText::FromString(FString::Printf(TEXT("%s"), *NPC->NPCPrompt[PromptCurrent])));
-		return;
-	}
-
 }
 
 void UEQWidgetNpcPrompt::AcceptQuest()
@@ -129,5 +130,4 @@ void UEQWidgetNpcPrompt::TypeWritingText()
 		DisplayText = UKismetStringLibrary::GetSubstring(*NPC->NPCPrompt[PromptCurrent], 0, DisplayText.Len() + 1);
 		Txt_NPCPrompt->SetText(FText::FromString(FString::Printf(TEXT("%s"), *DisplayText))); // 읽어주는 동작을 바꾸어야 함.
 	}
-	
 }

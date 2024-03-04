@@ -8,6 +8,16 @@
 #include "Components/TextBlock.h"
 #include "GameFramework/Character.h"
 
+UEQWidgetQuestList::UEQWidgetQuestList(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	static ConstructorHelpers::FObjectFinder<USoundWave> QuestIconClickSoundRef(TEXT("/Script/Engine.SoundWave'/Game/Assets/RPG_Interface_SFX/WAV/Interaction_With_Book_TurnPage_03.Interaction_With_Book_TurnPage_03'"));
+	if (QuestIconClickSoundRef.Succeeded())
+	{
+		QuestIconClickSound = QuestIconClickSoundRef.Object;
+	}
+}
+
 void UEQWidgetQuestList::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -20,8 +30,9 @@ void UEQWidgetQuestList::NativeConstruct()
 
 void UEQWidgetQuestList::OnClickedQuest1()
 {
+	PlaySound(QuestIconClickSound);
 	Txt_QuestSubject->SetText(FText::FromString(TEXT("승태의 오늘의 할일 노트")));
-	Txt_QuestDetail->SetText(FText::FromString(TEXT("ㅁㄴㅇ")));
+	Txt_QuestDetail->SetText(FText::FromString(TEXT("승태의 일기장을 어디선가 떨구었다고 한다. \n\n아마 마을 어딘가에 있을것 같은데 잘 찾아주자.")));
 	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[0] == 0)
 	{
 		Txt_QuestState->SetText(FText::FromString(TEXT("퀘스트 미완료")));
@@ -38,8 +49,10 @@ void UEQWidgetQuestList::OnClickedQuest1()
 
 void UEQWidgetQuestList::OnClickedQuest2()
 {
+	PlaySound(QuestIconClickSound);
+
 	Txt_QuestSubject->SetText(FText::FromString(TEXT("경복의 펭귄소드를 얻어라")));
-	Txt_QuestDetail->SetText(FText::FromString(TEXT("ㅁㄴㅇ")));
+	Txt_QuestDetail->SetText(FText::FromString(TEXT("경복의 펭귄소드를 거대전갈이 빼앗아갔다고 한다. \n\n거대 전갈을 해치우고 펭귄소드를 찾아주자.")));
 	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[1] == 0)
 	{
 		Txt_QuestState->SetText(FText::FromString(TEXT("퀘스트 미완료")));
@@ -56,8 +69,10 @@ void UEQWidgetQuestList::OnClickedQuest2()
 
 void UEQWidgetQuestList::OnClickedQuest3()
 {
-	Txt_QuestSubject->SetText(FText::FromString(TEXT("민경의 자전거를 되찾아라")));
-	Txt_QuestDetail->SetText(FText::FromString(TEXT("ㅁㄴㅇ")));
+	PlaySound(QuestIconClickSound);
+
+	Txt_QuestSubject->SetText(FText::FromString(TEXT("민경이의 안전한 자전거길")));
+	Txt_QuestDetail->SetText(FText::FromString(TEXT("마을 바깥의 버섯들 때문에 민경이가 자전거를 탈 수 없다고 한다. \n\n버섯들을 해치워 자전거를 탈수 있는 안전한 길을 만들어주자.")));
 	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[2] == 0)
 	{
 		Txt_QuestState->SetText(FText::FromString(TEXT("퀘스트 미완료")));
@@ -74,8 +89,10 @@ void UEQWidgetQuestList::OnClickedQuest3()
 
 void UEQWidgetQuestList::OnClickedQuest4()
 {
+	PlaySound(QuestIconClickSound);
+
 	Txt_QuestSubject->SetText(FText::FromString(TEXT("보스를 처치하고 새싹을 수료하자")));
-	Txt_QuestDetail->SetText(FText::FromString(TEXT("ㅁㄴㅇ")));
+	Txt_QuestDetail->SetText(FText::FromString(TEXT("이제 최종 프로젝트만 남았다. \n\n 거대 오크 보스를 쓰러뜨리고, 새싹을 수료해보자.")));
 	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[3] == 0)
 	{
 		Txt_QuestState->SetText(FText::FromString(TEXT("퀘스트 미완료")));

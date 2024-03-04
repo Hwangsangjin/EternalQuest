@@ -8,6 +8,8 @@
 #include "Interface/EQInterfaceNPCPrompt.h"
 #include "EQCharacterNeutralPlayer.generated.h"
 
+class AEQItemBase;
+class UNiagaraComponent;
 class UEQWidgetNpcPrompt;
 /**
  * 
@@ -22,6 +24,7 @@ public:
 	virtual void BeginPlay() override;
 	virtual void QuestAccepted() override;
 	virtual void QuestDenied() override;
+	virtual void QuestSuccess() override;
 	// ----- 오버라이드 함수 -----
 
 	// ----- 변수 -----
@@ -30,5 +33,14 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<USkeletalMeshComponent> ClothComp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UNiagaraComponent> QuestIcon;
+
+	UPROPERTY()
+	TSubclassOf<AActor> SpawnItemFactory;
+
+	UPROPERTY()
+	TObjectPtr<UDataTable> ItemDataTable;
 	// ----- 변수 -----
 };

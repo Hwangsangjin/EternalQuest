@@ -19,6 +19,18 @@ UEQWidgetInventory::UEQWidgetInventory(const FObjectInitializer& ObjectInitializ
 	{
 		ItemSlotFactory = ItemSlotRef.Class;
 	}
+
+	static ConstructorHelpers::FObjectFinder<USoundWave> OpenInventorySoundRef(TEXT("/Script/Engine.SoundWave'/Game/Assets/RPG_Interface_SFX/WAV/UI_Menu_01.UI_Menu_01'"));
+	if (OpenInventorySoundRef.Succeeded())
+	{
+		OpenInventorySound = OpenInventorySoundRef.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<USoundWave> UIBaseSoundRef(TEXT("/Script/Engine.SoundWave'/Game/Assets/RPG_Interface_SFX/WAV/UI_Menu_02.UI_Menu_02'"));
+	if (OpenInventorySoundRef.Succeeded())
+	{
+		UIBaseSound = UIBaseSoundRef.Object;
+	}
 }
 
 void UEQWidgetInventory::NativeConstruct()

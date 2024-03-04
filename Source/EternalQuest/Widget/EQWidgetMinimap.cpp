@@ -3,3 +3,8 @@
 
 #include "Widget/EQWidgetMinimap.h"
 
+UEQWidgetMinimap::UEQWidgetMinimap(const FObjectInitializer& ObjectInitializer)
+	:Super(ObjectInitializer)
+{
+	
+}

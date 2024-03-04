@@ -4,8 +4,12 @@
 #include "Component/EQComponentMove.h"
 
 #include "EngineUtils.h"
+#include "InputAction.h"
 #include "EnhancedInputComponent.h"
 #include "Character/EQCharacterPlayer.h"
+#include "Component/EQComponentAttack.h"
+#include "Component/EQComponentAvoid.h"
+#include "Component/EQComponentSkill.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -18,46 +22,51 @@
 #include "Widget/EQWidgetChatMessage.h"
 #include "Widget/EQWidgetChattingSystem.h"
 #include "Widget/EQWidgetMainUI.h"
-#include "Component/EQComponentAttack.h"
 
 UEQComponentMove::UEQComponentMove()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
-	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionJumpRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/Input/Actions/IA_Jump.IA_Jump'"));
-	if (InputActionJumpRef.Object)
+	static ConstructorHelpers::FObjectFinder<UInputAction> JumpActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/Input/Actions/IA_Jump.IA_Jump'"));
+	if (JumpActionRef.Succeeded())
 	{
-		JumpAction = InputActionJumpRef.Object;
+		JumpAction = JumpActionRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionMoveRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/Input/Actions/IA_Move.IA_Move'"));
-	if (InputActionMoveRef.Object)
+	static ConstructorHelpers::FObjectFinder<UInputAction> MoveActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/Input/Actions/IA_Move.IA_Move'"));
+	if (MoveActionRef.Succeeded())
 	{
-		MoveAction = InputActionMoveRef.Object;
+		MoveAction = MoveActionRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionTurnRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/Input/Actions/IA_Turn.IA_Turn'"));
-	if (InputActionTurnRef.Object)
+	static ConstructorHelpers::FObjectFinder<UInputAction> TurnActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/Input/Actions/IA_Turn.IA_Turn'"));
+	if (TurnActionRef.Succeeded())
 	{
-		TurnAction = InputActionTurnRef.Object;
+		TurnAction = TurnActionRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionLookRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/Input/Actions/IA_Look.IA_Look'"));
-	if (InputActionLookRef.Object)
+	static ConstructorHelpers::FObjectFinder<UInputAction> LookActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/Input/Actions/IA_Look.IA_Look'"));
+	if (LookActionRef.Succeeded())
 	{
-		LookAction = InputActionLookRef.Object;
+		LookAction = LookActionRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionSprintRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/Input/Actions/IA_Sprint.IA_Sprint'"));
-	if (InputActionSprintRef.Object)
+	static ConstructorHelpers::FObjectFinder<UInputAction> SprintActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/Input/Actions/IA_Sprint.IA_Sprint'"));
+	if (SprintActionRef.Succeeded())
 	{
-		SprintAction = InputActionSprintRef.Object;
+		SprintAction = SprintActionRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionEnterRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/Input/Actions/IA_Enter.IA_Enter'"));
-	if (InputActionEnterRef.Object)
+	static ConstructorHelpers::FObjectFinder<UInputAction> EnterActionrRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/Input/Actions/IA_Enter.IA_Enter'"));
+	if (EnterActionrRef.Succeeded())
 	{
-		EnterAction = InputActionEnterRef.Object;
+		EnterAction = EnterActionrRef.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> ParkourMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Assets/StylizedCharactersPack/Common/Animation/Montage/AM_Parkour.AM_Parkour'"));
+	if (ParkourMontageRef.Succeeded())
+	{
+		ParkourMontage = ParkourMontageRef.Object;
 	}
 }
 
@@ -76,7 +85,6 @@ void UEQComponentMove::SetupPlayerInput(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ThisClass::Move);
 		EnhancedInputComponent->BindAction(TurnAction, ETriggerEvent::Triggered, this, &ThisClass::Turn);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ThisClass::Look);
-		EnhancedInputComponent->BindAction(AvoidAction, ETriggerEvent::Triggered, this, &ThisClass::Avoid);
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &ThisClass::Sprint);
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ThisClass::StopSprinting);
 		EnhancedInputComponent->BindAction(EnterAction, ETriggerEvent::Completed, this, &ThisClass::Enter);
@@ -98,7 +106,62 @@ void UEQComponentMove::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 void UEQComponentMove::Jump(const FInputActionValue& Value)
 {
-	Player->Jump();
+	if (Player->GetCharacterMovement()->IsFalling())
+	{
+		return;
+	}
+
+	if (Player->GetAvoidComponent()->IsAvoid())
+	{
+		return;
+	}
+
+	if (Player->GetSkillComponent()->IsSkill())
+	{
+		return;
+	}
+
+	switch (Player->GetClassType())
+	{
+	case EClassType::ECT_Mage:
+		Player->Jump();
+		break;
+	case EClassType::ECT_Paladin:
+		break;
+	case EClassType::ECT_Priest:
+		break;
+	case EClassType::ECT_Rogue:
+		break;
+	case EClassType::ECT_Warrior:
+		if (IsSprinting() && !Player->GetCharacterMovement()->GetCurrentAcceleration().IsZero())
+		{
+			Server_Jump();
+			Player->Jump();
+			break;
+		}
+		else
+		{
+			Player->Jump();
+			break;
+		}
+	}
+}
+
+bool UEQComponentMove::Server_Jump_Validate()
+{
+	return true;
+}
+
+void UEQComponentMove::Server_Jump_Implementation()
+{
+	NetMulticast_Jump();
+}
+
+void UEQComponentMove::NetMulticast_Jump_Implementation()
+{
+	constexpr float PlayRate = 1.0f;
+	UAnimInstance* AnimInstance = Player->GetMesh()->GetAnimInstance();
+	AnimInstance->Montage_Play(ParkourMontage, PlayRate);
 }
 
 void UEQComponentMove::StopJumping(const FInputActionValue& Value)
@@ -157,72 +220,6 @@ void UEQComponentMove::Look(const FInputActionValue& Value)
 	{
 		Player->GetCameraBoom()->TargetArmLength = FMath::FInterpTo(CurrentTargetArmLength, MaxTargetArmLength, GetWorld()->GetDeltaSeconds(), InterpSpeed);
 	}
-}
-
-void UEQComponentMove::Avoid(const FInputActionValue& Value)
-{
-	if (IsAvoiding())
-	{
-		return;
-	}
-
-	Server_Avoid();
-}
-
-bool UEQComponentMove::Server_Avoid_Validate()
-{
-	return true;
-}
-
-void UEQComponentMove::Server_Avoid_Implementation()
-{
-	NetMulticast_Avoid();
-}
-
-void UEQComponentMove::NetMulticast_Avoid_Implementation()
-{
-	switch (Player->GetClassType())
-	{
-	case EClassType::ECT_Mage:
-		break;
-	case EClassType::ECT_Paladin:
-		break;
-	case EClassType::ECT_Priest:
-		break;
-	case EClassType::ECT_Rogue:
-		break;
-	case EClassType::ECT_Warrior:
-		Roll();
-		break;
-	}
-}
-
-void UEQComponentMove::Roll()
-{
-	if (Player->GetCharacterMovement()->GetCurrentAcceleration().IsZero())
-	{
-		return;
-	}
-
-	RollBegin();
-}
-
-void UEQComponentMove::RollBegin()
-{
-	bIsAvoiding = true;
-
-	const float AvoidSpeedRate = 1.0f;
-	UAnimInstance* AnimInstance = Player->GetMesh()->GetAnimInstance();
-	AnimInstance->Montage_Play(RollMontage, AvoidSpeedRate);
-
-	FOnMontageEnded EndDelegate;
-	EndDelegate.BindUObject(this, &ThisClass::RollEnd);
-	AnimInstance->Montage_SetEndDelegate(EndDelegate, RollMontage);
-}
-
-void UEQComponentMove::RollEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded)
-{
-	bIsAvoiding = false;
 }
 
 void UEQComponentMove::Sprint(const FInputActionValue& Value)

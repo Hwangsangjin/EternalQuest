@@ -6,6 +6,7 @@
 #include "EQWidgetInventory.h"
 #include "EQWidgetItemSlot.h"
 #include "EQWidgetMainUI.h"
+#include "EQWidgetStatus.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Character/EQCharacterPlayer.h"
 #include "Component/EQComponentInventory.h"
@@ -59,12 +60,14 @@ void UEQWidgetItemActionMenu::OnClickBtnUse()
 		{
 			Swap(EQSlot->Quantity, EQComponentInventory->EQAllItem.EquippingSword.Top().Quantity);
 			Swap(EQSlot->ItemID.RowName, EQComponentInventory->EQAllItem.EquippingSword.Top().ItemID.RowName);
+			Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStatus->UpdateAdditionalStat();
 			// EQWidgetInventory->UpdateItemInInventoryUI();
 		}
 		else if (EQSlot->ItemID.RowName.ToString().Contains(TEXT("Shield")))
 		{
 			Swap(EQSlot->Quantity, EQComponentInventory->EQAllItem.EquippingShield.Top().Quantity);
 			Swap(EQSlot->ItemID.RowName, EQComponentInventory->EQAllItem.EquippingShield.Top().ItemID.RowName);
+			Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStatus->UpdateAdditionalStat();
 			// EQWidgetInventory->UpdateItemInInventoryUI();
 		}
 	}

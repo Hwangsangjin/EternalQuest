@@ -17,6 +17,21 @@
 #include "GameFramework/Character.h"
 #include "Player/EQPlayerController.h"
 
+UEQWidgetIconBar::UEQWidgetIconBar(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	static ConstructorHelpers::FObjectFinder<USoundWave> UIOpenSoundRef(TEXT("/Script/Engine.SoundWave'/Game/Assets/RPG_Interface_SFX/WAV/UI_Menu_01.UI_Menu_01'"));
+	if (UIOpenSoundRef.Succeeded())
+	{
+		UIOpenSound = UIOpenSoundRef.Object;
+	}
+	static ConstructorHelpers::FObjectFinder<USoundWave> UICloseSoundRef(TEXT("/Script/Engine.SoundWave'/Game/Assets/RPG_Interface_SFX/WAV/UI_Menu_02.UI_Menu_02'"));
+	if (UICloseSoundRef.Succeeded())
+	{
+		UICloseSound = UICloseSoundRef.Object;
+	}
+}
+
 void UEQWidgetIconBar::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -77,6 +92,7 @@ void UEQWidgetIconBar::OnClickStatus()
 		ClearIconFlag();
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStatus->SetVisibility(ESlateVisibility::Hidden);
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Visible);
+		PlaySound(UICloseSound);
 	}
 	else
 	{
@@ -86,6 +102,7 @@ void UEQWidgetIconBar::OnClickStatus()
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStatus->SetVisibility(ESlateVisibility::Visible);
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Hidden);
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetMinimap->SetVisibility(ESlateVisibility::Visible);
+		PlaySound(UIOpenSound);
 	}
 
 	
@@ -124,6 +141,7 @@ void UEQWidgetIconBar::OnClickInventory()
 		OnUnhoverInventory();
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetInventory->OpenCloseInventoryWidget();
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetMinimap->SetVisibility(ESlateVisibility::Visible);
+		PlaySound(UICloseSound);
 	}
 	else
 	{
@@ -133,6 +151,7 @@ void UEQWidgetIconBar::OnClickInventory()
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetInventory->OpenCloseInventoryWidget();
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetMinimap->SetVisibility(ESlateVisibility::Hidden);
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Visible);
+		PlaySound(UIOpenSound);
 	}
 
 	if (MenuManager->bInventoryFlag)
@@ -170,6 +189,7 @@ void UEQWidgetIconBar::OnClickSkill()
 		ClearIconFlag();
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetSkill->SetVisibility(ESlateVisibility::Hidden);
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetMinimap->SetVisibility(ESlateVisibility::Visible);
+		PlaySound(UICloseSound);
 	}
 	else
 	{
@@ -179,6 +199,7 @@ void UEQWidgetIconBar::OnClickSkill()
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetSkill->SetVisibility(ESlateVisibility::Visible);
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetMinimap->SetVisibility(ESlateVisibility::Hidden);
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Visible);
+		PlaySound(UIOpenSound);
 	}
 	if (MenuManager->bSkillFlag)
 	{
@@ -215,6 +236,7 @@ void UEQWidgetIconBar::OnClickQuest()
 		ClearIconFlag();
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetQuestList->SetVisibility(ESlateVisibility::Hidden);
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Visible);
+		PlaySound(UICloseSound);
 	}
 	else
 	{
@@ -224,6 +246,7 @@ void UEQWidgetIconBar::OnClickQuest()
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetQuestList->SetVisibility(ESlateVisibility::Visible);
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Hidden);
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetMinimap->SetVisibility(ESlateVisibility::Visible);
+		PlaySound(UIOpenSound);
 	}
 	if (MenuManager->bQuestFlag)
 	{
@@ -260,6 +283,7 @@ void UEQWidgetIconBar::OnClickPostBox()
 		ClearIconFlag();
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetPostBox->SetVisibility(ESlateVisibility::Hidden); // 변경
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Visible);
+		PlaySound(UICloseSound);
 	}
 	else
 	{
@@ -269,6 +293,7 @@ void UEQWidgetIconBar::OnClickPostBox()
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetPostBox->SetVisibility(ESlateVisibility::Visible); // 변경
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Hidden);
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetMinimap->SetVisibility(ESlateVisibility::Visible);
+		PlaySound(UIOpenSound);
 	}
 	if (MenuManager->bPostBoxFlag)
 	{
@@ -304,6 +329,7 @@ void UEQWidgetIconBar::OnClickSettings()
 		bOpenSettings = false;
 		ClearIconFlag();
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetSettings->SetVisibility(ESlateVisibility::Hidden);
+		PlaySound(UICloseSound);
 	}
 	else
 	{
@@ -311,6 +337,7 @@ void UEQWidgetIconBar::OnClickSettings()
 		OnHoverSettings();
 		bOpenSettings = true;
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetSettings->SetVisibility(ESlateVisibility::Visible);
+		PlaySound(UIOpenSound);
 	}
 }
 
