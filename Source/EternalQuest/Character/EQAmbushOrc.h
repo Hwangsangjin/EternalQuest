@@ -14,6 +14,7 @@ class ETERNALQUEST_API AEQAmbushOrc : public AEQNormalEnemy
 {
 	GENERATED_BODY()
 
+public:
 	AEQAmbushOrc();
 	UPROPERTY(EditAnywhere)
 	USkeletalMeshComponent* HelmetComp;
@@ -23,7 +24,14 @@ class ETERNALQUEST_API AEQAmbushOrc : public AEQNormalEnemy
 	UStaticMeshComponent* WeaponComp_L;
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* WeaponComp_R;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Montage")
+	UAnimMontage* Montage;
 	
+	virtual void BeginPlay() override;
 	virtual FString SetName() override;
+
+	UFUNCTION(NetMulticast,Unreliable)
+	void MultiPRC_Ambushing();
 	
 };

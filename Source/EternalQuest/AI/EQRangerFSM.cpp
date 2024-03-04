@@ -101,7 +101,6 @@ void UEQRangerFSM::TickMove()
 
 void UEQRangerFSM::TickAttack()
 {
-	Super::TickAttack();
 	ServerRPC_SpiderAttack();
 }
 
