@@ -26,5 +26,5 @@ public:
 
 	virtual void DropItem() override;
 	virtual FString SetName() override;
-	virtual int32 GetExperience() override;
+	
 };

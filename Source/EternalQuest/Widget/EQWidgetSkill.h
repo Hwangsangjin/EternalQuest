@@ -10,6 +10,39 @@ class UImage;
 class UButton;
 class UWidgetSwitcher;
 class UTextBlock;
+
+USTRUCT(BlueprintType, Atomic)
+struct FEQSkill : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int32 Pnt_WarriorSkill1 = 1;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int32 Pnt_WarriorSkill2 = 1;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int32 Pnt_WarriorSkill3 = 1;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int32 Pnt_WarriorSkill4 = 1;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int32 Pnt_WarriorSkill5 = 1;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int32 Pnt_MageSkill1 = 1;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int32 Pnt_MageSkill2 = 1;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int32 Pnt_MageSkill3 = 1;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int32 Pnt_MageSkill4 = 1;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int32 Pnt_MageSkill5 = 1;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int32 SkillPnt = 50;
+
+};
+
 /**
  * 
  */
@@ -83,61 +116,51 @@ public:
 	TObjectPtr<UButton> Btn_WarriorSkill1;
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTextBlock> Txt_WarriorSkill1Pnt;
-	int32 Pnt_WarriorSkill1 = 1;
 
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UButton> Btn_WarriorSkill2;
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTextBlock> Txt_WarriorSkill2Pnt;
-	int32 Pnt_WarriorSkill2 = 1;
 
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UButton> Btn_WarriorSkill3;
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTextBlock> Txt_WarriorSkill3Pnt;
-	int32 Pnt_WarriorSkill3 = 1;
 
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UButton> Btn_WarriorSkill4;
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTextBlock> Txt_WarriorSkill4Pnt;
-	int32 Pnt_WarriorSkill4 = 1;
 
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UButton> Btn_WarriorSkill5;
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTextBlock> Txt_WarriorSkill5Pnt;
-	int32 Pnt_WarriorSkill5 = 1;
 
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UButton> Btn_MageSkill1;
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTextBlock> Txt_MageSkill1Pnt;
-	int32 Pnt_MageSkill1 = 1;
 
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UButton> Btn_MageSkill2;
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTextBlock> Txt_MageSkill2Pnt;
-	int32 Pnt_MageSkill2 = 1;
 
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UButton> Btn_MageSkill3;
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTextBlock> Txt_MageSkill3Pnt;
-	int32 Pnt_MageSkill3 = 1;
 	
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UButton> Btn_MageSkill4;
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTextBlock> Txt_MageSkill4Pnt;
-	int32 Pnt_MageSkill4 = 1;
     	
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UButton> Btn_MageSkill5;
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTextBlock> Txt_MageSkill5Pnt;
-	int32 Pnt_MageSkill5 = 1;
 
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTextBlock> Txt_SkillDetail;
@@ -150,7 +173,6 @@ public:
 
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTextBlock> Txt_SkillPnt;
-	int32 SkillPnt = 99;
 	
 	// 컨트롤러 이미지
 	UPROPERTY()
@@ -173,4 +195,7 @@ public:
 
 	UPROPERTY()
 	TObjectPtr<UTexture2D> Img_MouseRightClick;
+
+	UPROPERTY()
+	FEQSkill EQSkill;
 };

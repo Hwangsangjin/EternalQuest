@@ -140,12 +140,18 @@ void UEQComponentMenuManager::CallInventory(const FInputActionValue& Value)
 
 void UEQComponentMenuManager::CallStatus(const FInputActionValue& Value)
 {
+	auto StatusWidget = Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStatus;
+	
 	EQPlayerController->EQWidgetMainUI->WBP_EQWidgetIconBar->OnClickStatus();
+	StatusWidget->InitUpdateStat();
 }
 
 void UEQComponentMenuManager::CallSkill(const FInputActionValue& Value)
 {
+	auto SkillWidget = Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetSkill;
+
 	EQPlayerController->EQWidgetMainUI->WBP_EQWidgetIconBar->OnClickSkill();
+	SkillWidget->UpdateSkillPnt();
 }
 
 void UEQComponentMenuManager::CallQuest(const FInputActionValue& Value)

@@ -6,8 +6,12 @@
 #include "EngineUtils.h"
 #include "Character/EQCharacterPlayer.h"
 #include "Item/EQItemBase.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "Player/EQPlayerController.h"
+#include "Save/EQSaveGame.h"
+#include "Widget/EQWidgetMainUI.h"
+#include "Widget/EQWidgetStatus.h"
 
 UEQComponentInventory::UEQComponentInventory()
 {
@@ -23,30 +27,37 @@ UEQComponentInventory::UEQComponentInventory()
 	{
 		ItemFactory = ItemFacRef.Class;
 	}
+
+	static ConstructorHelpers::FClassFinder<UEQSaveGame> SaveGameRef(TEXT("/Script/Engine.Blueprint'/Game/Blueprints/SaveGame/BP_EQSaveGame.BP_EQSaveGame_C'"));
+	if (SaveGameRef.Succeeded()) SaveGameFactory = SaveGameRef.Class;
 }
 
 void UEQComponentInventory::BeginPlay()
 {
 	Super::BeginPlay();
-	EmptySlot.ItemID.DataTable = ItemID;
-
-	EmptySlot.ItemType = EEQItemType::Equipment;
-	for (int i = 0; i < 20; i++) EQAllItem.Equipment.Push(EmptySlot);
-
-	EmptySlot.ItemType = EEQItemType::Consumtion;
-	for (int i = 0; i < 20; i++) EQAllItem.Consumtion.Push(EmptySlot);
-
-	EmptySlot.ItemType = EEQItemType::Material;
-	for (int i = 0; i < 20; i++) EQAllItem.Material.Push(EmptySlot);
-
-	EmptySlot.ItemType = EEQItemType::Questitem;
-	for (int i = 0; i < 20; i++) EQAllItem.QuestItem.Push(EmptySlot);
+	LoadInventory();
+	if (EQAllItem.IsEmpty())
+	{
+		EmptySlot.ItemID.DataTable = ItemID;
 	
-	EmptySlot.ItemType = EEQItemType::EquippingWeapon;
-	for (int i = 0; i < 1; i++) EQAllItem.EquippingSword.Push(EmptySlot);
+		EmptySlot.ItemType = EEQItemType::Equipment;
+		for (int i = 0; i < 20; i++) EQAllItem.Equipment.Push(EmptySlot);
 
-	EmptySlot.ItemType = EEQItemType::EquippingShield;
-	for (int i = 0; i < 1; i++) EQAllItem.EquippingShield.Push(EmptySlot);
+		EmptySlot.ItemType = EEQItemType::Consumtion;
+		for (int i = 0; i < 20; i++) EQAllItem.Consumtion.Push(EmptySlot);
+
+		EmptySlot.ItemType = EEQItemType::Material;
+		for (int i = 0; i < 20; i++) EQAllItem.Material.Push(EmptySlot);
+
+		EmptySlot.ItemType = EEQItemType::Questitem;
+		for (int i = 0; i < 20; i++) EQAllItem.QuestItem.Push(EmptySlot);
+	
+		EmptySlot.ItemType = EEQItemType::EquippingWeapon;
+		for (int i = 0; i < 1; i++) EQAllItem.EquippingSword.Push(EmptySlot);
+
+		EmptySlot.ItemType = EEQItemType::EquippingShield;
+		for (int i = 0; i < 1; i++) EQAllItem.EquippingShield.Push(EmptySlot);
+	}
 }
 
 void UEQComponentInventory::TickComponent(float DeltaTime, ELevelTick TickType,
@@ -194,6 +205,38 @@ void UEQComponentInventory::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(UEQComponentInventory, CurrItem)
+}
+
+void UEQComponentInventory::SaveInventory()
+{
+	UEQSaveGame* SaveGameInstance = Cast<UEQSaveGame>(UGameplayStatics::CreateSaveGameObject(SaveGameFactory));
+	
+	if (SaveGameInstance)
+	{
+		SaveGameInstance->EQAllItem = EQAllItem;
+		SaveGameInstance->StatusStat = GetOwner()->FindComponentByClass<UEQComponentStat>()->StatusStat;
+		SaveGameInstance->QuestCondition = GetOwner()->FindComponentByClass<UEQComponentQuest>()->QuestCondition;
+		SaveGameInstance->EQSkill = Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetSkill->EQSkill;
+		UGameplayStatics::SaveGameToSlot(SaveGameInstance, "EQSlot", 0);
+		GEngine->AddOnScreenDebugMessage(-1,5,FColor::Magenta, TEXT("Success Save"));
+	}
+	
+}
+
+void UEQComponentInventory::LoadInventory()
+{
+	UEQSaveGame* SaveGameInstance = Cast<UEQSaveGame>(UGameplayStatics::CreateSaveGameObject(SaveGameFactory));
+	
+	if (SaveGameInstance)
+	{
+		SaveGameInstance = Cast<UEQSaveGame>(UGameplayStatics::LoadGameFromSlot("EQSlot", 0));
+		EQAllItem = SaveGameInstance->EQAllItem;
+		GetOwner()->FindComponentByClass<UEQComponentStat>()->StatusStat = SaveGameInstance->StatusStat;
+		GetOwner()->FindComponentByClass<UEQComponentQuest>()->QuestCondition = SaveGameInstance->QuestCondition;
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetSkill->EQSkill = SaveGameInstance->EQSkill;
+		GEngine->AddOnScreenDebugMessage(-1,5,FColor::Magenta, TEXT("Success Load"));
+	}
+
 }
 
 void UEQComponentInventory::ClientRPC_DropItem_Implementation(const FName& RowName, const EEQItemType& ItemType,

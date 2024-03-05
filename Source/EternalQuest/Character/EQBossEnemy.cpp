@@ -9,6 +9,7 @@
 
 AEQBossEnemy::AEQBossEnemy()
 {
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 	bReplicates = true;
 	SetReplicateMovement(true);
 }

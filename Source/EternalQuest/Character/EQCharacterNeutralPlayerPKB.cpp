@@ -38,9 +38,9 @@ void AEQCharacterNeutralPlayerPKB::QuestAccepted()
 {
 	Super::QuestAccepted();
 	NPCPrompt.Reset();
-	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[1] == 0)
+	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestCondition.QuestStateArray[1] == 0)
 	{
-		GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[1] = 1;
+		GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestCondition.QuestStateArray[1] = 1;
 	}
 	NPCPrompt.PushLast(TEXT("내 펭귄 소드..."));
 	QuestIcon->SetVisibility(false);
@@ -53,19 +53,19 @@ void AEQCharacterNeutralPlayerPKB::QuestDenied()
 
 void AEQCharacterNeutralPlayerPKB::QuestSuccess()
 {
-	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[1] == 2)
+	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestCondition.QuestStateArray[1] == 2)
 	{
 		NPCPrompt.Reset();
 		NPCPrompt.PushLast(TEXT("역시 고양이보단 펭귄이지~"));
 	}
 	
-	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[1] != 1)
+	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestCondition.QuestStateArray[1] != 1)
 	{
 		Super::QuestSuccess();
 		return;
 	}
 	
-	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->bQuestCond2 != true)
+	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestCondition.bQuestCond2 != true)
 	{
 		Super::QuestSuccess();
 		return;
@@ -83,7 +83,7 @@ void AEQCharacterNeutralPlayerPKB::QuestSuccess()
 	}
 	CurrItem->FinishSpawning(GetActorTransform());
 
-	GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[1] = 2;
+	GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestCondition.QuestStateArray[1] = 2;
 
 	Super::QuestSuccess();
 }

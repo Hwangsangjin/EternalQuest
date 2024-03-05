@@ -24,6 +24,5 @@ class ETERNALQUEST_API AEQArcherOrc : public AEQNormalEnemy
 	virtual FString SetName() override;
 	virtual void MonsterProjectileHit(AActor* OtherActor);
 	virtual void DropItem() override;
-	virtual int32 GetExperience() override;
 
 };

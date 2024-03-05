@@ -7,6 +7,29 @@
 #include "Character/EQCharacterStat.h"
 #include "EQComponentStat.generated.h"
 
+class UEQSaveGame;
+
+USTRUCT(BlueprintType, Atomic)
+struct FEQStatusStat : public FTableRowBase
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float HP;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MP;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Str;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Int;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Def;
+};
+
 DECLARE_MULTICAST_DELEGATE(FOnHpZeroDelegate);
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnHpChangedDelegate, float /*CurrentHp*/, float /*MaxHp*/);
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnExpChangedDelegate, float /*CurrentExp*/, float /*MaxExp*/);
@@ -47,7 +70,7 @@ public:
 	void SetNewMaxHp(const FEQCharacterStat& InBaseStat, const FEQCharacterStat& InModifierStat);
 	void SetHp(float NewHp);
 	void SetNewMaxExp(const FEQCharacterStat& InBaseStat, const FEQCharacterStat& InModifierStat);
-	void SetExp(float NewExp);
+	void SetExp(float ExpAmount);
 	void ResetStat();
 
 	FOnHpZeroDelegate OnHpZero;
@@ -98,4 +121,12 @@ private:
 
 	UPROPERTY(ReplicatedUsing = OnRep_ModifierStat, Transient, VisibleInstanceOnly, Category = Stat, Meta = (AllowPrivateAccess = true))
 	FEQCharacterStat ModifierStat;
+
+public:
+	// Status UI 적용 관련 로직 //
+	UPROPERTY()
+	FEQStatusStat StatusStat;
+
+	UPROPERTY()
+	TSubclassOf<UEQSaveGame> SaveGameFactory;
 };

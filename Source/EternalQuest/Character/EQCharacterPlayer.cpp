@@ -286,6 +286,11 @@ void AEQCharacterPlayer::SkillHitCheck()
 	SkillComp->SkillHitCheck();
 }
 
+void AEQCharacterPlayer::TakeExp(float ExpAmount)
+{
+	StatComp->SetExp(ExpAmount);
+}
+
 float AEQCharacterPlayer::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);

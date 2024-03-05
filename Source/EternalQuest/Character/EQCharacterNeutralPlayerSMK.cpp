@@ -38,9 +38,9 @@ void AEQCharacterNeutralPlayerSMK::QuestAccepted()
 {
 	Super::QuestAccepted();
 	NPCPrompt.Reset();
-	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[2] == 0)
+	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestCondition.QuestStateArray[2] == 0)
 	{
-		GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[2] = 1;
+		GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestCondition.QuestStateArray[2] = 1;
 	}
 	NPCPrompt.PushLast(TEXT("혹시, 처리는 다 했니?"));
 	QuestIcon->SetVisibility(false);
@@ -53,19 +53,19 @@ void AEQCharacterNeutralPlayerSMK::QuestDenied()
 
 void AEQCharacterNeutralPlayerSMK::QuestSuccess()
 {
-	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[2] == 2)
+	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestCondition.QuestStateArray[2] == 2)
 	{
 		NPCPrompt.Reset();
 		NPCPrompt.PushLast(TEXT("이제 맘놓고 자전거를 탈 수 있겠어!"));
 	}
 	
-	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[2] != 1)
+	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestCondition.QuestStateArray[2] != 1)
 	{
 		Super::QuestSuccess();
 		return;
 	}
 	
-	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->bQuestCond3 != true)
+	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestCondition.bQuestCond3 != true)
 	{
 		Super::QuestSuccess();
 		return;
@@ -83,7 +83,7 @@ void AEQCharacterNeutralPlayerSMK::QuestSuccess()
 	}
 	CurrItem->FinishSpawning(GetActorTransform());
 
-	GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[2] = 2;
+	GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestCondition.QuestStateArray[2] = 2;
 	
 	Super::QuestSuccess();
 }

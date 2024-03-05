@@ -59,7 +59,7 @@ void AEQScorpion::DropItem()
 	{
 		CurrItem4->ItemName.DataTable = ItemDataTable;
 		CurrItem4->ItemName.RowName = TEXT("HealingPostion");
-		CurrItem4->ItemType = EEQItemType::Questitem;
+		CurrItem4->ItemType = EEQItemType::Consumtion;
 		CurrItem4->ItemQuantity = 2;
 	}
 	CurrItem4->FinishSpawning(GetActorTransform());
@@ -72,7 +72,7 @@ void AEQScorpion::DropItem()
 		{
 			CurrItem->ItemName.DataTable = ItemDataTable;
 			CurrItem->ItemName.RowName = TEXT("HealingPostion");
-			CurrItem->ItemType = EEQItemType::Questitem;
+			CurrItem->ItemType = EEQItemType::Consumtion;
 			CurrItem->ItemQuantity = 2;
 		}
 		CurrItem->FinishSpawning(GetActorTransform());
@@ -91,7 +91,3 @@ void AEQScorpion::DropItem()
 	}
 }
 
-int32 AEQScorpion::GetExperience()
-{
-	return Experience;
-}

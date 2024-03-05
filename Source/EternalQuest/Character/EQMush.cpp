@@ -55,9 +55,5 @@ void AEQMush::DropItem()
 	
 }
 
-int32 AEQMush::GetExperience()
-{
-	return Experience;
-}
 
 
