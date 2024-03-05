@@ -10,6 +10,7 @@ class UInputAction;
 class UAnimMontage;
 class AEQProjectileBase;
 class UNiagaraSystem;
+class UStaticMesh;
 
 UCLASS()
 class ETERNALQUEST_API UEQComponentSkill : public UEQComponentBase
@@ -24,12 +25,12 @@ protected:
 
 public:
 	virtual void SetupPlayerInput(UInputComponent* PlayerInputComponent) override;
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 // Skill
 public:
-	void SkillHitCheck();
-
 	FORCEINLINE bool IsSkill() const { return IsSkilling; }
+	void SkillHitCheck();
 
 private:
 	bool IsSkilling = false;
@@ -73,6 +74,10 @@ protected:
 	void WarriorFirstSkill();
 	void WarriorFirstSkillBegin();
 	void WarriorFirstSkillEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded);
+
+private:
+	bool bHitDetected = false;
+	FVector_NetQuantize TeleportPoint;
 
 // Second Skill
 protected:
@@ -139,4 +144,26 @@ protected:
 	void WarriorFourthSkill();
 	void WarriorFourthSkillBegin();
 	void WarriorFourthSkillEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded);
+
+// Area of Effect
+public:
+	void UpdatePreviewMesh();
+
+private:
+	bool bIsChanneling = false;
+	bool bDoOnceMeshSet = false;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, Meta = (AllowPrivateAccess = true))
+	TSubclassOf<UStaticMeshComponent> PreviewMeshFactory;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UStaticMeshComponent> PreviewMeshComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UStaticMesh> PreviewMesh;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UMaterialInterface> MaterialInterface;
+
+	FTransform PreviewMeshTransform;
 };

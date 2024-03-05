@@ -8,7 +8,6 @@
 #include "EnhancedInputComponent.h"
 #include "Character/EQCharacterPlayer.h"
 #include "Component/EQComponentAttack.h"
-#include "Component/EQComponentAvoid.h"
 #include "Component/EQComponentSkill.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -107,11 +106,6 @@ void UEQComponentMove::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 void UEQComponentMove::Jump(const FInputActionValue& Value)
 {
 	if (Player->GetCharacterMovement()->IsFalling())
-	{
-		return;
-	}
-
-	if (Player->GetAvoidComponent()->IsAvoid())
 	{
 		return;
 	}

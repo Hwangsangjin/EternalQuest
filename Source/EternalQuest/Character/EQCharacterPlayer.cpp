@@ -11,12 +11,12 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/BoxComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
 #include "InputMappingContext.h"
 #include "EnhancedInputSubsystems.h"
 #include "Component/EQComponentMove.h"
 #include "Component/EQComponentAttack.h"
-#include "Component/EQComponentAvoid.h"
 #include "Component/EQComponentSkill.h"
 #include "Component/EQComponentStat.h"
 #include "Component/EQComponentInteraction.h"
@@ -24,9 +24,12 @@
 #include "Component/EQComponentMenuManager.h"
 #include "Component/EQComponentQuest.h"
 #include "Component/EQComponentWidget.h"
+#include "Components/Border.h"
 #include "Components/Image.h"
 #include "Components/SceneCaptureComponent2D.h"
 #include "Engine/TextureRenderTarget2D.h"
+#include "Kismet/KismetRenderingLibrary.h"
+#include "Widget/EQWidgetUserName.h"
 #include "Widget/EQWidgetHpBar.h"
 #include "Widget/EQWidgetMainUI.h"
 #include "Widget/EQWidgetMinimap.h"
@@ -69,6 +72,12 @@ AEQCharacterPlayer::AEQCharacterPlayer()
 	SwordEffect->SetRelativeLocation(FVector(0, 0, 60));
 	SwordEffect->SetupAttachment(SwordMesh);
 	SwordEffect->SetHiddenInGame(true);
+
+	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> SwordEffectRef(TEXT("/Script/Niagara.NiagaraSystem'/Game/Assets/SlashHitVFX/NS/NS_Trail_Sword_Edited.NS_Trail_Sword_Edited'"));
+	if (SwordEffectRef.Succeeded())
+	{
+		SwordEffect->SetAsset(SwordEffectRef.Object);
+	}
 
 	// Camera
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
@@ -126,7 +135,6 @@ AEQCharacterPlayer::AEQCharacterPlayer()
 	// Component
 	MoveComp = CreateDefaultSubobject<UEQComponentMove>(TEXT("Move Component"));
 	AttackComp = CreateDefaultSubobject<UEQComponentAttack>(TEXT("Attack Component"));
-	AvoidComp = CreateDefaultSubobject<UEQComponentAvoid>(TEXT("Avoid Component"));
 	SkillComp = CreateDefaultSubobject<UEQComponentSkill>(TEXT("Skill Component"));
 	StatComp = CreateDefaultSubobject<UEQComponentStat>(TEXT("Stat Component"));
 	InteractionComp = CreateDefaultSubobject<UEQComponentInteraction>(TEXT("Interaction Component"));
@@ -179,7 +187,7 @@ void AEQCharacterPlayer::PostInitializeComponents()
 	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), TEXT("End"));
 
 	StatComp->OnHpZero.AddUObject(this, &ThisClass::SetDead);
-	//StatComp->OnStatChanged.AddUObject(this, &ThisClass::ApplyStat);
+	StatComp->OnStatChanged.AddUObject(this, &ThisClass::ApplyStat);
 	
 }
 
@@ -271,11 +279,6 @@ void AEQCharacterPlayer::Tick(float DeltaSeconds)
 void AEQCharacterPlayer::AttackHitCheck()
 {
 	AttackComp->AttackHitCheck();
-}
-
-void AEQCharacterPlayer::AvoidableCheck()
-{
-	AvoidComp->AvoidableCheck();
 }
 
 void AEQCharacterPlayer::SkillHitCheck()

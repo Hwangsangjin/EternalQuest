@@ -12,10 +12,13 @@ struct FEQCharacterStat : public FTableRowBase
 	GENERATED_BODY()
 
 public:
-	FEQCharacterStat() : MaxHp(0.0f), AttackDamage(0.0f), AttackRange(0.0f), AttackRadius(0.0f), AttackSpeed(100.0f), MovementSpeed(450.0f) {}
+	FEQCharacterStat() : MaxHp(0.0f), MaxExp(0.0f), AttackDamage(0.0f), AttackRange(0.0f), AttackRadius(0.0f), AttackSpeed(100.0f), MovementSpeed(450.0f) {}
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
 	float MaxHp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+	float MaxExp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
 	float AttackDamage;
@@ -53,6 +56,10 @@ public:
 		uint32 uMaxHp = (uint32)MaxHp;
 		Ar.SerializeIntPacked(uMaxHp);
 		MaxHp = (float)uMaxHp;
+
+		uint32 uMaxExp = (uint32)MaxExp;
+		Ar.SerializeIntPacked(uMaxExp);
+		MaxExp = (float)uMaxExp;
 
 		uint32 uAttackDamage = (uint32)AttackDamage;
 		Ar.SerializeIntPacked(uAttackDamage);

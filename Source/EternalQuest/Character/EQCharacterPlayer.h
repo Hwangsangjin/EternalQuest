@@ -6,7 +6,6 @@
 #include "Character/EQCharacterBase.h"
 #include "Game/EQGameInstance.h"
 #include "Interface/EQInterfaceAnimationAttack.h"
-#include "Interface/EQInterfaceAnimationAvoid.h"
 #include "Interface/EQInterfaceAnimationSkill.h"
 #include "Interface/EQInterfaceCharacterWidget.h"
 #include "EQCharacterPlayer.generated.h"
@@ -21,11 +20,11 @@ class UInputAction;
 struct FInputActionValue;
 class UAnimMontage;
 class UInputComponent;
+class USceneCaptureComponent2D;
 class UBoxComponent;
 class UEQComponentBase;
 class UEQComponentMove;
 class UEQComponentAttack;
-class UEQComponentAvoid;
 class UEQComponentSkill;
 class UEQComponentStat;
 class UEQComponentInteraction;
@@ -38,7 +37,7 @@ class UNiagaraComponent;
 DECLARE_MULTICAST_DELEGATE_OneParam(FInputSignature, UInputComponent*)
 
 UCLASS(config = EternalQuest)
-class ETERNALQUEST_API AEQCharacterPlayer : public AEQCharacterBase, public IEQInterfaceAnimationAttack, public IEQInterfaceAnimationAvoid, public IEQInterfaceAnimationSkill, public IEQInterfaceCharacterWidget
+class ETERNALQUEST_API AEQCharacterPlayer : public AEQCharacterBase, public IEQInterfaceAnimationAttack, public IEQInterfaceAnimationSkill, public IEQInterfaceCharacterWidget
 {
 	GENERATED_BODY()
 
@@ -174,10 +173,6 @@ private:
 protected:
 	virtual void AttackHitCheck() override;
 
-// Avoid
-protected:
-	virtual void AvoidableCheck() override;
-
 // Skill
 protected:
 	virtual void SkillHitCheck() override;
@@ -218,7 +213,6 @@ public:
 	FORCEINLINE UEQComponentMove* GetMoveComponent() const { return MoveComp; }
 	FORCEINLINE UEQComponentStat* GetStatComponent() const { return StatComp; }
 	FORCEINLINE UEQComponentAttack* GetAttackComponent() const { return AttackComp; }
-	FORCEINLINE UEQComponentAvoid* GetAvoidComponent() const { return AvoidComp; }
 	FORCEINLINE UEQComponentSkill* GetSkillComponent() const { return SkillComp; }
 
 private:
@@ -227,9 +221,6 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UEQComponentAttack> AttackComp;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
-	TObjectPtr<UEQComponentAvoid> AvoidComp;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UEQComponentSkill> SkillComp;
