@@ -76,6 +76,7 @@ public:
 
 		return true;
 	}
+	
 };
 
 template<>

@@ -3,6 +3,7 @@
 
 #include "Character/EQCharacterNeutralPlayerKHO.h"
 
+#include "Component/EQComponentInventory.h"
 #include "Component/EQComponentQuest.h"
 #include "Item/EQItemBase.h"
 
@@ -42,6 +43,8 @@ void AEQCharacterNeutralPlayerKHO::QuestAccepted()
 	}
 	NPCPrompt.PushLast(TEXT("던전에서 수료증을 가져와줘!"));
 
+	GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentInventory>()->SaveInventory();
+	
 	if (HasAuthority())
 	{
 		UWorld* World = GetWorld();

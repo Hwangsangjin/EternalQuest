@@ -77,4 +77,8 @@ public:
 	UPROPERTY()
 	int32 DropQuantity;
 	// ----- 변수 -----
+
+	// 세이브 관련 로직 //
+	void SaveInventory();
+	void LoadInventory();
 };

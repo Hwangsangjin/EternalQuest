@@ -18,4 +18,7 @@ class ETERNALQUEST_API UEQSaveGame : public USaveGame
 public:
 	UPROPERTY()
 	FEQAllItem EQAllItem;
+
+	UPROPERTY()
+	
 };
