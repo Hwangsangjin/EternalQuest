@@ -7,6 +7,7 @@
 #include "EQMonsterAbility.generated.h"
 
 
+class AEQCharacterPlayer;
 class UEQDamageAmoutUI;
 class AEQBerserkerOrc;
 class UEQBossMonsterHPUI;
@@ -33,6 +34,9 @@ public:
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="UI")
 	UEQDamageAmoutUI* DamageUI;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	AEQCharacterPlayer* Target;
 	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Monster")
 	float MaxHealth;
@@ -104,7 +108,6 @@ public:
 	void SaveDamage(float Damage);
 	void CheckCanDodge();
 
-	void FoundKiller
-	();
+	
 	
 };

@@ -7,6 +7,7 @@
 #include "EQBaseFSM.h"
 #include "Character/EQBerserkerOrc.h"
 #include "Character/EQBossEnemy.h"
+#include "Character/EQCharacterPlayer.h"
 #include "Character/EQNormalEnemy.h"
 #include "Components/WidgetComponent.h"
 #include "Net/UnrealNetwork.h"
@@ -15,17 +16,15 @@
 
 UEQMonsterAbility::UEQMonsterAbility()
 {
-	
 	PrimaryComponentTick.bCanEverTick = true;
 	SetIsReplicated(true);
 }
-
-
 
 void UEQMonsterAbility::BeginPlay()
 {
 	Super::BeginPlay();
 	CurrentHealth = MaxHealth;
+	Target = Cast<AEQCharacterPlayer>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	AActor* Owner = GetOwner();
 	if(Owner)
 	{
@@ -97,6 +96,7 @@ void UEQMonsterAbility::TakeDamage(AActor* DamagedActor, float Damage, const UDa
 			IsDead = true;
 			auto Orc = Cast<AEQBerserkerOrc>(DamagedActor);
 			Orc->SetActorEnableCollision(ECollisionEnabled::NoCollision);
+			Target->TakeExp(Orc->Experience);
 			Orc->MultiRPC_Die();
 			FTimerHandle DieTimerHandle;
 			GetWorld()->GetTimerManager().SetTimer(DieTimerHandle, [Orc]()
