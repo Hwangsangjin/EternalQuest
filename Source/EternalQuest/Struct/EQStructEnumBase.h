@@ -118,5 +118,20 @@ struct FEQAllItem : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FEQSlot> EquippingShield;
+
+	FORCEINLINE bool IsEmpty()
+	{
+		if (EquippingSword.IsEmpty()) return true;
+		if (EquippingShield.IsEmpty()) return true;
+		
+		for (int i = 0; i < 20; i++)
+		{
+			if (Equipment.IsEmpty()) return true;
+			if (Consumtion.IsEmpty()) return true;
+			if (Material.IsEmpty()) return true;
+			if (QuestItem.IsEmpty()) return true;
+		}
+		return false;
+	}
 };
 

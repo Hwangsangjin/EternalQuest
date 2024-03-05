@@ -6,8 +6,10 @@
 #include "EngineUtils.h"
 #include "Character/EQCharacterPlayer.h"
 #include "Item/EQItemBase.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "Player/EQPlayerController.h"
+#include "Save/EQSaveGame.h"
 
 UEQComponentInventory::UEQComponentInventory()
 {
@@ -28,25 +30,29 @@ UEQComponentInventory::UEQComponentInventory()
 void UEQComponentInventory::BeginPlay()
 {
 	Super::BeginPlay();
-	EmptySlot.ItemID.DataTable = ItemID;
-
-	EmptySlot.ItemType = EEQItemType::Equipment;
-	for (int i = 0; i < 20; i++) EQAllItem.Equipment.Push(EmptySlot);
-
-	EmptySlot.ItemType = EEQItemType::Consumtion;
-	for (int i = 0; i < 20; i++) EQAllItem.Consumtion.Push(EmptySlot);
-
-	EmptySlot.ItemType = EEQItemType::Material;
-	for (int i = 0; i < 20; i++) EQAllItem.Material.Push(EmptySlot);
-
-	EmptySlot.ItemType = EEQItemType::Questitem;
-	for (int i = 0; i < 20; i++) EQAllItem.QuestItem.Push(EmptySlot);
+	LoadInventory();
+	if (EQAllItem.IsEmpty())
+	{
+		EmptySlot.ItemID.DataTable = ItemID;
 	
-	EmptySlot.ItemType = EEQItemType::EquippingWeapon;
-	for (int i = 0; i < 1; i++) EQAllItem.EquippingSword.Push(EmptySlot);
+		EmptySlot.ItemType = EEQItemType::Equipment;
+		for (int i = 0; i < 20; i++) EQAllItem.Equipment.Push(EmptySlot);
 
-	EmptySlot.ItemType = EEQItemType::EquippingShield;
-	for (int i = 0; i < 1; i++) EQAllItem.EquippingShield.Push(EmptySlot);
+		EmptySlot.ItemType = EEQItemType::Consumtion;
+		for (int i = 0; i < 20; i++) EQAllItem.Consumtion.Push(EmptySlot);
+
+		EmptySlot.ItemType = EEQItemType::Material;
+		for (int i = 0; i < 20; i++) EQAllItem.Material.Push(EmptySlot);
+
+		EmptySlot.ItemType = EEQItemType::Questitem;
+		for (int i = 0; i < 20; i++) EQAllItem.QuestItem.Push(EmptySlot);
+	
+		EmptySlot.ItemType = EEQItemType::EquippingWeapon;
+		for (int i = 0; i < 1; i++) EQAllItem.EquippingSword.Push(EmptySlot);
+
+		EmptySlot.ItemType = EEQItemType::EquippingShield;
+		for (int i = 0; i < 1; i++) EQAllItem.EquippingShield.Push(EmptySlot);
+	}
 }
 
 void UEQComponentInventory::TickComponent(float DeltaTime, ELevelTick TickType,
@@ -194,6 +200,23 @@ void UEQComponentInventory::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(UEQComponentInventory, CurrItem)
+}
+
+void UEQComponentInventory::SaveInventory()
+{
+	UEQSaveGame* SaveGameInstance = Cast<UEQSaveGame>(UGameplayStatics::CreateSaveGameObject(UEQSaveGame::StaticClass()));
+	SaveGameInstance->EQAllItem = EQAllItem;
+	UGameplayStatics::SaveGameToSlot(SaveGameInstance, "EQSlot", 0);
+}
+
+void UEQComponentInventory::LoadInventory()
+{
+	UEQSaveGame* SaveGameInstance = Cast<UEQSaveGame>(UGameplayStatics::CreateSaveGameObject(UEQSaveGame::StaticClass()));
+	SaveGameInstance = Cast<UEQSaveGame>(UGameplayStatics::LoadGameFromSlot("EQSlot", 0));
+	if (SaveGameInstance)
+	{
+		EQAllItem = SaveGameInstance->EQAllItem;
+	}
 }
 
 void UEQComponentInventory::ClientRPC_DropItem_Implementation(const FName& RowName, const EEQItemType& ItemType,

@@ -83,6 +83,7 @@ public:
 
 		return true;
 	}
+	
 };
 
 template<>
