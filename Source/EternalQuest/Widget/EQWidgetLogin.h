@@ -95,7 +95,6 @@ public:
 	void MageButtonHovered();
 	UFUNCTION()
 	void MageButtonUnhovered();
-	// 메이지 선택 버튼 //
 
 	// 워리어 선택 버튼 //
 	UFUNCTION()
@@ -104,7 +103,6 @@ public:
 	void WarriorButtonHovered();
 	UFUNCTION()
 	void WarriorButtonUnhovered();
-	// 워리어 선택 버튼 //
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Player, Meta = (BindWidget), Meta = (AllowPrivateAccess = true))
@@ -139,5 +137,6 @@ private:
 	bool BtnWarriorHovered = false;
 	
 	void LoadingEffect();
-	// 로딩창 UI //
+	UFUNCTION()
+	void CloseLoadingBorder();
 };
