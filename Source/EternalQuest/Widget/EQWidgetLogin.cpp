@@ -154,7 +154,8 @@ void UEQWidgetLogin::MageButtonClicked()
 	{
 		GameInstance->FindSessions(100000);
 	}
-
+	FTimerHandle EQHandle;
+	GetWorld()->GetTimerManager().SetTimer(EQHandle,this, &ThisClass::CloseLoadingBorder, 6, false, 3);
 	Border_Loading->SetVisibility(ESlateVisibility::Visible);
 	Button_Mage->SetIsEnabled(false);
 	Button_Warrior->SetIsEnabled(false);
@@ -192,6 +193,8 @@ void UEQWidgetLogin::WarriorButtonClicked()
 	}
 
 	Border_Loading->SetVisibility(ESlateVisibility::Visible);
+	FTimerHandle EQHandle;
+	GetWorld()->GetTimerManager().SetTimer(EQHandle,this, &ThisClass::CloseLoadingBorder, 6, false, 3);
 	Button_Mage->SetIsEnabled(false);
 	Button_Warrior->SetIsEnabled(false);
 	Button_Cancel->SetIsEnabled(false);
@@ -222,6 +225,15 @@ void UEQWidgetLogin::LoadingEffect()
 		auto DotText = FString(TEXT("."));
 		Txt_Loading->SetText(FText::FromString(FString::Printf(TEXT("%s"), *(Txt_Loading->GetText().ToString() + DotText))));
 	}
+}
+
+void UEQWidgetLogin::CloseLoadingBorder()
+{
+	GEngine->AddOnScreenDebugMessage(-1,5,FColor::Magenta, TEXT("세션이 없습니다."));
+	Border_Loading->SetVisibility(ESlateVisibility::Hidden);
+	Button_Mage->SetIsEnabled(true);
+	Button_Warrior->SetIsEnabled(true);
+	Button_Cancel->SetIsEnabled(true);
 }
 
 void UEQWidgetLogin::HostButtonClicked()

@@ -135,11 +135,13 @@ void UEQComponentMenuManager::SetupPlayerInput(UInputComponent* PlayerInputCompo
 
 void UEQComponentMenuManager::CallInventory(const FInputActionValue& Value)
 {
+	EQComponentInventory->LoadInventory();
 	EQPlayerController->EQWidgetMainUI->WBP_EQWidgetIconBar->OnClickInventory();
 }
 
 void UEQComponentMenuManager::CallStatus(const FInputActionValue& Value)
 {
+	EQComponentInventory->LoadInventory();
 	auto StatusWidget = Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStatus;
 	
 	EQPlayerController->EQWidgetMainUI->WBP_EQWidgetIconBar->OnClickStatus();
@@ -148,6 +150,7 @@ void UEQComponentMenuManager::CallStatus(const FInputActionValue& Value)
 
 void UEQComponentMenuManager::CallSkill(const FInputActionValue& Value)
 {
+	EQComponentInventory->LoadInventory();
 	auto SkillWidget = Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetSkill;
 
 	EQPlayerController->EQWidgetMainUI->WBP_EQWidgetIconBar->OnClickSkill();
@@ -156,6 +159,7 @@ void UEQComponentMenuManager::CallSkill(const FInputActionValue& Value)
 
 void UEQComponentMenuManager::CallQuest(const FInputActionValue& Value)
 {
+	EQComponentInventory->LoadInventory();
 	EQPlayerController->EQWidgetMainUI->WBP_EQWidgetIconBar->OnClickQuest();
 }
 

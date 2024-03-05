@@ -35,7 +35,8 @@ UEQComponentInventory::UEQComponentInventory()
 void UEQComponentInventory::BeginPlay()
 {
 	Super::BeginPlay();
-	LoadInventory();
+	
+	// LoadInventory();
 	if (EQAllItem.IsEmpty())
 	{
 		EmptySlot.ItemID.DataTable = ItemID;
