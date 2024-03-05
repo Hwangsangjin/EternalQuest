@@ -3,8 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Component/EQComponentQuest.h"
+#include "Component/EQComponentStat.h"
 #include "GameFramework/SaveGame.h"
 #include "Struct/EQStructEnumBase.h"
+#include "Widget/EQWidgetSkill.h"
 #include "EQSaveGame.generated.h"
 
 /**
@@ -20,5 +23,11 @@ public:
 	FEQAllItem EQAllItem;
 
 	UPROPERTY()
-	
+	FEQStatusStat StatusStat;
+
+	UPROPERTY()
+	FEQQuestProgress QuestCondition;
+
+	UPROPERTY()
+	FEQSkill EQSkill;
 };

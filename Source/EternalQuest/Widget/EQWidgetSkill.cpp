@@ -3,11 +3,13 @@
 
 #include "Widget/EQWidgetSkill.h"
 
+#include "Component/EQComponentInventory.h"
 #include "Components/Button.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/WidgetSwitcher.h"
 #include "Game/EQGameInstance.h"
+#include "GameFramework/Character.h"
 
 UEQWidgetSkill::UEQWidgetSkill(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
@@ -102,19 +104,19 @@ void UEQWidgetSkill::NativeConstruct()
 
 void UEQWidgetSkill::UpdateSkillPnt()
 {
-	Txt_SkillPnt->SetText(FText::FromString(FString::Printf(TEXT("Skill Point : %d"), SkillPnt)));
+	Txt_SkillPnt->SetText(FText::FromString(FString::Printf(TEXT("Skill Point : %d"), EQSkill.SkillPnt)));
 	
-	Txt_WarriorSkill1Pnt->SetText(FText::FromString(FString::Printf(TEXT("%d"), Pnt_WarriorSkill1)));
-	Txt_WarriorSkill2Pnt->SetText(FText::FromString(FString::Printf(TEXT("%d"), Pnt_WarriorSkill2)));
-	Txt_WarriorSkill3Pnt->SetText(FText::FromString(FString::Printf(TEXT("%d"), Pnt_WarriorSkill3)));
-	Txt_WarriorSkill4Pnt->SetText(FText::FromString(FString::Printf(TEXT("%d"), Pnt_WarriorSkill4)));
-	Txt_WarriorSkill5Pnt->SetText(FText::FromString(FString::Printf(TEXT("%d"), Pnt_WarriorSkill5)));
+	Txt_WarriorSkill1Pnt->SetText(FText::FromString(FString::Printf(TEXT("%d"), EQSkill.Pnt_WarriorSkill1)));
+	Txt_WarriorSkill2Pnt->SetText(FText::FromString(FString::Printf(TEXT("%d"), EQSkill.Pnt_WarriorSkill2)));
+	Txt_WarriorSkill3Pnt->SetText(FText::FromString(FString::Printf(TEXT("%d"), EQSkill.Pnt_WarriorSkill3)));
+	Txt_WarriorSkill4Pnt->SetText(FText::FromString(FString::Printf(TEXT("%d"), EQSkill.Pnt_WarriorSkill4)));
+	Txt_WarriorSkill5Pnt->SetText(FText::FromString(FString::Printf(TEXT("%d"), EQSkill.Pnt_WarriorSkill5)));
 
-	Txt_MageSkill1Pnt->SetText(FText::FromString(FString::Printf(TEXT("%d"), Pnt_MageSkill1)));
-	Txt_MageSkill2Pnt->SetText(FText::FromString(FString::Printf(TEXT("%d"), Pnt_MageSkill2)));
-	Txt_MageSkill3Pnt->SetText(FText::FromString(FString::Printf(TEXT("%d"), Pnt_MageSkill3)));
-	Txt_MageSkill4Pnt->SetText(FText::FromString(FString::Printf(TEXT("%d"), Pnt_MageSkill4)));
-	Txt_MageSkill5Pnt->SetText(FText::FromString(FString::Printf(TEXT("%d"), Pnt_MageSkill5)));
+	Txt_MageSkill1Pnt->SetText(FText::FromString(FString::Printf(TEXT("%d"), EQSkill.Pnt_MageSkill1)));
+	Txt_MageSkill2Pnt->SetText(FText::FromString(FString::Printf(TEXT("%d"), EQSkill.Pnt_MageSkill2)));
+	Txt_MageSkill3Pnt->SetText(FText::FromString(FString::Printf(TEXT("%d"), EQSkill.Pnt_MageSkill3)));
+	Txt_MageSkill4Pnt->SetText(FText::FromString(FString::Printf(TEXT("%d"), EQSkill.Pnt_MageSkill4)));
+	Txt_MageSkill5Pnt->SetText(FText::FromString(FString::Printf(TEXT("%d"), EQSkill.Pnt_MageSkill5)));
 }
 
 void UEQWidgetSkill::ClearSkillText()
@@ -166,51 +168,66 @@ void UEQWidgetSkill::OnHoveredWarriorSkill5()
 
 void UEQWidgetSkill::OnClickedWarriorSkill1()
 {
-	if (SkillPnt > 0 && Pnt_WarriorSkill1 < 20)
+	if (EQSkill.SkillPnt > 0 && EQSkill.Pnt_WarriorSkill1 < 20)
 	{
-		Pnt_WarriorSkill1++;
-		SkillPnt--;
+		EQSkill.Pnt_WarriorSkill1++;
+		EQSkill.SkillPnt--;
 		UpdateSkillPnt();
+
+		auto SaveComp = GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentInventory>();
+		SaveComp->SaveInventory();
 	}
 }
 
 void UEQWidgetSkill::OnClickedWarriorSkill2()
 {
-	if (SkillPnt > 0 && Pnt_WarriorSkill2 < 20)
+	if (EQSkill.SkillPnt > 0 && EQSkill.Pnt_WarriorSkill2 < 20)
 	{
-		Pnt_WarriorSkill2++;
-		SkillPnt--;
+		EQSkill.Pnt_WarriorSkill2++;
+		EQSkill.SkillPnt--;
 		UpdateSkillPnt();
+
+		auto SaveComp = GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentInventory>();
+		SaveComp->SaveInventory();
 	}
 }
 
 void UEQWidgetSkill::OnClickedWarriorSkill3()
 {
-	if (SkillPnt > 0 && Pnt_WarriorSkill3 < 20)
+	if (EQSkill.SkillPnt > 0 && EQSkill.Pnt_WarriorSkill3 < 20)
 	{
-		Pnt_WarriorSkill3++;
-		SkillPnt--;
+		EQSkill.Pnt_WarriorSkill3++;
+		EQSkill.SkillPnt--;
 		UpdateSkillPnt();
+
+		auto SaveComp = GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentInventory>();
+		SaveComp->SaveInventory();
 	}
 }
 
 void UEQWidgetSkill::OnClickedWarriorSkill4()
 {
-	if (SkillPnt > 0 && Pnt_WarriorSkill4 < 20)
+	if (EQSkill.SkillPnt > 0 && EQSkill.Pnt_WarriorSkill4 < 20)
 	{
-		Pnt_WarriorSkill4++;
-		SkillPnt--;
+		EQSkill.Pnt_WarriorSkill4++;
+		EQSkill.SkillPnt--;
 		UpdateSkillPnt();
+
+		auto SaveComp = GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentInventory>();
+		SaveComp->SaveInventory();
 	}
 }
 
 void UEQWidgetSkill::OnClickedWarriorSkill5()
 {
-	if (SkillPnt > 0 && Pnt_WarriorSkill5 < 20)
+	if (EQSkill.SkillPnt > 0 && EQSkill.Pnt_WarriorSkill5 < 20)
 	{
-		Pnt_WarriorSkill5++;
-		SkillPnt--;
+		EQSkill.Pnt_WarriorSkill5++;
+		EQSkill.SkillPnt--;
 		UpdateSkillPnt();
+
+		auto SaveComp = GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentInventory>();
+		SaveComp->SaveInventory();
 	}
 }
 
@@ -256,50 +273,65 @@ void UEQWidgetSkill::OnHoveredMageSkill5()
 
 void UEQWidgetSkill::OnClickedMageSkill1()
 {
-	if (SkillPnt > 0 && Pnt_MageSkill1 < 20)
+	if (EQSkill.SkillPnt > 0 && EQSkill.Pnt_MageSkill1 < 20)
 	{
-		Pnt_MageSkill1++;
-		SkillPnt--;
+		EQSkill.Pnt_MageSkill1++;
+		EQSkill.SkillPnt--;
 		UpdateSkillPnt();
+		
+		auto SaveComp = GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentInventory>();
+		SaveComp->SaveInventory();
 	}
 }
 
 void UEQWidgetSkill::OnClickedMageSkill2()
 {
-	if (SkillPnt > 0 && Pnt_MageSkill2 < 20)
+	if (EQSkill.SkillPnt > 0 && EQSkill.Pnt_MageSkill2 < 20)
 	{
-		Pnt_MageSkill2++;
-		SkillPnt--;
+		EQSkill.Pnt_MageSkill2++;
+		EQSkill.SkillPnt--;
 		UpdateSkillPnt();
+
+		auto SaveComp = GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentInventory>();
+		SaveComp->SaveInventory();
 	}
 }
 
 void UEQWidgetSkill::OnClickedMageSkill3()
 {
-	if (SkillPnt > 0 && Pnt_MageSkill3 < 20)
+	if (EQSkill.SkillPnt > 0 && EQSkill.Pnt_MageSkill3 < 20)
 	{
-		Pnt_MageSkill3++;
-		SkillPnt--;
+		EQSkill.Pnt_MageSkill3++;
+		EQSkill.SkillPnt--;
 		UpdateSkillPnt();
+
+		auto SaveComp = GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentInventory>();
+		SaveComp->SaveInventory();
 	}
 }
 
 void UEQWidgetSkill::OnClickedMageSkill4()
 {
-	if (SkillPnt > 0 && Pnt_MageSkill4 < 20)
+	if (EQSkill.SkillPnt > 0 && EQSkill.Pnt_MageSkill4 < 20)
 	{
-		Pnt_MageSkill4++;
-		SkillPnt--;
+		EQSkill.Pnt_MageSkill4++;
+		EQSkill.SkillPnt--;
 		UpdateSkillPnt();
+
+		auto SaveComp = GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentInventory>();
+		SaveComp->SaveInventory();
 	}
 }
 
 void UEQWidgetSkill::OnClickedMageSkill5()
 {
-	if (SkillPnt > 0 && Pnt_MageSkill5 < 20)
+	if (EQSkill.SkillPnt > 0 && EQSkill.Pnt_MageSkill5 < 20)
 	{
-		Pnt_MageSkill5++;
-		SkillPnt--;
+		EQSkill.Pnt_MageSkill5++;
+		EQSkill.SkillPnt--;
 		UpdateSkillPnt();
+
+		auto SaveComp = GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentInventory>();
+		SaveComp->SaveInventory();
 	}
 }

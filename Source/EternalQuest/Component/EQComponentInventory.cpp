@@ -10,6 +10,8 @@
 #include "Net/UnrealNetwork.h"
 #include "Player/EQPlayerController.h"
 #include "Save/EQSaveGame.h"
+#include "Widget/EQWidgetMainUI.h"
+#include "Widget/EQWidgetStatus.h"
 
 UEQComponentInventory::UEQComponentInventory()
 {
@@ -25,6 +27,9 @@ UEQComponentInventory::UEQComponentInventory()
 	{
 		ItemFactory = ItemFacRef.Class;
 	}
+
+	static ConstructorHelpers::FClassFinder<UEQSaveGame> SaveGameRef(TEXT("/Script/Engine.Blueprint'/Game/Blueprints/SaveGame/BP_EQSaveGame.BP_EQSaveGame_C'"));
+	if (SaveGameRef.Succeeded()) SaveGameFactory = SaveGameRef.Class;
 }
 
 void UEQComponentInventory::BeginPlay()
@@ -204,19 +209,34 @@ void UEQComponentInventory::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>
 
 void UEQComponentInventory::SaveInventory()
 {
-	UEQSaveGame* SaveGameInstance = Cast<UEQSaveGame>(UGameplayStatics::CreateSaveGameObject(UEQSaveGame::StaticClass()));
-	SaveGameInstance->EQAllItem = EQAllItem;
-	UGameplayStatics::SaveGameToSlot(SaveGameInstance, "EQSlot", 0);
+	UEQSaveGame* SaveGameInstance = Cast<UEQSaveGame>(UGameplayStatics::CreateSaveGameObject(SaveGameFactory));
+	
+	if (SaveGameInstance)
+	{
+		SaveGameInstance->EQAllItem = EQAllItem;
+		SaveGameInstance->StatusStat = GetOwner()->FindComponentByClass<UEQComponentStat>()->StatusStat;
+		SaveGameInstance->QuestCondition = GetOwner()->FindComponentByClass<UEQComponentQuest>()->QuestCondition;
+		SaveGameInstance->EQSkill = Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetSkill->EQSkill;
+		UGameplayStatics::SaveGameToSlot(SaveGameInstance, "EQSlot", 0);
+		GEngine->AddOnScreenDebugMessage(-1,5,FColor::Magenta, TEXT("Success Save"));
+	}
+	
 }
 
 void UEQComponentInventory::LoadInventory()
 {
-	UEQSaveGame* SaveGameInstance = Cast<UEQSaveGame>(UGameplayStatics::CreateSaveGameObject(UEQSaveGame::StaticClass()));
-	SaveGameInstance = Cast<UEQSaveGame>(UGameplayStatics::LoadGameFromSlot("EQSlot", 0));
+	UEQSaveGame* SaveGameInstance = Cast<UEQSaveGame>(UGameplayStatics::CreateSaveGameObject(SaveGameFactory));
+	
 	if (SaveGameInstance)
 	{
+		SaveGameInstance = Cast<UEQSaveGame>(UGameplayStatics::LoadGameFromSlot("EQSlot", 0));
 		EQAllItem = SaveGameInstance->EQAllItem;
+		GetOwner()->FindComponentByClass<UEQComponentStat>()->StatusStat = SaveGameInstance->StatusStat;
+		GetOwner()->FindComponentByClass<UEQComponentQuest>()->QuestCondition = SaveGameInstance->QuestCondition;
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetSkill->EQSkill = SaveGameInstance->EQSkill;
+		GEngine->AddOnScreenDebugMessage(-1,5,FColor::Magenta, TEXT("Success Load"));
 	}
+
 }
 
 void UEQComponentInventory::ClientRPC_DropItem_Implementation(const FName& RowName, const EEQItemType& ItemType,

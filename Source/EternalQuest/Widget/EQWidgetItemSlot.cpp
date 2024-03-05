@@ -143,7 +143,7 @@ bool UEQWidgetItemSlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDro
 		return true;
 	}
 	///////////////////////////////////
-	if (HangItem->EQSlot->ItemID.RowName == EQSlot->ItemID.RowName) //장비의 이름이 같을 때
+	if (HangItem->EQSlot-> ItemID.RowName == EQSlot->ItemID.RowName) //장비의 이름이 같을 때
 	{
 		Swap(HangItem->EQSlot->Quantity, EQSlot->Quantity);
 		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStatus->UpdateAdditionalStat();

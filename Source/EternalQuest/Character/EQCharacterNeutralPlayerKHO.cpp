@@ -5,6 +5,7 @@
 
 #include "Component/EQComponentInventory.h"
 #include "Component/EQComponentQuest.h"
+#include "Component/EQComponentStat.h"
 #include "Item/EQItemBase.h"
 
 AEQCharacterNeutralPlayerKHO::AEQCharacterNeutralPlayerKHO()
@@ -37,9 +38,9 @@ void AEQCharacterNeutralPlayerKHO::QuestAccepted()
 {
 	Super::QuestAccepted();
 	NPCPrompt.Reset();
-	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[3] == 0)
+	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestCondition.QuestStateArray[3] == 0)
 	{
-		GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[3] = 1;
+		GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestCondition.QuestStateArray[3] = 1;
 	}
 	NPCPrompt.PushLast(TEXT("던전에서 수료증을 가져와줘!"));
 
@@ -64,19 +65,19 @@ void AEQCharacterNeutralPlayerKHO::QuestDenied()
 void AEQCharacterNeutralPlayerKHO::QuestSuccess()
 {
 
-	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[3] == 2)
+	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestCondition.QuestStateArray[3] == 2)
 	{
 		NPCPrompt.Reset();
 		NPCPrompt.PushLast(TEXT("수료를 축하드려요!"));
 	}
 	
-	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[3] != 1)
+	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestCondition.QuestStateArray[3] != 1)
 	{
 		Super::QuestSuccess();
 		return;
 	}
 	
-	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->bQuestCond4 != true)
+	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestCondition.bQuestCond4 != true)
 	{
 		Super::QuestSuccess();
 		return;
@@ -95,7 +96,7 @@ void AEQCharacterNeutralPlayerKHO::QuestSuccess()
 	}
 	CurrItem->FinishSpawning(GetActorTransform());
 
-	GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestStateArray[3] = 2;
+	GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestCondition.QuestStateArray[3] = 2;
 	
 	Super::QuestSuccess();
 }

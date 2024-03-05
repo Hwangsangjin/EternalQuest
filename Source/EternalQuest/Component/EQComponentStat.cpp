@@ -2,15 +2,21 @@
 
 
 #include "Component/EQComponentStat.h"
+
+#include "EQComponentInventory.h"
 #include "EternalQuest.h"
 #include "Net/UnrealNetwork.h"
 #include "Game/EQGameSingleton.h"
 #include "Character/EQCharacterPlayer.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Save/EQSaveGame.h"
 
 UEQComponentStat::UEQComponentStat()
 	: CurrentLevel(1)
 {
+	static ConstructorHelpers::FClassFinder<UEQSaveGame> SaveGameRef(TEXT("/Script/Engine.Blueprint'/Game/Blueprints/SaveGame/BP_EQSaveGame.BP_EQSaveGame_C'"));
+	if (SaveGameRef.Succeeded()) SaveGameFactory = SaveGameRef.Class;
 }
 
 void UEQComponentStat::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -49,6 +55,7 @@ void UEQComponentStat::BeginPlay()
 	EQ_SUBLOG(LogEternalQuest, Log, TEXT("%s"), TEXT("Begin"));
 
 	Super::BeginPlay();
+	
 }
 
 float UEQComponentStat::ApplyDamage(float InDamage)
