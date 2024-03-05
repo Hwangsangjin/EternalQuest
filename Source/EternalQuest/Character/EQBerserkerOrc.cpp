@@ -66,6 +66,8 @@ AEQBerserkerOrc::AEQBerserkerOrc()
 		//(Pitch=-90.000000,Yaw=180.000000,Roll=180.000000)
 		ShoulderMesh->SetRelativeRotation(FRotator(-90,180,180));
 	}
+
+	Experience = 500;
 }
 
 UBehaviorTree* AEQBerserkerOrc::GetBehaviorTree()
@@ -120,6 +122,11 @@ void AEQBerserkerOrc::CheckAttack_R(float Damage, float Radius)
 void AEQBerserkerOrc::EndAttack()
 {
 	DamagedPlayers.Empty();
+}
+
+int32 AEQBerserkerOrc::GetExperience()
+{
+	return Experience;
 }
 
 

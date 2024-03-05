@@ -164,6 +164,7 @@ void UEQBaseFSM::ServerRPC_TickDie_Implementation()
 	
 	if(CurrentTime>DieTime)
 	{
+		//Self->GetExperience();
 		Self->DropItem();
 		SetState(EMonsterState::Idle);
 		Pool->ReturnEnemyToPool(Self);

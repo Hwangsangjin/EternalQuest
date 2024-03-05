@@ -103,5 +103,7 @@ public:
 	// TODO : 데미지가 3초동안 100이상이 들어오면
 	void SaveDamage(float Damage);
 	void CheckCanDodge();
+
+	void FoundKiller();
 	
 };

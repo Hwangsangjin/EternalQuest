@@ -61,4 +61,7 @@ public:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat")
 	TArray<AEQCharacterPlayer*> DamagedPlayers;
+
+	virtual int32 GetExperience() override;
+
 };

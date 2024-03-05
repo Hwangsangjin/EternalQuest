@@ -30,8 +30,11 @@ public:
 	
 	virtual void BeginPlay() override;
 	virtual FString SetName() override;
-
+	virtual void DropItem() override;
 	UFUNCTION(NetMulticast,Unreliable)
 	void MultiPRC_Ambushing();
+
+	virtual int32 GetExperience() override;
+
 	
 };

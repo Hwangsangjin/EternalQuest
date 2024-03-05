@@ -23,6 +23,8 @@ public:
 	USkeletalMeshComponent* PauldronsComp;
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* WeaponComp;
-	
+
+	virtual void DropItem() override;
 	virtual FString SetName() override;
+	virtual int32 GetExperience() override;
 };

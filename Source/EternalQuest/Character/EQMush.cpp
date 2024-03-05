@@ -14,6 +14,7 @@ AEQMush::AEQMush()
 		GetMesh()->SetSkeletalMesh(TempMesh.Object);
 		GetMesh()->SetRelativeLocation(FVector(0,0,-30));
 	}
+	Experience = 10;
 }
 
 FString AEQMush::SetName()
@@ -52,6 +53,11 @@ void AEQMush::DropItem()
 	}
 	
 	
+}
+
+int32 AEQMush::GetExperience()
+{
+	return Experience;
 }
 
 

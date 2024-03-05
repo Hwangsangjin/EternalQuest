@@ -47,4 +47,10 @@ float AEQCharacterEnemy::TakeDamage(float DamageAmount, FDamageEvent const& Dama
 	return DamageAmount;
 }
 
+
+int32 AEQCharacterEnemy::GetExperience()
+{
+	return Experience;
+}
+
 void AEQCharacterEnemy::DropItem() {}
