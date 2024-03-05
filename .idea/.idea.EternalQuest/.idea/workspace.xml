@@ -11,19 +11,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="63226f85-0a41-4fd5-9731-20837f29bd3b" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/BP_AmbushOrc.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/BP_AmbushOrc.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/BP_Mush.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/BP_Mush.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Projectile/BP_AmbushTrigger.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Projectile/BP_AmbushTrigger.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/BP_Berserker.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/BP_Berserker.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Maps/DungeonMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/DungeonMap.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Maps/KesTestMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/KesTestMap.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Maps/LoginMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/LoginMap.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/AI/EQEnemySpawnManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/AI/EQEnemySpawnManager.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/AI/EQMeleeFSM.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/AI/EQMeleeFSM.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/AI/EQMeleeFSM.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/AI/EQMeleeFSM.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Character/EQAmbushOrc.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Character/EQAmbushOrc.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Character/EQAmbushOrc.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Character/EQAmbushOrc.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Projectile/EQAmbushTrigger.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Projectile/EQAmbushTrigger.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Projectile/EQAmbushTrigger.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Projectile/EQAmbushTrigger.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Sequence/BossSequence.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Sequence/BossSequence.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/AI/EQMonsterAbility.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/AI/EQMonsterAbility.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Character/EQScorpion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Character/EQScorpion.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Character/EQSpider.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Character/EQSpider.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -201,6 +194,7 @@
       <workItem from="1708996011212" duration="10276000" />
       <workItem from="1709109537782" duration="2000" />
       <workItem from="1709538693085" duration="65000" />
+      <workItem from="1709623475925" duration="253000" />
     </task>
     <servers />
   </component>

@@ -66,7 +66,7 @@ void AEQSpider::DropItem()
 		if (CurrItem)
 		{
 			CurrItem->ItemName.DataTable = ItemDataTable;
-			CurrItem->ItemName.RowName = TEXT("HealthPostion");
+			CurrItem->ItemName.RowName = TEXT("HealingPostion");
 			CurrItem->ItemType = EEQItemType::Consumtion;
 			CurrItem->ItemQuantity = 1;
 		}
@@ -74,10 +74,7 @@ void AEQSpider::DropItem()
 	}
 }
 
-int32 AEQSpider::GetExperience()
-{
-	return Experience;
-}
+
 
 
 

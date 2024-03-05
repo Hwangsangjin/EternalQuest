@@ -128,8 +128,3 @@ void AEQArcherOrc::DropItem()
 	}
 	
 }
-
-int32 AEQArcherOrc::GetExperience()
-{
-	return Experience;
-}

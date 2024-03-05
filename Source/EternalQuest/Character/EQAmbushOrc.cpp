@@ -137,10 +137,6 @@ void AEQAmbushOrc::DropItem()
 	
 }
 
-int32 AEQAmbushOrc::GetExperience()
-{
-	return Experience;
-}
 
 void AEQAmbushOrc::MultiPRC_Ambushing_Implementation()
 {

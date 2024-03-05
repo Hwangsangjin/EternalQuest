@@ -155,7 +155,3 @@ void AEQWarlockOrc::DropItem()
 	
 }
 
-int32 AEQWarlockOrc::GetExperience()
-{
-	return Experience;
-}

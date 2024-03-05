@@ -104,6 +104,7 @@ public:
 	void SaveDamage(float Damage);
 	void CheckCanDodge();
 
-	void FoundKiller();
+	void FoundKiller
+	();
 	
 };

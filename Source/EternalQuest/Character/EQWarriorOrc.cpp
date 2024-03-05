@@ -100,7 +100,3 @@ FString AEQWarriorOrc::SetName()
 	return MonsterName;
 }
 
-int32 AEQWarriorOrc::GetExperience()
-{
-	return Experience;
-}

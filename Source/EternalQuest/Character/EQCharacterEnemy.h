@@ -35,7 +35,6 @@ public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AActor> SpawnItemFactory;
 
-	int32 Experience = 0;
-	virtual int32 GetExperience();
+	float Experience = 0;
 	virtual void DropItem();
 };

@@ -33,8 +33,7 @@ public:
 	virtual void DropItem() override;
 	UFUNCTION(NetMulticast,Unreliable)
 	void MultiPRC_Ambushing();
-
-	virtual int32 GetExperience() override;
+	
 
 	
 };
