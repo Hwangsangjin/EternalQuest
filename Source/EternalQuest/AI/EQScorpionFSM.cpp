@@ -185,6 +185,7 @@ void UEQScorpionFSM::ServerRPC_ScorpionDie_Implementation()
 	Self->SetActorEnableCollision(ECollisionEnabled::NoCollision);
 	if(CurrentTime>DieTime)
 	{
+		Self->DropItem();
 		Target->TakeExp(Self->Experience);
 		Self->Destroy();
 	}
