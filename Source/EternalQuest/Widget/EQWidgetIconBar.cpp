@@ -3,6 +3,7 @@
 
 #include "Widget/EQWidgetIconBar.h"
 
+#include "EQWidgetBindKeySkillBar.h"
 #include "EQWidgetInventory.h"
 #include "EQWidgetMainUI.h"
 #include "EQWidgetMinimap.h"
@@ -141,6 +142,7 @@ void UEQWidgetIconBar::OnClickInventory()
 		OnUnhoverInventory();
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetInventory->OpenCloseInventoryWidget();
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetMinimap->SetVisibility(ESlateVisibility::Visible);
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetBindKeySkillBar->SetVisibility(ESlateVisibility::Visible);
 		PlaySound(UICloseSound);
 	}
 	else
@@ -150,6 +152,7 @@ void UEQWidgetIconBar::OnClickInventory()
 		bOpenInventory = true;
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetInventory->OpenCloseInventoryWidget();
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetMinimap->SetVisibility(ESlateVisibility::Hidden);
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetBindKeySkillBar->SetVisibility(ESlateVisibility::Hidden);
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Visible);
 		PlaySound(UIOpenSound);
 	}
@@ -189,6 +192,7 @@ void UEQWidgetIconBar::OnClickSkill()
 		ClearIconFlag();
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetSkill->SetVisibility(ESlateVisibility::Hidden);
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetMinimap->SetVisibility(ESlateVisibility::Visible);
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetBindKeySkillBar->SetVisibility(ESlateVisibility::Visible);
 		PlaySound(UICloseSound);
 	}
 	else
@@ -198,6 +202,7 @@ void UEQWidgetIconBar::OnClickSkill()
 		bOpenSkill = true;
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetSkill->SetVisibility(ESlateVisibility::Visible);
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetMinimap->SetVisibility(ESlateVisibility::Hidden);
+		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetBindKeySkillBar->SetVisibility(ESlateVisibility::Hidden);
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Visible);
 		PlaySound(UIOpenSound);
 	}
