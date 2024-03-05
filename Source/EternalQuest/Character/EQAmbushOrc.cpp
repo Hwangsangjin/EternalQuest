@@ -4,6 +4,7 @@
 #include "Character/EQAmbushOrc.h"
 
 #include "Components/CapsuleComponent.h"
+#include "Item/EQItemBase.h"
 
 AEQAmbushOrc::AEQAmbushOrc()
 {
@@ -65,6 +66,8 @@ AEQAmbushOrc::AEQAmbushOrc()
 		WeaponComp_R->SetRelativeRotation(FRotator(0,180,0));
 		WeaponComp_R->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
+
+	Experience = 35;
 }
 
 void AEQAmbushOrc::BeginPlay()
@@ -78,6 +81,65 @@ FString AEQAmbushOrc::SetName()
 	Super::SetName();
 	MonsterName = TEXT("백정");
 	return MonsterName;
+}
+
+void AEQAmbushOrc::DropItem()
+{
+	Super::DropItem();
+	float RandomValue = FMath::FRand();
+	if(RandomValue <= 0.6f)
+	{
+		auto CurrItem = GetWorld()->SpawnActorDeferred<AEQItemBase>(SpawnItemFactory, GetActorTransform());
+		if (CurrItem)
+		{
+			CurrItem->ItemName.DataTable = ItemDataTable;
+			CurrItem->ItemName.RowName = TEXT("ManaPostion");
+			CurrItem->ItemType = EEQItemType::Consumtion;
+			CurrItem->ItemQuantity = 2;
+		}
+		CurrItem->FinishSpawning(GetActorTransform());	
+	}
+	else
+	{
+		auto CurrItem = GetWorld()->SpawnActorDeferred<AEQItemBase>(SpawnItemFactory, GetActorTransform());
+		if (CurrItem)
+		{
+			CurrItem->ItemName.DataTable = ItemDataTable;
+			CurrItem->ItemName.RowName = TEXT("HealthPostion");
+			CurrItem->ItemType = EEQItemType::Consumtion;
+			CurrItem->ItemQuantity = 2;
+		}
+		CurrItem->FinishSpawning(GetActorTransform());
+	}
+
+	auto CurrItem3 = GetWorld()->SpawnActorDeferred<AEQItemBase>(SpawnItemFactory, GetActorTransform());
+	if (CurrItem3)
+	{
+		CurrItem3->ItemName.DataTable = ItemDataTable;
+		CurrItem3->ItemName.RowName = TEXT("SeSacSoul");
+		CurrItem3->ItemType = EEQItemType::Material;
+		CurrItem3->ItemQuantity = 1;
+	}
+	CurrItem3->FinishSpawning(GetActorTransform());
+
+	if(RandomValue <= 0.4)
+	{
+		auto CurrItem4 = GetWorld()->SpawnActorDeferred<AEQItemBase>(SpawnItemFactory, GetActorTransform());
+		if (CurrItem4)
+		{
+			CurrItem4->ItemName.DataTable = ItemDataTable;
+			CurrItem4->ItemName.RowName = TEXT("Dan_Sword");
+			CurrItem4->ItemType = EEQItemType::Equipment;
+			CurrItem4->ItemQuantity = 2;
+		}
+		CurrItem4->FinishSpawning(GetActorTransform());
+	}
+	
+}
+
+int32 AEQAmbushOrc::GetExperience()
+{
+	return Experience;
 }
 
 void AEQAmbushOrc::MultiPRC_Ambushing_Implementation()

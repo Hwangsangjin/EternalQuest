@@ -20,6 +20,7 @@ AEQScorpion::AEQScorpion()
 		GetCapsuleComponent()->SetCapsuleHalfHeight(120.f);
 		GetCapsuleComponent()->SetCapsuleRadius(100.f);
 	}
+	Experience = 100;
 }
 
 void AEQScorpion::MonsterProjectileHit(AActor* OtherActor)
@@ -88,4 +89,9 @@ void AEQScorpion::DropItem()
 		}
 		CurrItem2->FinishSpawning(GetActorTransform());
 	}
+}
+
+int32 AEQScorpion::GetExperience()
+{
+	return Experience;
 }

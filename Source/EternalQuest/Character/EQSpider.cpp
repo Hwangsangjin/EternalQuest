@@ -23,7 +23,7 @@ AEQSpider::AEQSpider()
 		GetCapsuleComponent()->SetCapsuleRadius(70);
 	}
 
-	
+	Experience = 40;
 }
 
 void AEQSpider::MonsterProjectileHit(AActor* OtherActor)
@@ -72,6 +72,11 @@ void AEQSpider::DropItem()
 		}
 		CurrItem->FinishSpawning(GetActorTransform());
 	}
+}
+
+int32 AEQSpider::GetExperience()
+{
+	return Experience;
 }
 
 

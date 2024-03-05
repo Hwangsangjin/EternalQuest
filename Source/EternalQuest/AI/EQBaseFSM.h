@@ -82,7 +82,7 @@ protected:
 	UPROPERTY(Replicated)
 	float DetectionRange = 450;
 	UPROPERTY(Replicated)
-	float DieTime = 2.0f;
+	float DieTime = 3.0f;
 	UPROPERTY(Replicated)
 	FVector RandomLoc;
 	UPROPERTY(Replicated)
@@ -93,6 +93,8 @@ public:
 	
 	UPROPERTY(Replicated)
 	bool SuperAmor = false;
+
+	bool WarlockDie = false;
 
 
 protected:
@@ -114,8 +116,9 @@ public:
 	void SetState(EMonsterState Next);
 	bool UpdateRandLoc(FVector OldLoc, float Radius, FVector& NewLoc);
 	virtual void MeleeAttackCheck();
+	
 
-
+	
 public:
 	UFUNCTION(Server,Reliable)
 	void ServerRPC_TickIdle();

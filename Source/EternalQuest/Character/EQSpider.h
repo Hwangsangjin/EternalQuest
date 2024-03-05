@@ -20,5 +20,6 @@ public:
 	virtual void MonsterProjectileHit(AActor* OtherActor) override;
 	virtual FString SetName() override;
 	virtual void DropItem() override;
+	virtual int32 GetExperience() override;
 
 };

@@ -8,6 +8,7 @@
 #include "Components/ArrowComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/DamageEvents.h"
+#include "Item/EQItemBase.h"
 #include "Projectile/EQWarlockOrcSkill.h"
 
 AEQWarlockOrc::AEQWarlockOrc()
@@ -70,7 +71,7 @@ AEQWarlockOrc::AEQWarlockOrc()
 		WeaponComp_R->SetRelativeRotation(FRotator(0,180,0));
 		WeaponComp_R->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
-	
+	Experience = 120;
 }
 
 void AEQWarlockOrc::MonsterProjectileHit(AActor* OtherActor)
@@ -91,4 +92,70 @@ FString AEQWarlockOrc::SetName()
 	Super::SetName();
 	MonsterName = TEXT("Faker");
 	return MonsterName;
+}
+
+void AEQWarlockOrc::DropItem()
+{
+	Super::DropItem();
+	float RandomValue = FMath::FRand();
+	if(RandomValue <= 0.6f)
+	{
+		auto CurrItem = GetWorld()->SpawnActorDeferred<AEQItemBase>(SpawnItemFactory, GetActorTransform());
+		if (CurrItem)
+		{
+			CurrItem->ItemName.DataTable = ItemDataTable;
+			CurrItem->ItemName.RowName = TEXT("ManaPostion");
+			CurrItem->ItemType = EEQItemType::Consumtion;
+			CurrItem->ItemQuantity = 3;
+		}
+		CurrItem->FinishSpawning(GetActorTransform());	
+	}
+	else
+	{
+		auto CurrItem = GetWorld()->SpawnActorDeferred<AEQItemBase>(SpawnItemFactory, GetActorTransform());
+		if (CurrItem)
+		{
+			CurrItem->ItemName.DataTable = ItemDataTable;
+			CurrItem->ItemName.RowName = TEXT("HealthPostion");
+			CurrItem->ItemType = EEQItemType::Consumtion;
+			CurrItem->ItemQuantity = 2;
+		}
+		CurrItem->FinishSpawning(GetActorTransform());
+	}
+
+	auto CurrItem3 = GetWorld()->SpawnActorDeferred<AEQItemBase>(SpawnItemFactory, GetActorTransform());
+	if (CurrItem3)
+	{
+		CurrItem3->ItemName.DataTable = ItemDataTable;
+		CurrItem3->ItemName.RowName = TEXT("SeSacSoul");
+		CurrItem3->ItemType = EEQItemType::Material;
+		CurrItem3->ItemQuantity = 5;
+	}
+	CurrItem3->FinishSpawning(GetActorTransform());
+	
+	auto CurrItem4 = GetWorld()->SpawnActorDeferred<AEQItemBase>(SpawnItemFactory, GetActorTransform());
+	if (CurrItem4)
+	{
+		CurrItem4->ItemName.DataTable = ItemDataTable;
+		CurrItem4->ItemName.RowName = TEXT("SeSacSoulWand");
+		CurrItem4->ItemType = EEQItemType::Equipment;
+		CurrItem4->ItemQuantity = 1;
+	}
+	CurrItem4->FinishSpawning(GetActorTransform());
+
+	auto CurrItem5 = GetWorld()->SpawnActorDeferred<AEQItemBase>(SpawnItemFactory, GetActorTransform());
+	if (CurrItem5)
+	{
+		CurrItem5->ItemName.DataTable = ItemDataTable;
+		CurrItem5->ItemName.RowName = TEXT("HealthPostion");
+		CurrItem5->ItemType = EEQItemType::Consumtion;
+		CurrItem5->ItemQuantity = 2;
+	}
+	CurrItem5->FinishSpawning(GetActorTransform());
+	
+}
+
+int32 AEQWarlockOrc::GetExperience()
+{
+	return Experience;
 }

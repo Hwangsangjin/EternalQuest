@@ -6,6 +6,7 @@
 #include "AI/EQBaseFSM.h"
 #include "EQWarlockOrcFSM.generated.h"
 
+class AEQDoor;
 class AEQWarlockTeleportPoint;
 class AEQWarlockOrcSkill;
 /**
@@ -23,6 +24,9 @@ public:
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Skills")
 	AEQWarlockTeleportPoint* TPPoint;
+
+	UPROPERTY(EditAnywhere)
+	AEQDoor* Door;
 	
 	
 protected:
@@ -46,12 +50,11 @@ public:
 	void CheckPlayerLoc();
 	void SetFocus();
 	virtual void WarlockPrj() override;
-
+	void DoorOpen();
 
 	UFUNCTION(NetMulticast,Unreliable)
 	void MultiRPC_OrcWarlockAttack();
 	
 	UFUNCTION(NetMulticast,Unreliable)
 	void MultiRPC_OrcWarlockSkill();
-	
 };

@@ -4,6 +4,7 @@
 #include "Character/EQWarriorOrc.h"
 
 #include "Components/CapsuleComponent.h"
+#include "Item/EQItemBase.h"
 
 AEQWarriorOrc::AEQWarriorOrc()
 {
@@ -49,6 +50,47 @@ AEQWarriorOrc::AEQWarriorOrc()
 		WeaponComp->SetRelativeRotation(FRotator(0,180,0));
 		WeaponComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
+	Experience = 30;
+}
+
+void AEQWarriorOrc::DropItem()
+{
+	Super::DropItem();
+	float RandomValue = FMath::FRand();
+	if(RandomValue <= 0.6f)
+	{
+		auto CurrItem = GetWorld()->SpawnActorDeferred<AEQItemBase>(SpawnItemFactory, GetActorTransform());
+		if (CurrItem)
+		{
+			CurrItem->ItemName.DataTable = ItemDataTable;
+			CurrItem->ItemName.RowName = TEXT("ManaPostion");
+			CurrItem->ItemType = EEQItemType::Consumtion;
+			CurrItem->ItemQuantity = 2;
+		}
+		CurrItem->FinishSpawning(GetActorTransform());	
+	}
+	else
+	{
+		auto CurrItem = GetWorld()->SpawnActorDeferred<AEQItemBase>(SpawnItemFactory, GetActorTransform());
+		if (CurrItem)
+		{
+			CurrItem->ItemName.DataTable = ItemDataTable;
+			CurrItem->ItemName.RowName = TEXT("HealthPostion");
+			CurrItem->ItemType = EEQItemType::Consumtion;
+			CurrItem->ItemQuantity = 2;
+		}
+		CurrItem->FinishSpawning(GetActorTransform());
+	}
+
+	auto CurrItem3 = GetWorld()->SpawnActorDeferred<AEQItemBase>(SpawnItemFactory, GetActorTransform());
+	if (CurrItem3)
+	{
+		CurrItem3->ItemName.DataTable = ItemDataTable;
+		CurrItem3->ItemName.RowName = TEXT("SeSacSoul");
+		CurrItem3->ItemType = EEQItemType::Material;
+		CurrItem3->ItemQuantity = 1;
+	}
+	CurrItem3->FinishSpawning(GetActorTransform());
 }
 
 FString AEQWarriorOrc::SetName()
@@ -56,4 +98,9 @@ FString AEQWarriorOrc::SetName()
 	Super::SetName();
 	MonsterName = TEXT("망나니");
 	return MonsterName;
+}
+
+int32 AEQWarriorOrc::GetExperience()
+{
+	return Experience;
 }

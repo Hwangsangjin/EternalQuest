@@ -7,11 +7,13 @@
 #include "AITypes.h"
 #include "EQMonsterAbility.h"
 #include "NavigationSystem.h"
+#include "Animation/EQEnemyAnim.h"
 #include "Character/EQCharacterPlayer.h"
 #include "Character/EQNormalEnemy.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/DamageEvents.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Item/EQDoor.h"
 #include "Kismet/GameplayStatics.h"
 #include "Navigation/PathFollowingComponent.h"
 #include "Projectile/EQWarlockOrcSkill.h"
@@ -24,6 +26,7 @@ void UEQWarlockOrcFSM::BeginPlay()
 	DetectionRange = 2000.f;
 	AttackTime = 2.0f;
 	BasicSpeed = 150.f;
+	DieTime = 10.0f;
 }
 
 void UEQWarlockOrcFSM::TickMove()
@@ -66,17 +69,17 @@ void UEQWarlockOrcFSM::TickMove()
 			CurrentTime = AttackTime;
 		}
 	}
-	else if(Result.IsSuccessful() || Direction.Length() > DetectionRange && Self->HasAuthority())
-	{
-		Self->GetCharacterMovement()->MaxWalkSpeed = BasicSpeed;
-		FPathFollowingRequestResult R;
-		R.Code = AI -> MoveToLocation(RandomLoc);
-		if(R != EPathFollowingRequestResult::RequestSuccessful)
-		{
-			UpdateRandLoc(Self->GetActorLocation(),500,RandomLoc);
-			ChaseSpeed = BasicSpeed;
-		}
-	}
+	// else if(Result.IsSuccessful() || Direction.Length() > DetectionRange && Self->HasAuthority())
+	// {
+	// 	Self->GetCharacterMovement()->MaxWalkSpeed = BasicSpeed;
+	// 	FPathFollowingRequestResult R;
+	// 	R.Code = AI -> MoveToLocation(RandomLoc);
+	// 	if(R != EPathFollowingRequestResult::RequestSuccessful)
+	// 	{
+	// 		UpdateRandLoc(Self->GetActorLocation(),500,RandomLoc);
+	// 		ChaseSpeed = BasicSpeed;
+	// 	}
+	// }
 
 }
 
@@ -150,7 +153,7 @@ void UEQWarlockOrcFSM::WarlockTeleport()
 		//Ability->HitCount = 0;
 		int32 RandNum = FMath::RandRange(0,2);
 		FVector NewLocation = TPPoint->GetTeleportPoint(RandNum);
-		GEngine->AddOnScreenDebugMessage(-1,5,FColor::Red,FString::Printf(TEXT("%f,%f,%f"),NewLocation.X,NewLocation.Y,NewLocation.Z));
+		//GEngine->AddOnScreenDebugMessage(-1,5,FColor::Red,FString::Printf(TEXT("%f,%f,%f"),NewLocation.X,NewLocation.Y,NewLocation.Z));
 		Self->SetActorLocation(NewLocation);
 	}
 }
@@ -173,6 +176,20 @@ void UEQWarlockOrcFSM::SetFocus()
 void UEQWarlockOrcFSM::TickDie()
 {
 	Super::TickDie();
+	if(AnimInst->IsDieDone == false) return;
+	bCanAttack = false;
+	bIsUsingSkill = true;
+	CurrentTime += GetWorld()->GetDeltaSeconds();
+	Self->SetActorEnableCollision(ECollisionEnabled::NoCollision);
+	WarlockDie = true;
+	Door->IsOpen = true;
+	DoorOpen();
+	if(CurrentTime>DieTime)
+	{
+		Door -> IsOpen = false;
+		Self->DropItem();
+		Self->Destroy();
+	}
 }
 
 
@@ -183,6 +200,22 @@ void UEQWarlockOrcFSM::WarlockPrj()
 	FTransform ShootPoint = Self->GetMesh()->GetSocketTransform(FName("WarlockSkillPoint"));
 	GetWorld()->SpawnActor<AEQWarlockOrcSkill>(SkillFactory,ShootPoint);
 	bIsUsingSkill = false;
+}
+
+void UEQWarlockOrcFSM::DoorOpen()
+{
+	if(Door->IsOpen == true)
+	{
+		FRotator TargetRotation1 = FRotator(0, 130, 0);
+		FRotator CurrentRotation1 = Door->Door1->GetRelativeRotation();
+		float InterpFactor = FMath::Clamp(GetWorld()->DeltaTimeSeconds / 2.0f, 0.0f, 1.0f);
+		FRotator LerpedRotation1 = FMath::Lerp(CurrentRotation1, TargetRotation1, InterpFactor);
+		Door->Door1->SetRelativeRotation(LerpedRotation1);
+		FRotator TargetRotation2 = FRotator(0, -130, 0);
+		FRotator CurrentRotation2 = Door->Door2->GetRelativeRotation();
+		FRotator LerpedRotation2 = FMath::Lerp(CurrentRotation2, TargetRotation2, InterpFactor);
+		Door->Door2->SetRelativeRotation(LerpedRotation2);
+	}
 }
 
 

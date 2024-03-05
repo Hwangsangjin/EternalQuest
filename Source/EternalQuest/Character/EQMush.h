@@ -19,4 +19,5 @@ public:
 	AEQMush();
 	virtual FString SetName() override;
 	virtual void DropItem() override;
+	virtual int32 GetExperience() override; 
 };
