@@ -46,11 +46,13 @@ void UEQWidgetNpcPrompt::PullNPCInfomation(AEQCharacterNeutralPlayer* InNPC)
 	// UI 연출
 	
 	NPC = InNPC;
-	PromptLast = NPC->NPCPrompt.Num()-1;
-	PromptCurrent = 0;
 
 	// NPC 퀘스트를 클리어했는지 점검하기
 	NPC->QuestSuccess();
+
+	// NPC 대사 길이 확인
+	PromptLast = NPC->NPCPrompt.Num()-1;
+	PromptCurrent = 0;
 
 	// NPC 대본 읽기 시작
 	Txt_NPCName->SetText(FText::FromString(FString::Printf(TEXT("%s"), *NPC->NPCName)));
@@ -64,7 +66,7 @@ void UEQWidgetNpcPrompt::NextPrompt()
 		return;
 	}
 	
-	if (PromptLast == PromptCurrent)
+	if (PromptLast == PromptCurrent) // 마지막 대사 후 클릭할 때 창을 사라지게 함.
 	{
 		RemoveFromParent();
 		GetOwningPlayer()->GetCharacter()->FindComponentByClass<UEQComponentInteraction>()->bCommunicationNPC = false;

@@ -53,12 +53,30 @@ void UEQWidgetStatus::NativeConstruct()
 	{
 		StatComp->OnHpChanged.AddUObject(this, &ThisClass::UpdateState);
 	}
+	
 	UpdateStatUp();
+}
+
+void UEQWidgetStatus::InitUpdateStat()
+{
+	Txt_OriginHP->SetText(FText::FromString(FString::Printf(TEXT("%.f"), StatComp->StatusStat.HP)));
+	Txt_OriginMP->SetText(FText::FromString(FString::Printf(TEXT("%.f"), StatComp->StatusStat.MP)));
+	Txt_OriginSTR->SetText(FText::FromString(FString::Printf(TEXT("%.f"), StatComp->StatusStat.Str)));
+	Txt_OriginINT->SetText(FText::FromString(FString::Printf(TEXT("%.f"), StatComp->StatusStat.Int)));
+	Txt_OriginDEF->SetText(FText::FromString(FString::Printf(TEXT("%.f"), StatComp->StatusStat.Def)));
+
+	Prog_HP->SetPercent(StatComp->StatusStat.HP/MaxPoint);
+	Prog_MP->SetPercent(StatComp->StatusStat.MP/MaxPoint);
+	Prog_STR->SetPercent(StatComp->StatusStat.Str/MaxPoint);
+	Prog_INT->SetPercent(StatComp->StatusStat.Int/MaxPoint);
+	Prog_DEF->SetPercent(StatComp->StatusStat.Def/MaxPoint);
+
 }
 
 void UEQWidgetStatus::UpdateStatUp()
 {
 	Txt_StatPoint->SetText(FText::FromString(FString::Printf(TEXT("%d"), StatPoint)));
+	
 	if (StatPoint < 1)
 	{
 		Btn_IncreaseHP->SetVisibility(ESlateVisibility::Hidden);
@@ -82,7 +100,7 @@ void UEQWidgetStatus::UpdateState(float InCurrentHP, float InMaxHP) //Delegate
 	Txt_StateHP->SetText(FText::FromString(FString::Printf(TEXT("HP : %.f / %.f"), InCurrentHP, InMaxHP)));
 }
 
-void UEQWidgetStatus::UpdateAdditionalStat()
+void UEQWidgetStatus::UpdateAdditionalStat() //아이템 장착 시 스텟 로직
 {
 	auto Inventory = GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentInventory>();
 	
@@ -139,59 +157,70 @@ void UEQWidgetStatus::UpdateAdditionalStat()
 void UEQWidgetStatus::OnClickedIncreaseHP()
 {
 	StatPoint--;
-	CurrentPointHP++;
-	Prog_HP->SetPercent(CurrentPointHP/MaxPoint);
-	Txt_OriginHP->SetText(FText::FromString(FString::Printf(TEXT("%.f"), CurrentPointHP)));
+	StatComp->StatusStat.HP++;
+	Prog_HP->SetPercent(StatComp->StatusStat.HP/MaxPoint);
+	Txt_OriginHP->SetText(FText::FromString(FString::Printf(TEXT("%.f"), StatComp->StatusStat.HP)));
 	//
 	UpdateStatUp();
 	PlaySound(StatPointClickSound);
 
+	auto SaveComp = GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentInventory>();
+	SaveComp->SaveInventory();
 }
 
 void UEQWidgetStatus::OnClickedIncreaseMP()
 {
 	StatPoint--;
-	CurrentPointMP++;
-	Prog_MP->SetPercent(CurrentPointMP/MaxPoint);
-	Txt_OriginMP->SetText(FText::FromString(FString::Printf(TEXT("%.f"), CurrentPointMP)));
+	StatComp->StatusStat.MP++;
+	Prog_MP->SetPercent(StatComp->StatusStat.MP/MaxPoint);
+	Txt_OriginMP->SetText(FText::FromString(FString::Printf(TEXT("%.f"), StatComp->StatusStat.MP)));
 	//
 	UpdateStatUp();
 	PlaySound(StatPointClickSound);
 
+	auto SaveComp = GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentInventory>();
+	SaveComp->SaveInventory();
 }
 
 void UEQWidgetStatus::OnClickedIncreaseSTR()
 {
 	StatPoint--;
-	CurrentPointSTR++;
-	Prog_STR->SetPercent(CurrentPointSTR/MaxPoint);
-	Txt_OriginSTR->SetText(FText::FromString(FString::Printf(TEXT("%.f"), CurrentPointSTR)));
+	StatComp->StatusStat.Str++;
+	Prog_STR->SetPercent(StatComp->StatusStat.Str/MaxPoint);
+	Txt_OriginSTR->SetText(FText::FromString(FString::Printf(TEXT("%.f"), StatComp->StatusStat.Str)));
 	//
 	UpdateStatUp();
 	PlaySound(StatPointClickSound);
 
+	auto SaveComp = GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentInventory>();
+	SaveComp->SaveInventory();
 }
 
 void UEQWidgetStatus::OnClickedIncreaseINT()
 {
 	StatPoint--;
-	CurrentPointINT++;
-	Prog_INT->SetPercent(CurrentPointINT/MaxPoint);
-	Txt_OriginINT->SetText(FText::FromString(FString::Printf(TEXT("%.f"), CurrentPointINT)));
+	StatComp->StatusStat.Int++;
+	Prog_INT->SetPercent(StatComp->StatusStat.Int/MaxPoint);
+	Txt_OriginINT->SetText(FText::FromString(FString::Printf(TEXT("%.f"), StatComp->StatusStat.Int)));
 
 	//
 	UpdateStatUp();
 	PlaySound(StatPointClickSound);
 
+	auto SaveComp = GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentInventory>();
+	SaveComp->SaveInventory();
 }
 
 void UEQWidgetStatus::OnClickedIncreaseDEF()
 {
 	StatPoint--;
-	CurrentPointDEF++;
-	Prog_DEF->SetPercent(CurrentPointDEF/MaxPoint);
-	Txt_OriginDEF->SetText(FText::FromString(FString::Printf(TEXT("%.f"), CurrentPointDEF)));
+	StatComp->StatusStat.Def++;
+	Prog_DEF->SetPercent(StatComp->StatusStat.Def/MaxPoint);
+	Txt_OriginDEF->SetText(FText::FromString(FString::Printf(TEXT("%.f"), StatComp->StatusStat.Def)));
 	//
 	UpdateStatUp();
 	PlaySound(StatPointClickSound);
+
+	auto SaveComp = GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentInventory>();
+	SaveComp->SaveInventory();
 }

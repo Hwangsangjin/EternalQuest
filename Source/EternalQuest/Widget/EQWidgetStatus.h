@@ -22,6 +22,7 @@ class ETERNALQUEST_API UEQWidgetStatus : public UUserWidget
 public:
 	UEQWidgetStatus(const FObjectInitializer& ObjectInitializer);
 	virtual void NativeConstruct() override;
+	void InitUpdateStat();
 	void UpdateStatUp();
 	UFUNCTION()
 	void UpdateState(float InCurrentHP, float InMaxHP);
@@ -125,12 +126,13 @@ public:
 
 	UPROPERTY()
 	TObjectPtr<UEQComponentStat> StatComp;
-	
-	float CurrentPointHP;
-	float CurrentPointMP;
-	float CurrentPointSTR;
-	float CurrentPointINT;
-	float CurrentPointDEF;
+
+	// 임시 변수 //
+	// float CurrentPointHP;
+	// float CurrentPointMP;
+	// float CurrentPointSTR;
+	// float CurrentPointINT;
+	// float CurrentPointDEF;
 
 	float SumMaxHP;
 	float SumMaxMP;
@@ -139,7 +141,7 @@ public:
 	float SumDEF;
 
 	float MaxPoint = 10;
-	int32 StatPoint = 100; // 레벨을 올릴 수 있는 포인트
+	int32 StatPoint = 50; // 레벨을 올릴 수 있는 포인트
 
 	UPROPERTY()
 	TObjectPtr<USoundWave> StatPointClickSound;

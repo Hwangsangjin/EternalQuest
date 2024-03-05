@@ -6,6 +6,31 @@
 #include "Component/EQComponentBase.h"
 #include "EQComponentQuest.generated.h"
 
+USTRUCT(BlueprintType, Atomic)
+struct FEQQuestProgress : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TArray<uint8> QuestStateArray;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bQuestCond1 = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bQuestCond2 = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bQuestCond3 = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 bQuestCond3Quantity = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bQuestCond4 = false;
+
+};
+
 /**
  * 
  */
@@ -21,12 +46,6 @@ public:
 
 	void InspectingItem();
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TArray<uint8> QuestStateArray;
-
-	bool bQuestCond1 = false;
-	bool bQuestCond2 = false;
-	bool bQuestCond3 = false;
-	int32 bQuestCond3Quantity = 0;
-	bool bQuestCond4 = false;
+	UPROPERTY()
+	FEQQuestProgress QuestCondition;
 };

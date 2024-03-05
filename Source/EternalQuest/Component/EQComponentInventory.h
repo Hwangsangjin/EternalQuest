@@ -8,6 +8,7 @@
 #include "Struct/EQStructEnumBase.h"
 #include "EQComponentInventory.generated.h"
 
+class UEQSaveGame;
 class UEQWidgetInventory;
 class AEQItemBase;
 class UInputAction;
@@ -81,4 +82,7 @@ public:
 	// 세이브 관련 로직 //
 	void SaveInventory();
 	void LoadInventory();
+
+	UPROPERTY()
+	TSubclassOf<UEQSaveGame> SaveGameFactory;
 };
