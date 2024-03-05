@@ -31,48 +31,52 @@ public:
 	FORCEINLINE bool IsAttack() const { return bIsAttacking; }
 	void AttackHitCheck();
 
-protected:
-	void Attack();
-
-	UFUNCTION(Server, Reliable, WithValidation)
-	void Server_Attack();
-
-	UFUNCTION(NetMulticast, Reliable)
-	void NetMulticast_Attack();
-
 private:
 	bool bIsAttacking = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
-	TObjectPtr<UInputAction> AttackAction;
+	TObjectPtr<UInputAction> LeftAttackAction;
 
-// Mage Attack
-protected:
-	void MageAttack();
-	void MageAttackBegin();
-	void MageAttackEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded);
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UInputAction> RightAttackAction;
 
-private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UAnimMontage> MageAttackMontage;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UAnimMontage> WarriorAttackMontage;
+
+// Left Attack
+protected:
+	void LeftAttack();
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_LeftAttack();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticast_LeftAttack();
+
+// Mage Left Attack
+protected:
+	void MageLeftAttack();
+	void MageLeftAttackBegin();
+	void MageLeftAttackEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded);
+
+private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
 	TSubclassOf<AEQProjectileBase> FireBall;
 
-// Warrior Attack
+// Warrior Left Attack
 protected:
-	void WarriorAttack();
-	void WarriorAttackBegin();
-	void WarriorAttackEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded);
+	void WarriorLeftAttack();
+	void WarriorLeftAttackBegin();
+	void WarriorLeftAttackEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded);
 	void SetComboCheckTimer();
 	void ComboCheck();
 
 private:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = true))
-	TObjectPtr<UAnimMontage> WarriorAttackMontage;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Effect, Meta = (AllowPrivateAccess = true))
-	TObjectPtr<UNiagaraSystem> AttackHitEffect;
+	TObjectPtr<UNiagaraSystem> WarriorAttackHitEffect;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Data, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UEQCharacterComboAttackData> ComboAttackData;
@@ -80,4 +84,26 @@ private:
 	int32 CurrentCombo = 0;
 	FTimerHandle ComboTimerHandle;
 	bool bHasNextComboCommand = false;
+
+// Right Attack
+protected:
+	void RightAttack();
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_RightAttack();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticast_RightAttack();
+
+// Mage Right Attack
+protected:
+	void MageRightAttack();
+	void MageRightAttackBegin();
+	void MageRightAttackEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded);
+
+// Warrior Right Attack
+protected:
+	void WarriorRightAttack();
+	void WarriorRightAttackBegin();
+	void WarriorRightAttackEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded);
 };

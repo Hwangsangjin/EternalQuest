@@ -7,7 +7,6 @@
 #include "Character/EQCharacterPlayer.h"
 #include "Character/EQCharacterComboAttackData.h"
 #include "Character/EQCharacterEnemy.h"
-#include "Component/EQComponentAvoid.h"
 #include "Component/EQComponentStat.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Game/EQGameInstance.h"
@@ -18,10 +17,16 @@
 
 UEQComponentAttack::UEQComponentAttack()
 {
-	static ConstructorHelpers::FObjectFinder<UInputAction> AttackActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/Input/Actions/IA_Attack.IA_Attack'"));
-	if (AttackActionRef.Succeeded())
+	static ConstructorHelpers::FObjectFinder<UInputAction> LeftAttackActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/Input/Actions/IA_LeftAttack.IA_LeftAttack'"));
+	if (LeftAttackActionRef.Succeeded())
 	{
-		AttackAction = AttackActionRef.Object;
+		LeftAttackAction = LeftAttackActionRef.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> RightAttackActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/Input/Actions/IA_RightAttack.IA_RightAttack'"));
+	if (RightAttackActionRef.Succeeded())
+	{
+		RightAttackAction = RightAttackActionRef.Object;
 	}
 
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> MageAttackMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Assets/StylizedCharactersPack/Common/Animation/Montage/AM_MageAttack.AM_MageAttack'"));
@@ -59,17 +64,8 @@ void UEQComponentAttack::SetupPlayerInput(UInputComponent* PlayerInputComponent)
 	Super::SetupPlayerInput(PlayerInputComponent);
 
 	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
-	EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ThisClass::Attack);
-}
-
-void UEQComponentAttack::Attack()
-{
-	if (Player->GetAvoidComponent()->IsAvoid())
-	{
-		return;
-	}
-
-	Server_Attack();
+	EnhancedInputComponent->BindAction(LeftAttackAction, ETriggerEvent::Triggered, this, &ThisClass::LeftAttack);
+	EnhancedInputComponent->BindAction(RightAttackAction, ETriggerEvent::Triggered, this, &ThisClass::RightAttack);
 }
 
 void UEQComponentAttack::AttackHitCheck()
@@ -100,30 +96,41 @@ void UEQComponentAttack::AttackHitCheck()
 		}
 	}
 
-//#if ENABLE_DRAW_DEBUG
-//	const FVector CapsuleOrigin = Start + (End - Start) * 0.5f;
-//	const float CapsuleHalfHeight = AttackRange * 0.5f;
-//	const FColor DrawColor = bHitDetected ? FColor::Green : FColor::Red;
-//	DrawDebugCapsule(GetWorld(), CapsuleOrigin, CapsuleHalfHeight, AttackRadius, FRotationMatrix::MakeFromZ(Player->GetActorForwardVector()).ToQuat(), DrawColor, false, 1.0f);
-//#endif
+	//#if ENABLE_DRAW_DEBUG
+	//	const FVector CapsuleOrigin = Start + (End - Start) * 0.5f;
+	//	const float CapsuleHalfHeight = AttackRange * 0.5f;
+	//	const FColor DrawColor = bHitDetected ? FColor::Green : FColor::Red;
+	//	DrawDebugCapsule(GetWorld(), CapsuleOrigin, CapsuleHalfHeight, AttackRadius, FRotationMatrix::MakeFromZ(Player->GetActorForwardVector()).ToQuat(), DrawColor, false, 1.0f);
+	//#endif
 }
 
-bool UEQComponentAttack::Server_Attack_Validate()
+
+void UEQComponentAttack::LeftAttack()
+{
+	if (IsAttack())
+	{
+		return;
+	}
+
+	Server_LeftAttack();
+}
+
+bool UEQComponentAttack::Server_LeftAttack_Validate()
 {
 	return true;
 }
 
-void UEQComponentAttack::Server_Attack_Implementation()
+void UEQComponentAttack::Server_LeftAttack_Implementation()
 {
-	NetMulticast_Attack();
+	NetMulticast_LeftAttack();
 }
 
-void UEQComponentAttack::NetMulticast_Attack_Implementation()
+void UEQComponentAttack::NetMulticast_LeftAttack_Implementation()
 {
 	switch (Player->GetClassType())
 	{
 	case EClassType::ECT_Mage:
-		MageAttack();
+		MageLeftAttack();
 		break;
 	case EClassType::ECT_Paladin:
 		break;
@@ -132,27 +139,22 @@ void UEQComponentAttack::NetMulticast_Attack_Implementation()
 	case EClassType::ECT_Rogue:
 		break;
 	case EClassType::ECT_Warrior:
-		WarriorAttack();
+		WarriorLeftAttack();
 		break;
 	}
 }
 
-void UEQComponentAttack::MageAttack()
+void UEQComponentAttack::MageLeftAttack()
 {
 	if (Player->GetCharacterMovement()->IsFalling())
 	{
 		return;
 	}
 
-	if (bIsAttacking)
-	{
-		return;
-	}
-
-	MageAttackBegin();
+	MageLeftAttackBegin();
 }
 
-void UEQComponentAttack::MageAttackBegin()
+void UEQComponentAttack::MageLeftAttackBegin()
 {
 	bIsAttacking = true;
 	Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
@@ -165,21 +167,21 @@ void UEQComponentAttack::MageAttackBegin()
 	AnimInstance->Montage_Play(MageAttackMontage, PlayRate);
 
 	FOnMontageEnded EndDelegate;
-	EndDelegate.BindUObject(this, &ThisClass::MageAttackEnd);
+	EndDelegate.BindUObject(this, &ThisClass::MageLeftAttackEnd);
 	AnimInstance->Montage_SetEndDelegate(EndDelegate, MageAttackMontage);
 }
 
-void UEQComponentAttack::MageAttackEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded)
+void UEQComponentAttack::MageLeftAttackEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded)
 {
 	bIsAttacking = false;
 	Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 }
 
-void UEQComponentAttack::WarriorAttack()
+void UEQComponentAttack::WarriorLeftAttack()
 {
 	if (CurrentCombo == 0)
 	{
-		WarriorAttackBegin();
+		WarriorLeftAttackBegin();
 		return;
 	}
 
@@ -193,9 +195,8 @@ void UEQComponentAttack::WarriorAttack()
 	}
 }
 
-void UEQComponentAttack::WarriorAttackBegin()
+void UEQComponentAttack::WarriorLeftAttackBegin()
 {
-	bIsAttacking = true;
 	Player->GetSwordEffect()->SetHiddenInGame(false);
 	Player->GetCharacterMovement()->MaxWalkSpeed = 350.0f;
 	CurrentCombo = 1;
@@ -206,20 +207,19 @@ void UEQComponentAttack::WarriorAttackBegin()
 	AnimInstance->Montage_Play(WarriorAttackMontage, PlayRate);
 
 	FOnMontageEnded EndDelegate;
-	EndDelegate.BindUObject(this, &ThisClass::WarriorAttackEnd);
+	EndDelegate.BindUObject(this, &ThisClass::WarriorLeftAttackEnd);
 	AnimInstance->Montage_SetEndDelegate(EndDelegate, WarriorAttackMontage);
 
 	ComboTimerHandle.Invalidate();
 	SetComboCheckTimer();
 }
 
-void UEQComponentAttack::WarriorAttackEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded)
+void UEQComponentAttack::WarriorLeftAttackEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded)
 {
 	ensure(CurrentCombo != 0);
 	CurrentCombo = 0;
 	Player->GetCharacterMovement()->MaxWalkSpeed = 450.0f;
 	Player->GetSwordEffect()->SetHiddenInGame(true);
-	bIsAttacking = false;
 }
 
 void UEQComponentAttack::SetComboCheckTimer()
@@ -252,4 +252,156 @@ void UEQComponentAttack::ComboCheck()
 
 		bHasNextComboCommand = false;
 	}
+}
+
+void UEQComponentAttack::RightAttack()
+{
+	if (IsAttack())
+	{
+		return;
+	}
+
+	Server_RightAttack();
+}
+
+bool UEQComponentAttack::Server_RightAttack_Validate()
+{
+	return true;
+}
+
+void UEQComponentAttack::Server_RightAttack_Implementation()
+{
+	NetMulticast_RightAttack();
+}
+
+void UEQComponentAttack::NetMulticast_RightAttack_Implementation()
+{
+	switch (Player->GetClassType())
+	{
+	case EClassType::ECT_Mage:
+		MageRightAttack();
+		break;
+	case EClassType::ECT_Paladin:
+		break;
+	case EClassType::ECT_Priest:
+		break;
+	case EClassType::ECT_Rogue:
+		break;
+	case EClassType::ECT_Warrior:
+		WarriorRightAttack();
+		break;
+	}
+}
+
+void UEQComponentAttack::MageRightAttack()
+{
+	if (Player->GetCharacterMovement()->IsFalling())
+	{
+		return;
+	}
+
+	if (bIsAttacking)
+	{
+		return;
+	}
+
+	MageRightAttackBegin();
+}
+
+void UEQComponentAttack::MageRightAttackBegin()
+{
+	bIsAttacking = true;
+	Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+
+	const FTransform Transform = Player->GetTransform();
+	GetWorld()->SpawnActor<AEQProjectileBase>(FireBall, Transform);
+
+	constexpr float PlayRate = 1.0f;
+	UAnimInstance* AnimInstance = Player->GetMesh()->GetAnimInstance();
+	AnimInstance->Montage_Play(MageAttackMontage, PlayRate);
+
+	FOnMontageEnded EndDelegate;
+	EndDelegate.BindUObject(this, &ThisClass::MageRightAttackEnd);
+	AnimInstance->Montage_SetEndDelegate(EndDelegate, MageAttackMontage);
+}
+
+void UEQComponentAttack::MageRightAttackEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded)
+{
+	bIsAttacking = false;
+	Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+}
+
+void UEQComponentAttack::WarriorRightAttack()
+{
+	if (CurrentCombo == 0)
+	{
+		WarriorRightAttackBegin();
+		return;
+	}
+
+	if (!ComboTimerHandle.IsValid())
+	{
+		bHasNextComboCommand = false;
+	}
+	else
+	{
+		bHasNextComboCommand = true;
+	}
+}
+
+void UEQComponentAttack::WarriorRightAttackBegin()
+{
+	bIsAttacking = true;
+
+	UAnimInstance* AnimInstance = Player->GetMesh()->GetAnimInstance();
+	if (AnimInstance->Montage_IsPlaying(WarriorAttackMontage))
+	{
+		return;
+	}
+
+	//const float PlayRate = Player->GetStatComponent()->GetTotalStat().AttackSpeed;
+	constexpr float PlayRate = 1.0f;
+	AnimInstance->Montage_Play(WarriorAttackMontage, PlayRate);
+	AnimInstance->Montage_JumpToSection(TEXT("RightAttack"), WarriorAttackMontage);
+
+	TArray<FHitResult> OutHitResults;
+	FCollisionQueryParams Params(SCENE_QUERY_STAT(Skill), false, Player);
+
+	constexpr float AttackRange = 100.0f;
+	constexpr float AttackRadius = 150.0f;
+	constexpr float AttackDamage = 10.0f;
+	const FVector Start = Player->GetActorLocation();
+	const FVector End = Start + Player->GetActorForwardVector();
+
+	const bool bHitDetected = GetWorld()->SweepMultiByChannel(OutHitResults, Start, End, FQuat::Identity, ECC_GameTraceChannel1, FCollisionShape::MakeSphere(AttackRadius), Params);
+	if (bHitDetected)
+	{
+		FDamageEvent DamageEvent;
+		for (const auto& OutHitResult : OutHitResults)
+		{
+			AEQCharacterEnemy* Enemy = Cast<AEQCharacterEnemy>(OutHitResult.GetActor());
+			if (Enemy)
+			{
+				Enemy->TakeDamage(AttackDamage, DamageEvent, Player->GetController(), Player);
+			}
+		}
+	}
+
+#if ENABLE_DRAW_DEBUG
+	const FVector CapsuleOrigin = Start + (End - Start) * 0.5f;
+	const float CapsuleHalfHeight = AttackRange * 0.5f;
+	const FColor DrawColor = bHitDetected ? FColor::Green : FColor::Red;
+	DrawDebugCapsule(GetWorld(), CapsuleOrigin, CapsuleHalfHeight, AttackRadius, FRotationMatrix::MakeFromZ(Player->GetActorForwardVector()).ToQuat(), DrawColor, false, 1.0f);
+#endif
+
+
+	FOnMontageEnded EndDelegate;
+	EndDelegate.BindUObject(this, &ThisClass::WarriorRightAttackEnd);
+	AnimInstance->Montage_SetEndDelegate(EndDelegate, WarriorAttackMontage);
+}
+
+void UEQComponentAttack::WarriorRightAttackEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded)
+{
+	Player->GetSwordEffect()->SetHiddenInGame(true);
+	bIsAttacking = false;
 }
