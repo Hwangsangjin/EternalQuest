@@ -24,8 +24,6 @@ public:
 	
 	AEQSpiderWeb();
 
-protected:
-	virtual void BeginPlay() override;
 
 public:	
 	
