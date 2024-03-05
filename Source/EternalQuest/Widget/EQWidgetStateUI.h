@@ -11,7 +11,8 @@ class UEQComponentStat;
 class UTextBlock;
 class UProgressBar;
 /**
- * 
+ * 		StatComp->SetHp(StatComp->GetCurrentHp() + UseItem->Healing);
+
  */
 UCLASS()
 class ETERNALQUEST_API UEQWidgetStateUI : public UUserWidget

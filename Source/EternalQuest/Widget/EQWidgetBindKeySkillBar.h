@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "EQWidgetBindKeySkillBar.generated.h"
 
+class UWidgetSwitcher;
 /**
  * 
  */
@@ -13,5 +14,10 @@ UCLASS()
 class ETERNALQUEST_API UEQWidgetBindKeySkillBar : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
+public:
+	virtual void NativeConstruct() override;
+
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UWidgetSwitcher> WS_JobSkillUI;
 };

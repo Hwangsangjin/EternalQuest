@@ -23,6 +23,19 @@ void UEQWidgetItemInfo::NativeConstruct()
 
 void UEQWidgetItemInfo::UpdateItemInfo(const FEQSlot& InItem)
 {
+	if (InItem.Quantity == 0) // 소비 아이템 사용 후 마우스를 다시 올렸을 때, 표시되는 현상을 방지
+	{
+		Txt_ItemName->SetText(FText::GetEmpty());
+		Txt_Description->SetText(FText::GetEmpty());
+		Txt_IncreaseHP->SetText(FText::GetEmpty());
+		Txt_IncreaseMP->SetText(FText::GetEmpty());
+		Txt_IncreaseSTR->SetText(FText::GetEmpty());
+		Txt_IncreaseINT->SetText(FText::GetEmpty());
+		Txt_IncreaseDEF->SetText(FText::GetEmpty());
+		Img_RenderItem->SetVisibility(ESlateVisibility::Hidden);
+		return;
+	}
+	
 	auto temp = InItem.ItemID.DataTable->FindRow<FEQItem>(InItem.ItemID.RowName, "");
 	if (temp)
 	{
