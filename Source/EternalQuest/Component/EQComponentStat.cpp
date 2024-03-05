@@ -93,6 +93,8 @@ void UEQComponentStat::ResetStat()
 	SetLevelStat(CurrentLevel);
 	MaxHp = BaseStat.MaxHp;
 	SetHp(MaxHp);
+	MaxExp = BaseStat.MaxExp;
+	SetExp(MaxExp);
 }
 
 void UEQComponentStat::SetHp(float NewHp)
@@ -100,6 +102,23 @@ void UEQComponentStat::SetHp(float NewHp)
 	CurrentHp = FMath::Clamp<float>(NewHp, 0.0f, MaxHp);
 
 	OnHpChanged.Broadcast(CurrentHp, MaxHp);
+}
+
+void UEQComponentStat::SetNewMaxExp(const FEQCharacterStat& InBaseStat, const FEQCharacterStat& InModifierStat)
+{
+	float PrevMaxExp = MaxExp;
+	MaxExp = GetTotalStat().MaxExp;
+	if (PrevMaxExp != MaxExp)
+	{
+		OnExpChanged.Broadcast(CurrentExp, MaxExp);
+	}
+}
+
+void UEQComponentStat::SetExp(float NewExp)
+{
+	CurrentExp = FMath::Clamp<float>(NewExp, 0.0f, MaxExp);
+
+	OnExpChanged.Broadcast(CurrentExp, MaxExp);
 }
 
 void UEQComponentStat::OnRep_CurrentHp()
@@ -119,6 +138,25 @@ void UEQComponentStat::OnRep_MaxHp()
 	EQ_SUBLOG(LogEternalQuest, Log, TEXT("%s"), TEXT("Begin"));
 
 	OnHpChanged.Broadcast(CurrentHp, MaxHp);
+}
+
+void UEQComponentStat::OnRep_CurrentExp()
+{
+	EQ_SUBLOG(LogEternalQuest, Log, TEXT("%s"), TEXT("Begin"));
+
+	OnExpChanged.Broadcast(CurrentExp, MaxExp);
+
+	if (CurrentExp >= MaxExp)
+	{
+		OnExpChanged.Broadcast(CurrentExp, MaxExp);
+	}
+}
+
+void UEQComponentStat::OnRep_MaxExp()
+{
+	EQ_SUBLOG(LogEternalQuest, Log, TEXT("%s"), TEXT("Begin"));
+
+	OnExpChanged.Broadcast(CurrentExp, MaxExp);
 }
 
 void UEQComponentStat::OnRep_BaseStat()

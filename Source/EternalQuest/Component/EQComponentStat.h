@@ -9,6 +9,7 @@
 
 DECLARE_MULTICAST_DELEGATE(FOnHpZeroDelegate);
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnHpChangedDelegate, float /*CurrentHp*/, float /*MaxHp*/);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnExpChangedDelegate, float /*CurrentExp*/, float /*MaxExp*/);
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnStatChangedDelegate, const FEQCharacterStat& /*BaseStat*/, const FEQCharacterStat& /*ModifierStat*/);
 
 UCLASS()
@@ -45,10 +46,13 @@ public:
 	void SetLevelStat(int32 InNewLevel);
 	void SetNewMaxHp(const FEQCharacterStat& InBaseStat, const FEQCharacterStat& InModifierStat);
 	void SetHp(float NewHp);
+	void SetNewMaxExp(const FEQCharacterStat& InBaseStat, const FEQCharacterStat& InModifierStat);
+	void SetExp(float NewExp);
 	void ResetStat();
 
 	FOnHpZeroDelegate OnHpZero;
 	FOnHpChangedDelegate OnHpChanged;
+	FOnExpChangedDelegate OnExpChanged;
 	FOnStatChangedDelegate OnStatChanged;
 
 protected:
@@ -57,6 +61,12 @@ protected:
 
 	UFUNCTION()
 	void OnRep_MaxHp();
+
+	UFUNCTION()
+	void OnRep_CurrentExp();
+
+	UFUNCTION()
+	void OnRep_MaxExp();
 
 	UFUNCTION()
 	void OnRep_BaseStat();
@@ -70,6 +80,12 @@ private:
 
 	UPROPERTY(ReplicatedUsing = OnRep_MaxHp, Transient, VisibleInstanceOnly, Category = Stat)
 	float MaxHp;
+
+	UPROPERTY(ReplicatedUsing = OnRep_CurrentExp, Transient, VisibleInstanceOnly, Category = Stat)
+	float CurrentExp;
+
+	UPROPERTY(ReplicatedUsing = OnRep_MaxExp, Transient, VisibleInstanceOnly, Category = Stat)
+	float MaxExp;
 
 	UPROPERTY(Transient, VisibleInstanceOnly, Category = Stat)
 	float CurrentLevel;
