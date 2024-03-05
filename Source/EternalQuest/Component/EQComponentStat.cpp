@@ -121,9 +121,9 @@ void UEQComponentStat::SetNewMaxExp(const FEQCharacterStat& InBaseStat, const FE
 	}
 }
 
-void UEQComponentStat::SetExp(float NewExp)
+void UEQComponentStat::SetExp(float ExpAmount)
 {
-	CurrentExp = FMath::Clamp<float>(NewExp, 0.0f, MaxExp);
+	CurrentExp = FMath::Clamp<float>(CurrentExp + ExpAmount, 0.0f, MaxExp);
 
 	OnExpChanged.Broadcast(CurrentExp, MaxExp);
 }

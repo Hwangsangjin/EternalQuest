@@ -70,7 +70,7 @@ public:
 	void SetNewMaxHp(const FEQCharacterStat& InBaseStat, const FEQCharacterStat& InModifierStat);
 	void SetHp(float NewHp);
 	void SetNewMaxExp(const FEQCharacterStat& InBaseStat, const FEQCharacterStat& InModifierStat);
-	void SetExp(float NewExp);
+	void SetExp(float ExpAmount);
 	void ResetStat();
 
 	FOnHpZeroDelegate OnHpZero;
