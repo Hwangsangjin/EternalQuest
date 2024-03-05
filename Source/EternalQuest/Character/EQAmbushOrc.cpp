@@ -67,11 +67,22 @@ AEQAmbushOrc::AEQAmbushOrc()
 	}
 }
 
-FString AEQAmbushOrc::SetName()
+void AEQAmbushOrc::BeginPlay()
 {
-	return Super::SetName();
+	Super::BeginPlay();
+	MultiPRC_Ambushing();
 }
 
+FString AEQAmbushOrc::SetName()
+{
+	Super::SetName();
+	MonsterName = TEXT("백정");
+	return MonsterName;
+}
 
+void AEQAmbushOrc::MultiPRC_Ambushing_Implementation()
+{
+	PlayAnimMontage(Montage,1,FName("Ambush"));
+}
 
 

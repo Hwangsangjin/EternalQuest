@@ -71,7 +71,6 @@ void UEQMonsterAbility::TakeDamage(AActor* DamagedActor, float Damage, const UDa
 		}
 		if(CurrentHealth > 0)
 		{
-			
 			if(Monster->HasAuthority())
 			{
 				Monster->BaseFsm->AI->StopMovement();

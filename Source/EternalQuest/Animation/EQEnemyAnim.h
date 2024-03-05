@@ -49,9 +49,11 @@ public:
 	// WarlockOrc //
 	UFUNCTION()
 	void AnimNotify_WarlockSkill();
-
 	UFUNCTION()
 	void AnimNotify_Teleport();
+
+	UFUNCTION()
+	void AnimNotify_AbAttack();
 
 	
 

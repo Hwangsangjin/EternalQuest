@@ -30,4 +30,10 @@ public:
 	TSubclassOf<UEQDamageAmoutUI> DamageFactory;
 	UPROPERTY(EditAnywhere)
 	UWidgetComponent* DamageComp;
+	UPROPERTY(EditAnywhere)
+	UDataTable* ItemDataTable;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> SpawnItemFactory;
+
+	virtual void DropItem();
 };

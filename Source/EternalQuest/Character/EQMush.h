@@ -18,4 +18,5 @@ class ETERNALQUEST_API AEQMush : public AEQNormalEnemy
 public:
 	AEQMush();
 	virtual FString SetName() override;
+	virtual void DropItem() override;
 };

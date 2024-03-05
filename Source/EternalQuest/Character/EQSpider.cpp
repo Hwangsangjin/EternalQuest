@@ -8,6 +8,7 @@
 #include "Components/ArrowComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/DamageEvents.h"
+#include "Item/EQItemBase.h"
 #include "Projectile/EQSpiderWeb.h"
 
 AEQSpider::AEQSpider()
@@ -42,6 +43,35 @@ FString AEQSpider::SetName()
 	Super::SetName();
 	MonsterName = TEXT("스파이더");
 	return MonsterName;
+}
+
+void AEQSpider::DropItem()
+{
+	float RandomValue = FMath::FRand();
+	if(RandomValue <= 0.6f)
+	{
+		auto CurrItem = GetWorld()->SpawnActorDeferred<AEQItemBase>(SpawnItemFactory, GetActorTransform());
+		if (CurrItem)
+		{
+			CurrItem->ItemName.DataTable = ItemDataTable;
+			CurrItem->ItemName.RowName = TEXT("ManaPostion");
+			CurrItem->ItemType = EEQItemType::Consumtion;
+			CurrItem->ItemQuantity = 1;
+		}
+		CurrItem->FinishSpawning(GetActorTransform());	
+	}
+	else
+	{
+		auto CurrItem = GetWorld()->SpawnActorDeferred<AEQItemBase>(SpawnItemFactory, GetActorTransform());
+		if (CurrItem)
+		{
+			CurrItem->ItemName.DataTable = ItemDataTable;
+			CurrItem->ItemName.RowName = TEXT("HealthPostion");
+			CurrItem->ItemType = EEQItemType::Consumtion;
+			CurrItem->ItemQuantity = 1;
+		}
+		CurrItem->FinishSpawning(GetActorTransform());
+	}
 }
 
 

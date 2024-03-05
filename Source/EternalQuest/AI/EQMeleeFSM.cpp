@@ -7,10 +7,13 @@
 #include "EQMonsterAbility.h"
 #include "NavigationSystem.h"
 #include "Character/EQCharacterPlayer.h"
+#include "Character/EQMush.h"
 #include "Character/EQNormalEnemy.h"
+#include "Character/EQWarriorOrc.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/DamageEvents.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Item/EQItemBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Navigation/PathFollowingComponent.h"
 
@@ -140,9 +143,17 @@ void UEQMeleeFSM::MeleeAttackCheck()
 	if(bHit)
 	{
 		FDamageEvent DamageEvent;
-		HitResult.GetActor()->TakeDamage(Damage,DamageEvent,nullptr,Self);
+		auto Player = Cast<AEQCharacterPlayer>(HitResult.GetActor());
+		if(Player)
+		{
+			Player ->TakeDamage(Damage,DamageEvent,nullptr,Self);
+		}
+		
 	}
 }
+
+
+
 
 void UEQMeleeFSM::ServerRPC_MushMove_Implementation()
 {
@@ -226,6 +237,7 @@ void UEQMeleeFSM::MultiRPC_MushAttack_Implementation()
 {
 	Self->PlayAnimMontage(AnimMontage,1,FName("Attack"));
 }
+
 
 
 

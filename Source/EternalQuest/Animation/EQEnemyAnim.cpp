@@ -5,6 +5,7 @@
 
 #include "AI/EQBaseFSM.h"
 #include "AI/EQMonsterAbility.h"
+#include "Character/EQAmbushOrc.h"
 #include "Character/EQArcherOrc.h"
 #include "Character/EQBerserkerOrc.h"
 #include "Character/EQMush.h"
@@ -107,7 +108,17 @@ void UEQEnemyAnim::AnimNotify_Teleport()
 	AEQWarlockOrc* WarlockOrc = Cast<AEQWarlockOrc>(TryGetPawnOwner());
 	if(WarlockOrc != nullptr)
 	{
+		UE_LOG(LogTemp,Warning,TEXT("Teleport!!!!!!!!!!!!!!!!!!!!"));
 		WarlockOrc->BaseFsm->WarlockTeleport();
+	}
+}
+
+void UEQEnemyAnim::AnimNotify_AbAttack()
+{
+	AEQAmbushOrc* AmbushOrc = Cast<AEQAmbushOrc>(TryGetPawnOwner());
+	if( AmbushOrc != nullptr)
+	{
+		AmbushOrc->BaseFsm->MeleeAttackCheck();
 	}
 }
 
@@ -128,3 +139,4 @@ void UEQEnemyAnim::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	DOREPLIFETIME(UEQEnemyAnim, IsDieDone);
 	
 }
+
