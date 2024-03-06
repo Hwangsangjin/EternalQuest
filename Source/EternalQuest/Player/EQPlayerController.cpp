@@ -88,9 +88,10 @@ void AEQPlayerController::Tick(float DeltaSeconds)
 void AEQPlayerController::PostSeamlessTravel()
 {
 	Super::PostSeamlessTravel();
-
+	GEngine->AddOnScreenDebugMessage(-1,60.f, FColor::Magenta, TEXT("asdasd"));
 	for (const auto& e : TActorRange<AEQPlayerController>(GetWorld()))
 	{
+		e->EQWidgetMainUI->RemoveFromParent();
 		e->CreateMainWidget();
 	}
 	

@@ -54,8 +54,8 @@ void AEQCharacterNeutralPlayerKHO::QuestAccepted()
 		{
 			FString PathToLevel = FString("/Game/Maps/DungeonMap?listen");
 			World->ServerTravel(PathToLevel);
-			World->SeamlessTravel(PathToLevel);
-			Cast<AEQPlayerController>(World->GetFirstPlayerController())->CreateMainWidget();
+			// World->SeamlessTravel(PathToLevel);
+			// Cast<AEQPlayerController>(World->GetFirstPlayerController())->CreateMainWidget();
 		}
 	}
 }
