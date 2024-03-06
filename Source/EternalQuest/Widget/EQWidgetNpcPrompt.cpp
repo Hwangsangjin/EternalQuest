@@ -94,6 +94,7 @@ void UEQWidgetNpcPrompt::NextPrompt()
 void UEQWidgetNpcPrompt::AcceptQuest()
 {
 	HorizonBox_Quest->SetVisibility(ESlateVisibility::Hidden);
+	PC->EQWidgetMainUI->SetVisibility(ESlateVisibility::Visible);
 	GetOwningPlayer()->GetCharacter()->FindComponentByClass<UEQComponentInteraction>()->bCommunicationNPC = false;
 	RemoveFromParent();
 	const FInputModeGameOnly InData;
@@ -101,12 +102,12 @@ void UEQWidgetNpcPrompt::AcceptQuest()
 	GetWorld()->GetFirstPlayerController()->SetShowMouseCursor(false);
 	NPC->QuestAccepted();
 	bQuestPromptCond = false;
-	PC->EQWidgetMainUI->SetVisibility(ESlateVisibility::Visible);
 }
 
 void UEQWidgetNpcPrompt::DenyQuest()
 {
 	HorizonBox_Quest->SetVisibility(ESlateVisibility::Hidden);
+	PC->EQWidgetMainUI->SetVisibility(ESlateVisibility::Visible);
 	GetOwningPlayer()->GetCharacter()->FindComponentByClass<UEQComponentInteraction>()->bCommunicationNPC = false;
 	RemoveFromParent();
 	const FInputModeGameOnly InData;
@@ -115,7 +116,6 @@ void UEQWidgetNpcPrompt::DenyQuest()
 	NPC->QuestDenied();
 	NPC->NPCPrompt[PromptCurrent].Append(TEXT("QuestTag"), QuestTagIdx);
 	bQuestPromptCond = false;
-	PC->EQWidgetMainUI->SetVisibility(ESlateVisibility::Visible);
 }
 
 void UEQWidgetNpcPrompt::TypeWritingText()
