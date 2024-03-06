@@ -12,6 +12,7 @@
 #include "Components/WidgetComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Widget/EQDamageAmoutUI.h"
+#include "Widget/EQReturnTimer.h"
 
 
 UEQMonsterAbility::UEQMonsterAbility()
@@ -97,12 +98,14 @@ void UEQMonsterAbility::TakeDamage(AActor* DamagedActor, float Damage, const UDa
 			auto Orc = Cast<AEQBerserkerOrc>(DamagedActor);
 			Orc->SetActorEnableCollision(ECollisionEnabled::NoCollision);
 			Target->TakeExp(Orc->Experience);
+			Orc->DropItem();
+			ShowReturnCount();
 			Orc->MultiRPC_Die();
 			FTimerHandle DieTimerHandle;
 			GetWorld()->GetTimerManager().SetTimer(DieTimerHandle, [Orc]()
 			{
-				//Orc->Destroy();
-			}, 5.0f, false);
+				Orc->BackToVillage();
+			}, 11.0f, false);
 		}
 		else
 		{
@@ -155,12 +158,39 @@ void UEQMonsterAbility::CheckCanDodge()
 	}
 }
 
+void UEQMonsterAbility::ShowReturnCount()
+{
+	auto UI = CreateWidget<UEQReturnTimer>(GetWorld(),TimerFactory);
+	ReturnTimer = Cast<UEQReturnTimer>(UI);
+	GetWorld()->GetTimerManager().SetTimer(TimeCountHandle, [&]()
+		{
+			TimeCount --;
+			ReturnTimer->CountToReturn(TimeCount);
+			ReturnTimer->AddToViewport();
+		}, 1.0f, true);
+	if(TimeCount <= 0)
+	{
+		GetWorld()->GetGameInstance()->GetTimerManager().ClearTimer(TimeCountHandle);
+	}
+	
+}
+
+void UEQMonsterAbility::DecreaseCount(UEQReturnTimer* UI)
+{
+	TimeCount --;
+	UI->CountToReturn(TimeCount);
+}
+
 
 void UEQMonsterAbility::ServerRPC_UpdateHP_Implementation(float UpdateHealth)
 {
 	CurrentHealth = FMath::Max(0,CurrentHealth+UpdateHealth);
 	bIsHit = true;
 }
+
+
+
+
 
 void UEQMonsterAbility::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {

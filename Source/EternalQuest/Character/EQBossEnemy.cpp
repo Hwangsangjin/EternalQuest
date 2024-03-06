@@ -7,6 +7,7 @@
 #include "AI/EQMonsterAbility.h"
 #include "Player/EQPlayerController.h"
 #include "Widget/EQBossMonsterHPUI.h"
+#include "Widget/EQReturnTimer.h"
 
 AEQBossEnemy::AEQBossEnemy()
 {
@@ -14,6 +15,7 @@ AEQBossEnemy::AEQBossEnemy()
 	bReplicates = true;
 	SetReplicateMovement(true);
 }
+
 
 void AEQBossEnemy::Tick(float DeltaSeconds)
 {
@@ -29,6 +31,7 @@ void AEQBossEnemy::Tick(float DeltaSeconds)
 	{
 		RemoveBossHPBar();
 	}
+	
 }
 
 bool AEQBossEnemy::GetIsMonsterHit()
@@ -69,10 +72,11 @@ void AEQBossEnemy::BackToVillage()
 		{
 			FString PathToLevel = FString("/Game/Maps/VillageMap?listen");
 			World->ServerTravel(PathToLevel);
-			World->SeamlessTravel(PathToLevel);
 			Cast<AEQPlayerController>(World->GetFirstPlayerController())->CreateMainWidget();
 		}
 	}
 }
+
+
 
 

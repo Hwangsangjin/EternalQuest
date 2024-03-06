@@ -143,6 +143,7 @@ void UEQBaseFSM::ServerRPC_SetState_Implementation(EMonsterState Next)
 
 void UEQBaseFSM::ServerRPC_TickIdle_Implementation()
 {
+	
 	Target = Cast<AEQCharacterPlayer>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	if(Target != nullptr)
 	{
@@ -152,8 +153,8 @@ void UEQBaseFSM::ServerRPC_TickIdle_Implementation()
 
 void UEQBaseFSM::ServerRPC_TickDie_Implementation()
 {
-	
-	if(AnimInst->IsDieDone == false) return;
+	//AnimInst->IsDieDone
+	if(IsDieDone == false) return;
 	CurrentTime += GetWorld()->GetDeltaSeconds();
 	bCanAttack = false;
 	
@@ -169,6 +170,8 @@ void UEQBaseFSM::ServerRPC_TickDie_Implementation()
 void UEQBaseFSM::MultiRPC_TickDie_Implementation()
 {
 	Self->PlayAnimMontage(AnimMontage,1,FName("Die"));
+	FVector SoundSpawn = Self->GetMesh()->GetComponentLocation();
+	UGameplayStatics::SpawnSoundAtLocation(GetWorld(),DieSound,SoundSpawn);
 }
 
 
@@ -208,6 +211,10 @@ void UEQBaseFSM::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifeti
 	DOREPLIFETIME(UEQBaseFSM, RandomLoc);
 	DOREPLIFETIME(UEQBaseFSM, bCanAttack);
 	DOREPLIFETIME(UEQBaseFSM, AnimInst);
+	DOREPLIFETIME(UEQBaseFSM, bIsDead);
+	DOREPLIFETIME(UEQBaseFSM, SuperAmor);
+	DOREPLIFETIME(UEQBaseFSM, Pool);
+	DOREPLIFETIME(UEQBaseFSM, IsDieDone);
 	
 }
 

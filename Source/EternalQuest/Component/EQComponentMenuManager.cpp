@@ -12,6 +12,7 @@
 #include "Widget/EQWidgetPostBox.h"
 #include "Widget/EQWidgetQuestList.h"
 #include "Widget/EQWidgetSkill.h"
+#include "Widget/EQWidgetStateUI.h"
 #include "Widget/EQWidgetStatus.h"
 
 UEQComponentMenuManager::UEQComponentMenuManager()
@@ -64,7 +65,7 @@ UEQComponentMenuManager::UEQComponentMenuManager()
 void UEQComponentMenuManager::BeginPlay()
 {
 	Super::BeginPlay();
-	EQComponentInventory = Player->FindComponentByClass<UEQComponentInventory>();
+	// EQComponentInventory = Player->FindComponentByClass<UEQComponentInventory>();
 }
 
 void UEQComponentMenuManager::TickComponent(float DeltaTime, ELevelTick TickType,
@@ -140,10 +141,9 @@ void UEQComponentMenuManager::CallInventory(const FInputActionValue& Value)
 
 void UEQComponentMenuManager::CallStatus(const FInputActionValue& Value)
 {
-	auto StatusWidget = Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStatus;
-	
 	EQPlayerController->EQWidgetMainUI->WBP_EQWidgetIconBar->OnClickStatus();
-	StatusWidget->InitUpdateStat();
+	Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStatus->InitUpdateStat();
+	Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStateUI->AddCallBackFunc();
 }
 
 void UEQComponentMenuManager::CallSkill(const FInputActionValue& Value)

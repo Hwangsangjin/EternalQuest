@@ -7,6 +7,7 @@
 #include "EQMonsterAbility.generated.h"
 
 
+class UEQReturnTimer;
 class AEQCharacterPlayer;
 class UEQDamageAmoutUI;
 class AEQBerserkerOrc;
@@ -65,6 +66,12 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated,Category="Orc")
 	float OrcSkillDamage = 10.f;
 
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UEQReturnTimer> TimerFactory;
+	UPROPERTY()
+	UEQReturnTimer* ReturnTimer;
+
 	
 	
 	
@@ -108,6 +115,9 @@ public:
 	void SaveDamage(float Damage);
 	void CheckCanDodge();
 
-	
+	void ShowReturnCount();
+	int32 TimeCount = 11.f;
+	void DecreaseCount(UEQReturnTimer* UI);
+	FTimerHandle TimeCountHandle;
 	
 };

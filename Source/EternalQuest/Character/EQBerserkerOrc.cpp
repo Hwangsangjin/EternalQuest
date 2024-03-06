@@ -7,6 +7,7 @@
 #include "AI/EQMonsterAbility.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/DamageEvents.h"
+#include "Item/EQItemBase.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 
@@ -57,7 +58,9 @@ AEQBerserkerOrc::AEQBerserkerOrc()
 		// (Pitch=90.000000,Yaw=1350.000000,Roll=-995.000000)
 		HelmetMesh->SetRelativeRotation(FRotator(90,1350,-995));
 	}
+	
 	ShoulderMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ShoulderMesh"));
+	ShoulderMesh -> SetupAttachment(GetMesh(),FName("Chest"));
 	ConstructorHelpers::FObjectFinder<USkeletalMesh>ShoTemp(TEXT("/Script/Engine.SkeletalMesh'/Game/Assets/ma17_OrcSet/ma035_OrcBerserker/Mesh/SK_ma035_Pauldrons.SK_ma035_Pauldrons'"));
 	if(ShoTemp.Succeeded())
 	{
@@ -123,6 +126,22 @@ void AEQBerserkerOrc::EndAttack()
 {
 	DamagedPlayers.Empty();
 }
+
+void AEQBerserkerOrc::DropItem()
+{
+	Super::DropItem();
+	auto CurrItem = GetWorld()->SpawnActorDeferred<AEQItemBase>(SpawnItemFactory, GetActorTransform());
+	if (CurrItem)
+	{
+		CurrItem->ItemName.DataTable = ItemDataTable;
+		CurrItem->ItemName.RowName = TEXT("OrcTooth");
+		CurrItem->ItemType = EEQItemType::Questitem;
+		CurrItem->ItemQuantity = 2;
+	}
+	CurrItem->FinishSpawning(GetActorTransform());
+}
+
+
 
 
 void AEQBerserkerOrc::MultiRPC_Die_Implementation()

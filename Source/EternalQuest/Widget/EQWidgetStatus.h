@@ -145,4 +145,6 @@ public:
 
 	UPROPERTY()
 	TObjectPtr<USoundWave> StatPointClickSound;
+
+	bool bFlagOnHPChangeAddUObject = false;
 };

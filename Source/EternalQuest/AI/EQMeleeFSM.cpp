@@ -22,7 +22,7 @@ void UEQMeleeFSM::BeginPlay()
 	Super::BeginPlay();
 
 	AttackRange = 100.f;
-	DetectionRange = 800.f;
+	DetectionRange = 500.f;
 	SetIsReplicated(true);
 }
 
@@ -237,6 +237,8 @@ void UEQMeleeFSM::ServerRPC_MushAttack_Implementation()
 void UEQMeleeFSM::MultiRPC_MushAttack_Implementation()
 {
 	Self->PlayAnimMontage(AnimMontage,1,FName("Attack"));
+	FVector SpawnSound = Self->GetMesh()->GetComponentLocation();
+	UGameplayStatics::SpawnSoundAtLocation(GetWorld(),MeleeAttackSound,SpawnSound);
 }
 
 

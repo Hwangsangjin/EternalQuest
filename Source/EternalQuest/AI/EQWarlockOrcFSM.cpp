@@ -177,7 +177,7 @@ void UEQWarlockOrcFSM::SetFocus()
 void UEQWarlockOrcFSM::TickDie()
 {
 	Super::TickDie();
-	if(AnimInst->IsDieDone == false) return;
+	if(IsDieDone == false) return;
 	bCanAttack = false;
 	bIsUsingSkill = true;
 	CurrentTime += GetWorld()->GetDeltaSeconds();
@@ -224,9 +224,14 @@ void UEQWarlockOrcFSM::DoorOpen()
 void UEQWarlockOrcFSM::MultiRPC_OrcWarlockAttack_Implementation()
 {
 	Self->PlayAnimMontage(AnimMontage,1,FName("Attack"));
+	FVector SpawnSound = Self->GetMesh()->GetComponentLocation();
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(),MeleeAttackSound,SpawnSound);
 }
 
 void UEQWarlockOrcFSM::MultiRPC_OrcWarlockSkill_Implementation()
 {
 	Self->PlayAnimMontage(AnimMontage,1,FName("Skill"));
+	FVector SpawnSound = Self->GetMesh()->GetComponentLocation();
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(),ArrowSound,SpawnSound);
+	
 }
