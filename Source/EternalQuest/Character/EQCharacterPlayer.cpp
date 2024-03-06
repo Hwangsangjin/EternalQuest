@@ -369,7 +369,7 @@ void AEQCharacterPlayer::SetUserName()
 
 	if (!HasAuthority())
 	{
-		Server_SetUserName(UserName);
+		//Server_SetUserName(UserName);
 	}
 }
 
