@@ -22,7 +22,6 @@ AEQDoor::AEQDoor()
 void AEQDoor::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
