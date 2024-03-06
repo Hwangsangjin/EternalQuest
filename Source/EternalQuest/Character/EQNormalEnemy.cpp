@@ -64,6 +64,7 @@ FString AEQNormalEnemy::SetName()
 
 void AEQNormalEnemy::MonsterProjectileHit(AActor* OtherActor) {}
 
+
 void AEQNormalEnemy::BeginPlay()
 {
 	Super::BeginPlay();
