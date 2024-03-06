@@ -226,7 +226,10 @@ void UEQComponentInventory::SaveInventory()
 void UEQComponentInventory::LoadInventory()
 {
 	UEQSaveGame* SaveGameInstance = Cast<UEQSaveGame>(UGameplayStatics::CreateSaveGameObject(SaveGameFactory));
-	SaveGameInstance = Cast<UEQSaveGame>(UGameplayStatics::LoadGameFromSlot("EQSlot", 0));
+	if (SaveGameInstance)
+	{
+		SaveGameInstance = Cast<UEQSaveGame>(UGameplayStatics::LoadGameFromSlot("EQSlot", 0));
+	}
 	
 	if (SaveGameInstance)
 	{

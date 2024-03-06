@@ -26,7 +26,10 @@ void UEQWidgetQuestList::NativeConstruct()
 	Btn_Quest3->OnClicked.AddDynamic(this, &ThisClass::OnClickedQuest3);
 	Btn_Quest4->OnClicked.AddDynamic(this, &ThisClass::OnClickedQuest4);
 
-	QuestComp = GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>();
+	if (GetWorld()->GetFirstPlayerController()->GetCharacter())
+	{
+		QuestComp = GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>();
+	}
 }
 
 void UEQWidgetQuestList::OnClickedQuest1()
