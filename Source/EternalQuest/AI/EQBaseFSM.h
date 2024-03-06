@@ -61,7 +61,7 @@ public:
 	UPROPERTY(EditAnywhere,Replicated,BlueprintReadWrite,Category="Animation")
 	UEQEnemyAnim* AnimInst;
 
-	UPROPERTY(EditAnywhere,Category="Pool")
+	UPROPERTY(EditAnywhere,Replicated,Category="Pool")
 	AEQEnemyPool* Pool;
 
 	UPROPERTY(EditAnywhere,Category="Ability")
@@ -87,13 +87,25 @@ protected:
 	FVector RandomLoc;
 	UPROPERTY(Replicated)
 	bool bCanAttack = true;
+
+public:
+	UPROPERTY(Replicated)
+	bool IsDieDone;
+
+	UPROPERTY(EditAnywhere)
+	USoundBase* ArrowSound;
+	UPROPERTY(EditAnywhere)
+	USoundBase* MeleeAttackSound;
+	UPROPERTY(EditAnywhere)
+	USoundBase* DieSound;
+	
+	
 public:
 	UPROPERTY(Replicated)
 	bool bIsDead = false;
-	
 	UPROPERTY(Replicated)
 	bool SuperAmor = false;
-
+	UPROPERTY(Replicated)
 	bool WarlockDie = false;
 
 
@@ -122,19 +134,15 @@ public:
 public:
 	UFUNCTION(Server,Reliable)
 	void ServerRPC_TickIdle();
-	
 	UFUNCTION(Server,Reliable)
 	void ServerRPC_TickHit();
 	UFUNCTION(NetMulticast,Unreliable)
 	void MultiRPC_TickHit();
-
 	UFUNCTION(Server,Reliable)
 	void ServerRPC_TickDie();
 	UFUNCTION(NetMulticast,Unreliable)
 	void MultiRPC_TickDie();
-
 	UFUNCTION(Server,Reliable)
 	void ServerRPC_SetState(EMonsterState Next);
-	
 	
 };

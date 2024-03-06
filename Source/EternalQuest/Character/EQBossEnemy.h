@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Character/EQCharacterEnemy.h"
 #include "EQBossEnemy.generated.h"
+class UEQReturnTimer;
 class UEQBossMonsterHPUI;
 class UWidgetComponent;
 class UEQMonsterAbility;
@@ -18,10 +19,12 @@ class ETERNALQUEST_API AEQBossEnemy : public AEQCharacterEnemy
 public:
 	AEQBossEnemy();
 	
+
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UEQBossMonsterHPUI> HPUIFactory;
 	UPROPERTY()
 	UEQBossMonsterHPUI* BossHp;
+	
 
 	UPROPERTY(EditAnywhere,Category="Ability")
 	float DetectRange = 2000.f;
@@ -35,4 +38,6 @@ public:
 	virtual void RemoveBossHPBar();
 
 	void BackToVillage();
+
+	
 };

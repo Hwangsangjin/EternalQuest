@@ -17,7 +17,6 @@ AEQEnemySpawnManager::AEQEnemySpawnManager()
  	
 	PrimaryActorTick.bCanEverTick = false;
 	bReplicates = true;
-
 }
 
 
@@ -47,23 +46,21 @@ void AEQEnemySpawnManager::SeverRPC_Spawn_Implementation()
 		FVector RandomLoc = MakeRandomSpawnPos();
 		if(PoolActor == nullptr)
 		{
-			UE_LOG(LogTemp,Warning,TEXT("CannotSpawn"));
+			
 			GetWorld()->GetGameInstance()->GetTimerManager().SetTimer(SpawnTimerHandle,this,&AEQEnemySpawnManager::Spawn,SpawnTime,false);
 			return;
 		}
 		// 월드 안에 랜덤한 위치에 스폰한다.
 		PoolActor->ActivateEnemy(RandomLoc);//+SpawnPoint);
 		GetWorld()->GetGameInstance()->GetTimerManager().SetTimer(SpawnTimerHandle,this,&AEQEnemySpawnManager::Spawn,SpawnTime,false);
-		UE_LOG(LogTemp,Warning,TEXT("Spawning"));
 	}
-	else UE_LOG(LogTemp,Warning,TEXT("NoPool!!!!!!!!!!!"));
+	
 }
-
 void AEQEnemySpawnManager::Spawn()
 {
-	UE_LOG(LogTemp,Warning,TEXT("InitSpawn"));
 	SeverRPC_Spawn();
 }
+
 int32 PrevIdx = -1;
 FVector AEQEnemySpawnManager::MakeRandomSpawnPos()
 {

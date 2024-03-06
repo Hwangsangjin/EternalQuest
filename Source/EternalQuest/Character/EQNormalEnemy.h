@@ -23,13 +23,10 @@ public:
 	AEQNormalEnemy();
 	UPROPERTY(EditAnywhere,Category="FSM")
 	UEQBaseFSM* BaseFsm;
-
 	UPROPERTY(EditAnywhere,Category="NPC")
 	AEQCharacterNonPlayer* NPC;
-	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Ability")
 	UWidgetComponent* HPComp;
-
 	UPROPERTY(EditAnywhere,Category="Ability")
 	float DetectRange = 1500.f;
 	bool bCanShowHP = false;

@@ -31,7 +31,6 @@ AEQNormalEnemy::AEQNormalEnemy()
 	MonsterName = TEXT("Default Monster Name");
 	bIsActive = false;
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
-
 	bReplicates = true;
 	SetReplicateMovement(true);
 }
@@ -85,13 +84,14 @@ void AEQNormalEnemy::Tick(float DeltaSeconds)
 	else  HPComp->SetVisibility(false);
 }
 
+
+
 void AEQNormalEnemy::DieEffect()
 {
 	// bool DieStart = true;
 	// bool DieEnd = false;
 	// bool VisibilityLerp = FMath::Lerp(DieStart,DieEnd,CheckTime*0.5);
 	// GetMesh()->SetVisibility(VisibilityLerp);
-	
 }
 
 
@@ -102,6 +102,4 @@ void  AEQNormalEnemy::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AEQNormalEnemy, bIsActive);
-	
-	
 }

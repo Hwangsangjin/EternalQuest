@@ -26,7 +26,7 @@ public:
 
 private:
 	int32 BarIdx = 0;
-	int32 BarLimit = 1000;
+	int32 BarLimit = 500;
 
 public:
 	virtual void NativeConstruct() override;
