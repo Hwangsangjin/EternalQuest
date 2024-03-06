@@ -186,6 +186,7 @@ void UEQWarlockOrcFSM::TickDie()
 	DoorOpen();
 	if(CurrentTime>DieTime)
 	{
+		Target->TakeExp(Self->Experience);
 		Door -> IsOpen = false;
 		Self->DropItem();
 		Self->Destroy();

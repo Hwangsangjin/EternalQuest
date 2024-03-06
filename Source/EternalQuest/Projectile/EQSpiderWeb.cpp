@@ -18,14 +18,7 @@ AEQSpiderWeb::AEQSpiderWeb()
 }
 
 
-void AEQSpiderWeb::BeginPlay()
-{
-	Super::BeginPlay();
-	Target = Cast<AEQCharacterPlayer>(GetWorld()->GetFirstPlayerController()->GetPawn());
-	auto Temp = UGameplayStatics::GetActorOfClass(GetWorld(),AEQSpider::StaticClass());
-	Self = Cast<AEQSpider>(Temp);
-	SphereComp->OnComponentBeginOverlap.AddDynamic(this,&AEQSpiderWeb::OverLapBegin);
-}
+
 
 
 void AEQSpiderWeb::Tick(float DeltaTime)
