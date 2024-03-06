@@ -2,6 +2,8 @@
 
 
 #include "Player/EQPlayerController.h"
+
+#include "EngineUtils.h"
 #include "EternalQuest.h"
 #include "Blueprint/UserWidget.h"
 #include "Component/EQComponentInventory.h"
@@ -86,32 +88,21 @@ void AEQPlayerController::Tick(float DeltaSeconds)
 void AEQPlayerController::PostSeamlessTravel()
 {
 	Super::PostSeamlessTravel();
-
-	if (HasAuthority())
+	GEngine->AddOnScreenDebugMessage(-1,60.f, FColor::Magenta, TEXT("asdasd"));
+	for (const auto& e : TActorRange<AEQPlayerController>(GetWorld()))
 	{
-		GEngine->AddOnScreenDebugMessage(-1,50,FColor::Red, TEXT("서버일 때"));
-	}
-	else
-	{
-		GEngine->AddOnScreenDebugMessage(-1,50,FColor::Green, TEXT("클라일 때"));
+		e->EQWidgetMainUI->RemoveFromParent();
+		e->CreateMainWidget();
 	}
 	
-	FInputModeGameOnly InputModeGameOnly;
-	SetInputMode(InputModeGameOnly);
-	
-	EQWidgetMainUI = Cast<UEQWidgetMainUI>(CreateWidget(GetWorld(), MainUIFactory));
-	if (EQWidgetMainUI && IsLocalController())
-	{
-		EQWidgetMainUI->AddToViewport();
-		
-	}
-}
-
-void AEQPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(AEQPlayerController, MainUIFactory);
+	// FInputModeGameOnly InputModeGameOnly;
+	// SetInputMode(InputModeGameOnly);
+	//
+	// EQWidgetMainUI = Cast<UEQWidgetMainUI>(CreateWidget(GetWorld(), MainUIFactory));
+	// if (EQWidgetMainUI && IsLocalController())
+	// {
+	// 	EQWidgetMainUI->AddToViewport();
+	// }
 }
 
 void AEQPlayerController::CreateMainWidget()

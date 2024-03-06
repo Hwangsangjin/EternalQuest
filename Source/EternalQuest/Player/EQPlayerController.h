@@ -28,15 +28,13 @@ protected:
 	virtual void PostSeamlessTravel() override;
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite,Replicated,Category=MySettings)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category=MySettings)
 	TSubclassOf<UEQWidgetMainUI> MainUIFactory;
 
 	UPROPERTY()
 	TObjectPtr<UEQWidgetMainUI> EQWidgetMainUI;
 
 	FOnSeamlessCompleted OnSeamlessCompleted;
-
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
 	void CreateMainWidget();
 };

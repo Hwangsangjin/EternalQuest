@@ -72,7 +72,21 @@ public:
 
 protected:
 	void Sprint(const FInputActionValue& Value);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_Sprint(const FInputActionValue& Value);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticast_Sprint(const FInputActionValue& Value);
+
 	void StopSprinting(const FInputActionValue& Value);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_StopSprinting(const FInputActionValue& Value);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticast_StopSprinting(const FInputActionValue& Value);
+
 	void ResetFieldOfView();
 
 private:

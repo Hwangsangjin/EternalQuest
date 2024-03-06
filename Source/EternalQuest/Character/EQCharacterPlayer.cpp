@@ -305,11 +305,25 @@ float AEQCharacterPlayer::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 
 void AEQCharacterPlayer::SetDead()
 {
+	Server_SetDead();
+}
+
+bool AEQCharacterPlayer::Server_SetDead_Validate()
+{
+	return true;
+}
+
+void AEQCharacterPlayer::Server_SetDead_Implementation()
+{
+	NetMulticast_SetDead();
+}
+
+void AEQCharacterPlayer::NetMulticast_SetDead_Implementation()
+{
 	if (IsLocallyControlled())
 	{
 		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 		GetWorld()->GetFirstPlayerController()->SetInputMode(FInputModeUIOnly());
-		PlayDeadAnimation();
 		SetActorEnableCollision(false);
 		HpBarComp->SetHiddenInGame(true);
 		bIsDead = true;
@@ -320,10 +334,7 @@ void AEQCharacterPlayer::SetDead()
 			DisableInput(PlayerController);
 		}
 	}
-}
 
-void AEQCharacterPlayer::PlayDeadAnimation()
-{
 	UAnimInstance* Animinstance = GetMesh()->GetAnimInstance();
 	Animinstance->StopAllMontages(0.0f);
 	Animinstance->Montage_Play(DeadMontage, 1.0f);

@@ -203,6 +203,21 @@ void UEQComponentMove::Look(const FInputActionValue& Value)
 
 void UEQComponentMove::Sprint(const FInputActionValue& Value)
 {
+	Server_Sprint(Value);
+}
+
+bool UEQComponentMove::Server_Sprint_Validate(const FInputActionValue& Value)
+{
+	return true;
+}
+
+void UEQComponentMove::Server_Sprint_Implementation(const FInputActionValue& Value)
+{
+	NetMulticast_Sprint(Value);
+}
+
+void UEQComponentMove::NetMulticast_Sprint_Implementation(const FInputActionValue& Value)
+{
 	if (Player->GetCharacterMovement()->GetCurrentAcceleration().IsZero())
 	{
 		return;
@@ -233,12 +248,27 @@ void UEQComponentMove::Sprint(const FInputActionValue& Value)
 
 void UEQComponentMove::StopSprinting(const FInputActionValue& Value)
 {
+	Server_StopSprinting(Value);
+}
+
+bool UEQComponentMove::Server_StopSprinting_Validate(const FInputActionValue& Value)
+{
+	return true;
+}
+
+void UEQComponentMove::Server_StopSprinting_Implementation(const FInputActionValue& Value)
+{
+	NetMulticast_StopSprinting(Value);
+}
+
+void UEQComponentMove::NetMulticast_StopSprinting_Implementation(const FInputActionValue& Value)
+{
 	bIsSprinting = Value.Get<bool>();
 	if (!bIsSprinting)
 	{
 		constexpr float DefaultSpeed = 450.0f;
 		Player->GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
-		
+
 		constexpr float DefaultFieldOfView = 90.0f;
 		if (CurrentFieldOfView >= DefaultFieldOfView - KINDA_SMALL_NUMBER)
 		{
