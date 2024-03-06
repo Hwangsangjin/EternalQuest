@@ -24,6 +24,7 @@ void UEQRangerFSM::BeginPlay()
 	AttackRange = 800.f;
 	BasicSpeed = 250.f;
 	DetectionRange = 500.f;
+	SetIsReplicated(true);
 }
 
 void UEQRangerFSM::TickMove()

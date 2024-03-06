@@ -23,6 +23,7 @@ void UEQMeleeFSM::BeginPlay()
 
 	AttackRange = 100.f;
 	DetectionRange = 800.f;
+	SetIsReplicated(true);
 }
 
 void UEQMeleeFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
