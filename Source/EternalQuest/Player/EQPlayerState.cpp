@@ -10,9 +10,15 @@ void AEQPlayerState::PostInitializeComponents()
 
 	Super::PostInitializeComponents();
 
+	UpdateUserName();
 	UpdateClassType();
 
 	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), TEXT("End"));
+}
+
+void AEQPlayerState::UpdateUserName()
+{
+	UserName = Cast<UEQGameInstance>(GetGameInstance())->GetUserName();
 }
 
 void AEQPlayerState::UpdateClassType()

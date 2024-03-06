@@ -212,20 +212,14 @@ protected:
 	virtual void SetupCharacterWidget(UEQWidgetBase* InWidgetBase) override;
 
 // User Name
-public:
-	FORCEINLINE FText GetUserName() const { return UserName; }
-	void SetUserName();
-
 protected:
+	void UpdateUserName();
+
 	UFUNCTION(Server, Reliable, WithValidation)
-	void Server_SetUserName(const FText& InUserName);
+	void Server_UpdateUserName(const FString& InUserName);
 
 	UFUNCTION(Client, Reliable)
-	void Client_SetUserName(const FText& InUserName);
-
-private:
-	UPROPERTY(Replicated)
-	FText UserName;
+	void Client_UpdateUserName(const FString& InUserName);
 
 // Component
 public:
@@ -233,6 +227,7 @@ public:
 	FORCEINLINE UEQComponentStat* GetStatComponent() const { return StatComp; }
 	FORCEINLINE UEQComponentAttack* GetAttackComponent() const { return AttackComp; }
 	FORCEINLINE UEQComponentSkill* GetSkillComponent() const { return SkillComp; }
+	FORCEINLINE UEQComponentWidget* GetUserNameComponent() const { return UserNameComp; }
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))

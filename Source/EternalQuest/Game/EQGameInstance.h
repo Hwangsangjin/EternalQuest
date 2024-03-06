@@ -77,6 +77,15 @@ private:
 	int32 NumPublicConnections;
 	FString MatchType;
 
+// User Name
+public:
+	FORCEINLINE FString GetUserName() const { return UserName; }
+	void SetUserName(FString InUserName) { UserName = InUserName; }
+
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character, Meta = (AllowPrivateAccess = true))
+	FString UserName;
+
 // Class Type
 public:
 	UFUNCTION(BlueprintCallable)

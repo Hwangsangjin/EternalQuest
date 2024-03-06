@@ -3,8 +3,6 @@
 
 #include "Widget/EQWidgetUserName.h"
 #include "Components/TextBlock.h"
-#include "Character/EQCharacterPlayer.h"
-#include "Interface/EQInterfaceCharacterWidget.h"
 
 UEQWidgetUserName::UEQWidgetUserName(const FObjectInitializer& ObjectInitialzer)
 	: Super(ObjectInitialzer)
@@ -14,13 +12,9 @@ UEQWidgetUserName::UEQWidgetUserName(const FObjectInitializer& ObjectInitialzer)
 void UEQWidgetUserName::NativeConstruct()
 {
 	Super::NativeConstruct();
+}
 
-	TextBlock_UserName->SetText(Cast<AEQCharacterPlayer>(OwningActor)->GetUserName());
-	ensure(TextBlock_UserName);
-
-	IEQInterfaceCharacterWidget* CharacterWidget = Cast<IEQInterfaceCharacterWidget>(OwningActor);
-	if (CharacterWidget)
-	{
-		CharacterWidget->SetupCharacterWidget(this);
-	}
+void UEQWidgetUserName::SetUserName(FString InUserName)
+{
+	TextBlock_UserName->SetText(FText::FromString(InUserName));
 }
