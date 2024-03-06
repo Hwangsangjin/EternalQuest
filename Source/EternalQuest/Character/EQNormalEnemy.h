@@ -31,7 +31,6 @@ public:
 	float DetectRange = 1500.f;
 	bool bCanShowHP = false;
 	void ActivateEnemy(const FVector& SpawnLocation);
-
 	
 	bool IsActive();
 
@@ -46,6 +45,9 @@ private:
 	bool bIsActive;
 public:
 	virtual void MonsterProjectileHit(AActor* OtherActor); 
+
+
+	
 	
 protected:
 	

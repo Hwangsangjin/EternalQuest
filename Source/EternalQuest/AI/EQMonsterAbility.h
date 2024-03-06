@@ -117,7 +117,7 @@ public:
 
 	void ShowReturnCount();
 	int32 TimeCount = 11.f;
-	void DecreaseCount(UEQReturnTimer* UI);
+	void DecreaseCount();
 	FTimerHandle TimeCountHandle;
 	
 };

@@ -105,7 +105,7 @@ void UEQMonsterAbility::TakeDamage(AActor* DamagedActor, float Damage, const UDa
 			GetWorld()->GetTimerManager().SetTimer(DieTimerHandle, [Orc]()
 			{
 				Orc->BackToVillage();
-			}, 11.0f, false);
+			}, 10.0f, false);
 		}
 		else
 		{
@@ -162,23 +162,22 @@ void UEQMonsterAbility::ShowReturnCount()
 {
 	auto UI = CreateWidget<UEQReturnTimer>(GetWorld(),TimerFactory);
 	ReturnTimer = Cast<UEQReturnTimer>(UI);
-	GetWorld()->GetTimerManager().SetTimer(TimeCountHandle, [&]()
-		{
-			TimeCount --;
-			ReturnTimer->CountToReturn(TimeCount);
-			ReturnTimer->AddToViewport();
-		}, 1.0f, true);
-	if(TimeCount <= 0)
-	{
-		GetWorld()->GetGameInstance()->GetTimerManager().ClearTimer(TimeCountHandle);
-	}
+	
+	GetWorld()->GetTimerManager().SetTimer(TimeCountHandle,this,&UEQMonsterAbility::DecreaseCount,1.0f,true);
+	
 	
 }
 
-void UEQMonsterAbility::DecreaseCount(UEQReturnTimer* UI)
+void UEQMonsterAbility::DecreaseCount()
 {
 	TimeCount --;
-	UI->CountToReturn(TimeCount);
+	ReturnTimer->CountToReturn(TimeCount);
+	ReturnTimer->AddToViewport();
+	if(TimeCount <= 0)
+	{
+		GetWorld()->GetGameInstance()->GetTimerManager().ClearTimer(TimeCountHandle);
+		ReturnTimer->SetVisibility(ESlateVisibility::Hidden);
+	}
 }
 
 
@@ -186,6 +185,7 @@ void UEQMonsterAbility::ServerRPC_UpdateHP_Implementation(float UpdateHealth)
 {
 	CurrentHealth = FMath::Max(0,CurrentHealth+UpdateHealth);
 	bIsHit = true;
+	
 }
 
 
