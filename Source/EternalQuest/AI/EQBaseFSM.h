@@ -82,7 +82,7 @@ protected:
 	UPROPERTY(Replicated)
 	float DetectionRange = 450;
 	UPROPERTY(Replicated)
-	float DieTime = 3.0f;
+	float DieTime = 2.0f;
 	UPROPERTY(Replicated)
 	FVector RandomLoc;
 	UPROPERTY(Replicated)

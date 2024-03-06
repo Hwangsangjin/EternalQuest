@@ -34,7 +34,8 @@ public:
 	UStaticMeshComponent* Door3;
 	UPROPERTY(EditAnywhere)
 	USceneComponent* SceneComponent;
-	
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Door")
 	bool IsOpen = false;
 	
 };
