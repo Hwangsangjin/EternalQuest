@@ -33,7 +33,7 @@ void UEQBTService_EnemySight::OnBecomeRelevant(UBehaviorTreeComponent& OwnerComp
 	float DotProduct = FVector::DotProduct(SelfForwardVector,DirectionToPlayer);
 	float ConeHalfAngle = FMath::DegreesToRadians(45.0f);
 	float ConeLength = 500.0f;
-	DrawDebugCone(GetWorld(), SelfPos, DirectionToPlayer, ConeLength, ConeHalfAngle, ConeHalfAngle, 12, FColor::Green, false, 2.f, 0, 10.f);
+	//DrawDebugCone(GetWorld(), SelfPos, DirectionToPlayer, ConeLength, ConeHalfAngle, ConeHalfAngle, 12, FColor::Green, false, 2.f, 0, 10.f);
 	if (DotProduct > 0)
 	{
 		if (DotProduct > 0.6)
