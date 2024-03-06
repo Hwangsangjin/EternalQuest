@@ -95,6 +95,10 @@ protected:
 	void MageSecondSkillBegin();
 	void MageSecondSkillEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded);
 
+	private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+	TSubclassOf<AEQProjectileBase> Tornado;
+
 // Warrior Second Skill
 protected:
 	void WarriorSecondSkill();

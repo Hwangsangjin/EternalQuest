@@ -9,6 +9,7 @@
 #include "Components/WidgetComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Net/UnrealNetwork.h"
 #include "Widget/EQNormalMonsterHPBar.h"
 
 
@@ -30,6 +31,7 @@ AEQNormalEnemy::AEQNormalEnemy()
 	MonsterName = TEXT("Default Monster Name");
 	bIsActive = false;
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+
 	bReplicates = true;
 	SetReplicateMovement(true);
 }
@@ -81,7 +83,6 @@ void AEQNormalEnemy::Tick(float DeltaSeconds)
 	HPComp->SetWorldRotation(NewRotation);
 	if(Dist < DetectRange || bCanShowHP == true ) HPComp->SetVisibility(true);
 	else  HPComp->SetVisibility(false);
-	
 }
 
 void AEQNormalEnemy::DieEffect()
@@ -90,5 +91,17 @@ void AEQNormalEnemy::DieEffect()
 	// bool DieEnd = false;
 	// bool VisibilityLerp = FMath::Lerp(DieStart,DieEnd,CheckTime*0.5);
 	// GetMesh()->SetVisibility(VisibilityLerp);
+	
+}
+
+
+
+
+void  AEQNormalEnemy::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AEQNormalEnemy, bIsActive);
+	
 	
 }

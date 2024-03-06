@@ -33,4 +33,6 @@ public:
 	
 	virtual void ShowBossHPBar();
 	virtual void RemoveBossHPBar();
+
+	void BackToVillage();
 };

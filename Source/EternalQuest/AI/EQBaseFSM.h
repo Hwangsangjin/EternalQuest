@@ -58,7 +58,7 @@ public:
 	UPROPERTY(EditAnywhere,Category="Animation")
 	UAnimMontage* AnimMontage;
 
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Animation")
+	UPROPERTY(EditAnywhere,Replicated,BlueprintReadWrite,Category="Animation")
 	UEQEnemyAnim* AnimInst;
 
 	UPROPERTY(EditAnywhere,Category="Pool")

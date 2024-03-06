@@ -64,7 +64,7 @@ protected:
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
-	TSubclassOf<AEQProjectileBase> FireBall;
+	TSubclassOf<AEQProjectileBase> FireArrow;
 
 // Warrior Left Attack
 protected:
@@ -100,6 +100,11 @@ protected:
 	void MageRightAttack();
 	void MageRightAttackBegin();
 	void MageRightAttackEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded);
+	void SpawnFireBall();
+
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+	TSubclassOf<AEQProjectileBase> FireBall;
 
 // Warrior Right Attack
 protected:

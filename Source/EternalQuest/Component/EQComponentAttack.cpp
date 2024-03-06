@@ -35,16 +35,22 @@ UEQComponentAttack::UEQComponentAttack()
 		MageAttackMontage = MageAttackMontageRef.Object;
 	}
 
-	static ConstructorHelpers::FClassFinder<AEQProjectileBase> FireBallRef(TEXT("/Script/Engine.Blueprint'/Game/Blueprints/Effect/BP_FireBall.BP_FireBall_C'"));
-	if (FireBallRef.Succeeded())
-	{
-		FireBall = FireBallRef.Class;
-	}
-
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> WarriorAttackMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Assets/StylizedCharactersPack/Common/Animation/Montage/AM_WarriorAttack.AM_WarriorAttack'"));
 	if (WarriorAttackMontageRef.Succeeded())
 	{
 		WarriorAttackMontage = WarriorAttackMontageRef.Object;
+	}
+
+	static ConstructorHelpers::FClassFinder<AEQProjectileBase> FireArrowRef(TEXT("/Script/Engine.Blueprint'/Game/Blueprints/Effect/BP_FireArrow.BP_FireArrow_C'"));
+	if (FireArrowRef.Succeeded())
+	{
+		FireArrow = FireArrowRef.Class;
+	}
+
+	static ConstructorHelpers::FClassFinder<AEQProjectileBase> FireBallRef(TEXT("/Script/Engine.Blueprint'/Game/Blueprints/Effect/BP_FireBall.BP_FireBall_C'"));
+	if (FireBallRef.Succeeded())
+	{
+		FireBall = FireBallRef.Class;
 	}
 
 	static ConstructorHelpers::FObjectFinder<UEQCharacterComboAttackData> ComboAttackDataRef(TEXT("/Script/EternalQuest.EQCharacterComboAttackData'/Game/Blueprints/Data/DA_ComboAttack.DA_ComboAttack'"));
@@ -92,6 +98,7 @@ void UEQComponentAttack::AttackHitCheck()
 			if (Enemy)
 			{
 				Enemy->TakeDamage(AttackDamage, DamageEvent, Player->GetController(), Player);
+				Player->TakeExp(10.0f);
 			}
 		}
 	}
@@ -157,10 +164,9 @@ void UEQComponentAttack::MageLeftAttack()
 void UEQComponentAttack::MageLeftAttackBegin()
 {
 	bIsAttacking = true;
-	Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 
 	const FTransform Transform = Player->GetTransform();
-	GetWorld()->SpawnActor<AEQProjectileBase>(FireBall, Transform);
+	GetWorld()->SpawnActor<AEQProjectileBase>(FireArrow, Transform);
 
 	constexpr float PlayRate = 1.0f;
 	UAnimInstance* AnimInstance = Player->GetMesh()->GetAnimInstance();
@@ -174,7 +180,6 @@ void UEQComponentAttack::MageLeftAttackBegin()
 void UEQComponentAttack::MageLeftAttackEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded)
 {
 	bIsAttacking = false;
-	Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 }
 
 void UEQComponentAttack::WarriorLeftAttack()
@@ -261,6 +266,11 @@ void UEQComponentAttack::RightAttack()
 		return;
 	}
 
+	if (Player->GetCharacterMovement()->IsFalling())
+	{
+		return;
+	}
+
 	Server_RightAttack();
 }
 
@@ -295,16 +305,6 @@ void UEQComponentAttack::NetMulticast_RightAttack_Implementation()
 
 void UEQComponentAttack::MageRightAttack()
 {
-	if (Player->GetCharacterMovement()->IsFalling())
-	{
-		return;
-	}
-
-	if (bIsAttacking)
-	{
-		return;
-	}
-
 	MageRightAttackBegin();
 }
 
@@ -313,12 +313,13 @@ void UEQComponentAttack::MageRightAttackBegin()
 	bIsAttacking = true;
 	Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 
-	const FTransform Transform = Player->GetTransform();
-	GetWorld()->SpawnActor<AEQProjectileBase>(FireBall, Transform);
-
 	constexpr float PlayRate = 1.0f;
 	UAnimInstance* AnimInstance = Player->GetMesh()->GetAnimInstance();
 	AnimInstance->Montage_Play(MageAttackMontage, PlayRate);
+	AnimInstance->Montage_JumpToSection(TEXT("RightAttack"), MageAttackMontage);
+
+	FTimerHandle TimerHandle;
+	GetWorld()->GetGameInstance()->GetTimerManager().SetTimer(TimerHandle, this, &ThisClass::SpawnFireBall, 2.0f, false);
 
 	FOnMontageEnded EndDelegate;
 	EndDelegate.BindUObject(this, &ThisClass::MageRightAttackEnd);
@@ -329,6 +330,12 @@ void UEQComponentAttack::MageRightAttackEnd(UAnimMontage* TargetMontage, bool bI
 {
 	bIsAttacking = false;
 	Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+}
+
+void UEQComponentAttack::SpawnFireBall()
+{
+	const FTransform Transform = Player->GetTransform();
+	GetWorld()->SpawnActor<AEQProjectileBase>(FireBall, Transform);
 }
 
 void UEQComponentAttack::WarriorRightAttack()
@@ -387,13 +394,12 @@ void UEQComponentAttack::WarriorRightAttackBegin()
 		}
 	}
 
-#if ENABLE_DRAW_DEBUG
-	const FVector CapsuleOrigin = Start + (End - Start) * 0.5f;
-	const float CapsuleHalfHeight = AttackRange * 0.5f;
-	const FColor DrawColor = bHitDetected ? FColor::Green : FColor::Red;
-	DrawDebugCapsule(GetWorld(), CapsuleOrigin, CapsuleHalfHeight, AttackRadius, FRotationMatrix::MakeFromZ(Player->GetActorForwardVector()).ToQuat(), DrawColor, false, 1.0f);
-#endif
-
+//#if ENABLE_DRAW_DEBUG
+//	const FVector CapsuleOrigin = Start + (End - Start) * 0.5f;
+//	const float CapsuleHalfHeight = AttackRange * 0.5f;
+//	const FColor DrawColor = bHitDetected ? FColor::Green : FColor::Red;
+//	DrawDebugCapsule(GetWorld(), CapsuleOrigin, CapsuleHalfHeight, AttackRadius, FRotationMatrix::MakeFromZ(Player->GetActorForwardVector()).ToQuat(), DrawColor, false, 1.0f);
+//#endif
 
 	FOnMontageEnded EndDelegate;
 	EndDelegate.BindUObject(this, &ThisClass::WarriorRightAttackEnd);

@@ -50,6 +50,8 @@ AEQWarriorOrc::AEQWarriorOrc()
 		WeaponComp->SetRelativeRotation(FRotator(0,180,0));
 		WeaponComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
+	bReplicates = true;
+	SetReplicateMovement(true);
 	Experience = 30;
 }
 

@@ -73,6 +73,10 @@ public:
 	void SetExp(float ExpAmount);
 	void ResetStat();
 
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE float GetCurrentExp() const { return CurrentExp; }
+
+
 	FOnHpZeroDelegate OnHpZero;
 	FOnHpChangedDelegate OnHpChanged;
 	FOnExpChangedDelegate OnExpChanged;
@@ -104,12 +108,14 @@ private:
 	UPROPERTY(ReplicatedUsing = OnRep_MaxHp, Transient, VisibleInstanceOnly, Category = Stat)
 	float MaxHp;
 
-	UPROPERTY(ReplicatedUsing = OnRep_CurrentExp, Transient, VisibleInstanceOnly, Category = Stat)
+public:
+	UPROPERTY(ReplicatedUsing = OnRep_CurrentExp, Transient, BlueprintReadOnly, Category = Stat)
 	float CurrentExp;
 
-	UPROPERTY(ReplicatedUsing = OnRep_MaxExp, Transient, VisibleInstanceOnly, Category = Stat)
+	UPROPERTY(ReplicatedUsing = OnRep_MaxExp, Transient, BlueprintReadOnly, Category = Stat)
 	float MaxExp;
 
+private:
 	UPROPERTY(Transient, VisibleInstanceOnly, Category = Stat)
 	float CurrentLevel;
 

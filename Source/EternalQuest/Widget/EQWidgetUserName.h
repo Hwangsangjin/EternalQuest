@@ -19,11 +19,7 @@ public:
 protected:
 	virtual void NativeConstruct() override;
 
-// User Name
-public:
-	void SetUserName(FText InUserName);
-
-protected:
+private:
 	UPROPERTY()
 	TObjectPtr<UTextBlock> TextBlock_UserName;
 };

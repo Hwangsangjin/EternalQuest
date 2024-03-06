@@ -76,6 +76,12 @@ UEQComponentSkill::UEQComponentSkill()
 	{
 		MaterialInterface = MaterialInterfaceRef.Object;
 	}
+
+	static ConstructorHelpers::FClassFinder<AEQProjectileBase>TornadoRef(TEXT("/Script/Engine.Blueprint'/Game/Blueprints/Effect/BP_Tornado.BP_Tornado_C'"));
+	if (TornadoRef.Succeeded())
+	{
+		Tornado = TornadoRef.Class;
+	}
 }
 
 void UEQComponentSkill::BeginPlay()
@@ -194,8 +200,6 @@ void UEQComponentSkill::MageFirstSkill()
 void UEQComponentSkill::MageFirstSkillBegin()
 {
 	IsSkilling = true;
-	bIsChanneling = true;
-	PreviewMeshComponent->SetStaticMesh(PreviewMesh);
 
 	constexpr float PlayRate = 1.0f;
 	UAnimInstance* AnimInstance = Player->GetMesh()->GetAnimInstance();
@@ -205,7 +209,7 @@ void UEQComponentSkill::MageFirstSkillBegin()
 	FHitResult OutHitResult;
 	FCollisionQueryParams Params(SCENE_QUERY_STAT(Skill), false, Player);
 
-	constexpr float TraceRange = 1000.0f;
+	constexpr float TraceRange = 500.0f;
 	const FVector Start = Player->GetActorLocation();
 	const FVector Current = Player->GetActorLocation();
 	const FVector End = Current + Player->GetActorForwardVector() * TraceRange;
@@ -230,12 +234,10 @@ void UEQComponentSkill::MageFirstSkillEnd(UAnimMontage* TargetMontage, bool bIsP
 	}
 	else
 	{
-		TeleportPoint = FVector_NetQuantize(1000, 0, 50);
+		TeleportPoint = FVector_NetQuantize(500, 0, 50);
 		Player->AddActorLocalOffset(TeleportPoint, true);
 	}
 
-	PreviewMeshComponent->SetStaticMesh(nullptr);
-	bIsChanneling = false;
 	IsSkilling = false;
 }
 
@@ -353,14 +355,31 @@ void UEQComponentSkill::NetMulticast_SecondSkill_Implementation()
 
 void UEQComponentSkill::MageSecondSkill()
 {
+	MageSecondSkillBegin();
 }
 
 void UEQComponentSkill::MageSecondSkillBegin()
 {
+	IsSkilling = true;
+	Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+
+	constexpr float PlayRate = 1.0f;
+	UAnimInstance* AnimInstance = Player->GetMesh()->GetAnimInstance();
+	AnimInstance->Montage_Play(MageSkillMontage, PlayRate);
+	AnimInstance->Montage_JumpToSection(TEXT("SecondSkill"), MageSkillMontage);
+
+	const FTransform Transform = Player->GetTransform();
+	GetWorld()->SpawnActor<AEQProjectileBase>(Tornado, Transform);
+
+	FOnMontageEnded EndDelegate;
+	EndDelegate.BindUObject(this, &ThisClass::MageSecondSkillEnd);
+	AnimInstance->Montage_SetEndDelegate(EndDelegate, MageSkillMontage);
 }
 
 void UEQComponentSkill::MageSecondSkillEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded)
 {
+	Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	IsSkilling = false;
 }
 
 void UEQComponentSkill::WarriorSecondSkill()
@@ -477,14 +496,58 @@ void UEQComponentSkill::NetMulticast_ThirdSkill_Implementation()
 
 void UEQComponentSkill::MageThirdSkill()
 {
+	MageThirdSkillBegin();
 }
 
 void UEQComponentSkill::MageThirdSkillBegin()
 {
+	IsSkilling = true;
+	Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+
+	constexpr float PlayRate = 1.0f;
+	UAnimInstance* AnimInstance = Player->GetMesh()->GetAnimInstance();
+	AnimInstance->Montage_Play(MageSkillMontage, PlayRate);
+	AnimInstance->Montage_JumpToSection(TEXT("ThirdSkill"), MageSkillMontage);
+
+	FOnMontageEnded EndDelegate;
+	EndDelegate.BindUObject(this, &ThisClass::MageThirdSkillEnd);
+	AnimInstance->Montage_SetEndDelegate(EndDelegate, MageSkillMontage);
 }
 
 void UEQComponentSkill::MageThirdSkillEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded)
 {
+	TArray<FHitResult> OutHitResults;
+	FCollisionQueryParams Params(SCENE_QUERY_STAT(Skill), false, Player);
+
+	constexpr float SkillRange = 200.0f;
+	constexpr float SkillRadius = 200.0f;
+	constexpr float SkillDamage = 20.0f;
+	const FVector Start = Player->GetActorLocation();
+	const FVector End = Start + Player->GetActorForwardVector();
+
+	bHitDetected = GetWorld()->SweepMultiByChannel(OutHitResults, Start, End, FQuat::Identity, ECC_GameTraceChannel1, FCollisionShape::MakeSphere(SkillRadius), Params);
+	if (bHitDetected)
+	{
+		FDamageEvent DamageEvent;
+		for (const auto& OutHitResult : OutHitResults)
+		{
+			AEQCharacterEnemy* Enemy = Cast<AEQCharacterEnemy>(OutHitResult.GetActor());
+			if (Enemy)
+			{
+				Enemy->TakeDamage(SkillDamage, DamageEvent, Player->GetController(), Player);
+			}
+		}
+	}
+
+//#if ENABLE_DRAW_DEBUG
+//	const FVector CapsuleOrigin = Start + (End - Start) * 0.5f;
+//	const float CapsuleHalfHeight = SkillRange * 0.5f;
+//	const FColor DrawColor = bHitDetected ? FColor::Green : FColor::Red;
+//	DrawDebugCapsule(GetWorld(), CapsuleOrigin, CapsuleHalfHeight, SkillRadius, FRotationMatrix::MakeFromZ(Player->GetActorForwardVector()).ToQuat(), DrawColor, false, 1.0f);
+//#endif
+
+	Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	IsSkilling = false;
 }
 
 void UEQComponentSkill::WarriorThirdSkill()
@@ -594,14 +657,58 @@ void UEQComponentSkill::NetMulticast_FourthSkill_Implementation()
 
 void UEQComponentSkill::MageFourthSkill()
 {
+	MageFourthSkillBegin();
 }
 
 void UEQComponentSkill::MageFourthSkillBegin()
 {
+	IsSkilling = true;
+	Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+
+	constexpr float PlayRate = 1.0f;
+	UAnimInstance* AnimInstance = Player->GetMesh()->GetAnimInstance();
+	AnimInstance->Montage_Play(MageSkillMontage, PlayRate);
+	AnimInstance->Montage_JumpToSection(TEXT("FourthSkill"), MageSkillMontage);
+
+	FOnMontageEnded EndDelegate;
+	EndDelegate.BindUObject(this, &ThisClass::MageFourthSkillEnd);
+	AnimInstance->Montage_SetEndDelegate(EndDelegate, MageSkillMontage);
 }
 
 void UEQComponentSkill::MageFourthSkillEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded)
 {
+	TArray<FHitResult> OutHitResults;
+	FCollisionQueryParams Params(SCENE_QUERY_STAT(Skill), false, Player);
+
+	constexpr float SkillRange = 200.0f;
+	constexpr float SkillRadius = 200.0f;
+	constexpr float SkillDamage = 20.0f;
+	const FVector Start = Player->GetActorLocation();
+	const FVector End = Start + Player->GetActorForwardVector();
+
+	bHitDetected = GetWorld()->SweepMultiByChannel(OutHitResults, Start, End, FQuat::Identity, ECC_GameTraceChannel1, FCollisionShape::MakeSphere(SkillRadius), Params);
+	if (bHitDetected)
+	{
+		FDamageEvent DamageEvent;
+		for (const auto& OutHitResult : OutHitResults)
+		{
+			AEQCharacterEnemy* Enemy = Cast<AEQCharacterEnemy>(OutHitResult.GetActor());
+			if (Enemy)
+			{
+				Enemy->TakeDamage(SkillDamage, DamageEvent, Player->GetController(), Player);
+			}
+		}
+	}
+
+	//#if ENABLE_DRAW_DEBUG
+	//	const FVector CapsuleOrigin = Start + (End - Start) * 0.5f;
+	//	const float CapsuleHalfHeight = SkillRange * 0.5f;
+	//	const FColor DrawColor = bHitDetected ? FColor::Green : FColor::Red;
+	//	DrawDebugCapsule(GetWorld(), CapsuleOrigin, CapsuleHalfHeight, SkillRadius, FRotationMatrix::MakeFromZ(Player->GetActorForwardVector()).ToQuat(), DrawColor, false, 1.0f);
+	//#endif
+
+	Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	IsSkilling = false;
 }
 
 void UEQComponentSkill::WarriorFourthSkill()
