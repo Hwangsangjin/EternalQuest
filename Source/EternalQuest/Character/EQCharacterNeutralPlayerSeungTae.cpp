@@ -48,7 +48,6 @@ void AEQCharacterNeutralPlayerSeungTae::QuestAccepted()
 
 void AEQCharacterNeutralPlayerSeungTae::QuestDenied()
 {
-	GEngine->AddOnScreenDebugMessage(-1,3,FColor::Red, TEXT("퀘스트를 거절했습니다."));
 }
 
 void AEQCharacterNeutralPlayerSeungTae::QuestSuccess()

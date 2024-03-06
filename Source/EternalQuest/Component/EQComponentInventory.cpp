@@ -186,7 +186,6 @@ void UEQComponentInventory::DropItem(FEQSlot* InSlot)
 {
 	if (InSlot->ItemType == EEQItemType::EquippingWeapon || InSlot->ItemType == EEQItemType::EquippingShield)
 	{
-		GEngine->AddOnScreenDebugMessage(-1,5,FColor::Red, TEXT("현재 장비중인 아이템입니다. 버릴 수 없습니다."));
 		return;
 	}
 	auto InPlayer = GetWorld()->GetFirstPlayerController()->GetCharacter();
@@ -220,7 +219,6 @@ void UEQComponentInventory::SaveInventory()
 		SaveGameInstance->QuestCondition = GetOwner()->FindComponentByClass<UEQComponentQuest>()->QuestCondition;
 		SaveGameInstance->EQSkill = Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetSkill->EQSkill;
 		UGameplayStatics::SaveGameToSlot(SaveGameInstance, "EQSlot", 0);
-		GEngine->AddOnScreenDebugMessage(-1,5,FColor::Magenta, TEXT("Success Save"));
 	}
 	
 }
@@ -236,7 +234,6 @@ void UEQComponentInventory::LoadInventory()
 		GetOwner()->FindComponentByClass<UEQComponentStat>()->StatusStat = SaveGameInstance->StatusStat;
 		GetOwner()->FindComponentByClass<UEQComponentQuest>()->QuestCondition = SaveGameInstance->QuestCondition;
 		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetSkill->EQSkill = SaveGameInstance->EQSkill;
-		GEngine->AddOnScreenDebugMessage(-1,5,FColor::Magenta, TEXT("Success Load"));
 	}
 
 }

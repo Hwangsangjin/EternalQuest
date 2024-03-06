@@ -229,7 +229,6 @@ void UEQWidgetLogin::LoadingEffect()
 
 void UEQWidgetLogin::CloseLoadingBorder()
 {
-	GEngine->AddOnScreenDebugMessage(-1,5,FColor::Magenta, TEXT("세션이 없습니다."));
 	Border_Loading->SetVisibility(ESlateVisibility::Hidden);
 	Button_Mage->SetIsEnabled(true);
 	Button_Warrior->SetIsEnabled(true);
