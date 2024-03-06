@@ -45,15 +45,17 @@ void UEQComponentQuest::InspectingItem()
 			QuestCondition.bQuestCond2 = true;
 			GEngine->AddOnScreenDebugMessage(-1,5,FColor::Red, TEXT("퀘스트2 완료!"));
 		}
+
+		if (Inventory->EQAllItem.QuestItem[i].ItemID.RowName == TEXT("MushRoomGem"))
+		{
+			GEngine->AddOnScreenDebugMessage(-1,5,FColor::Magenta, TEXT("1111111111111111111"));
+			QuestCondition.bQuestCond3Quantity = Inventory->EQAllItem.QuestItem[i].Quantity;
+		}
 		
 		if (Inventory->EQAllItem.QuestItem[i].ItemID.RowName == TEXT("MushRoomGem") && Inventory->EQAllItem.QuestItem[i].Quantity > 4)
 		{
 			QuestCondition.bQuestCond3 = true;
 			GEngine->AddOnScreenDebugMessage(-1,5,FColor::Red, TEXT("퀘스트3 완료!"));
-		}
-		else
-		{
-			QuestCondition.bQuestCond3Quantity = Inventory->EQAllItem.QuestItem[i].Quantity;
 		}
 
 		if (Inventory->EQAllItem.QuestItem[i].ItemID.RowName == TEXT("OrcTooth"))

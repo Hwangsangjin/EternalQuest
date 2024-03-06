@@ -23,6 +23,7 @@
 #include "Widget/EQWidgetItemLoger.h"
 #include "Widget/EQWidgetMainUI.h"
 #include "Widget/EQWidgetNpcPrompt.h"
+#include "Widget/EQWidgetQuestList.h"
 
 UEQComponentInteraction::UEQComponentInteraction()
 {
@@ -108,8 +109,13 @@ void UEQComponentInteraction::EatItem()
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetInventory->UpdateItemInInventoryUI(); // 인벤토리 업데이트
 		EQComponentInventory->SaveInventory();
 		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetItemLoger->SetItemLogMessage(Item->Slot); // 아이템 로그 띄우기
+
 		auto QuestComp = GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>();
+		auto QuestWidget = Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetQuestList;
+		
 		QuestComp->InspectingItem();
+		QuestWidget->UpdateQuestIcon();
+		// TO DO:
 		ServerRPC_EatItem();
 	}
 }

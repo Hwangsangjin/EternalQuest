@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "EQWidgetMainUI.generated.h"
 
+class UEQWidgetBindKeySkillBar;
 class UEQWidgetItemLoger;
 class UEQWidgetPostBox;
 class UEQWidgetMinimap;
@@ -67,4 +68,7 @@ public:
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, meta=(BindWidget))
 	TObjectPtr<UEQWidgetItemLoger> WBP_EQWidgetItemLoger;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, meta=(BindWidget))
+	TObjectPtr<UEQWidgetBindKeySkillBar> WBP_EQWidgetBindKeySkillBar;
 };
