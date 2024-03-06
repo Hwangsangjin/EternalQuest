@@ -190,7 +190,13 @@ public:
 
 protected:
 	virtual void SetDead();
-	void PlayDeadAnimation();
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_SetDead();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticast_SetDead();
+
 
 private:
 	bool bIsDead = false;
