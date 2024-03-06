@@ -361,7 +361,7 @@ void AEQCharacterPlayer::UpdateUserName()
 		UEQWidgetUserName* UserNameWidget = Cast<UEQWidgetUserName>(Cast<UEQWidgetBase>(UserNameComp->GetWidget()));
 		if (UserNameWidget)
 		{
-			FString UserName = GetWorld()->GetFirstPlayerController()->GetPlayerState<AEQPlayerState>()->GetUserName();
+			FString UserName = Cast<UEQGameInstance>(GetGameInstance())->GetUserName();
 			UserNameWidget->SetUserName(UserName);
 		}
 	}
