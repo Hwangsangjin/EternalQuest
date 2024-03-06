@@ -8,6 +8,7 @@
 #include "Components/ProgressBar.h"
 #include "Game/EQGameInstance.h"
 #include "GameFramework/Character.h"
+#include "Player/EQPlayerController.h"
 
 UEQWidgetStateUI::UEQWidgetStateUI(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
@@ -31,9 +32,10 @@ void UEQWidgetStateUI::NativeConstruct()
 	{
 		Img_JobClass->SetBrushFromTexture(T_WarriorIcon);
 	}
-	StatComp = GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>();
-	StatComp->OnHpChanged.AddUObject(this, &ThisClass::UpdateStateUI);
-	SetMaxHP();
+	// StatComp = GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>();
+	// StatComp->OnHpChanged.AddUObject(this, &ThisClass::UpdateStateUI);
+	// SetMaxHP();
+	// GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>()->OnHpChanged.AddUObject(this, &ThisClass::UpdateStateUI);
 }
 
 void UEQWidgetStateUI::UpdateStateUI(float InCurrentHP, float InMaxHP)
@@ -46,5 +48,10 @@ void UEQWidgetStateUI::UpdateStateUI(float InCurrentHP, float InMaxHP)
 
 void UEQWidgetStateUI::SetMaxHP()
 {
-	MaxHP = StatComp->GetMaxHp();
+	MaxHP = GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>()->GetMaxHp();
+}
+
+void UEQWidgetStateUI::AddCallBackFunc()
+{
+	GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>()->OnHpChanged.AddUObject(this, &ThisClass::UpdateStateUI);
 }

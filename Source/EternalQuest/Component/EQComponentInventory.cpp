@@ -36,27 +36,27 @@ void UEQComponentInventory::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	// LoadInventory();
+	LoadInventory();
 	
-	if (EQAllItem.IsEmpty())
+	if (EQAllItem.Equipment.IsEmpty())
 	{
 		EmptySlot.ItemID.DataTable = ItemID;
 	
 		EmptySlot.ItemType = EEQItemType::Equipment;
 		for (int i = 0; i < 20; i++) EQAllItem.Equipment.Push(EmptySlot);
-
+	
 		EmptySlot.ItemType = EEQItemType::Consumtion;
 		for (int i = 0; i < 20; i++) EQAllItem.Consumtion.Push(EmptySlot);
-
+	
 		EmptySlot.ItemType = EEQItemType::Material;
 		for (int i = 0; i < 20; i++) EQAllItem.Material.Push(EmptySlot);
-
+	
 		EmptySlot.ItemType = EEQItemType::Questitem;
 		for (int i = 0; i < 20; i++) EQAllItem.QuestItem.Push(EmptySlot);
 	
 		EmptySlot.ItemType = EEQItemType::EquippingWeapon;
 		for (int i = 0; i < 1; i++) EQAllItem.EquippingSword.Push(EmptySlot);
-
+	
 		EmptySlot.ItemType = EEQItemType::EquippingShield;
 		for (int i = 0; i < 1; i++) EQAllItem.EquippingShield.Push(EmptySlot);
 	}
@@ -188,9 +188,8 @@ void UEQComponentInventory::DropItem(FEQSlot* InSlot)
 	{
 		return;
 	}
-	auto InPlayer = GetWorld()->GetFirstPlayerController()->GetCharacter();
 	FTransform SpawnTransform(FRotator(0),
-							  FVector(InPlayer->GetActorLocation() + InPlayer->GetActorForwardVector() * 100));
+							  FVector(GetWorld()->GetFirstPlayerController()->GetCharacter()->GetActorLocation() + GetWorld()->GetFirstPlayerController()->GetCharacter()->GetActorForwardVector() * 100));
 	ServerRPC_DropItem(InSlot->ItemID.RowName, InSlot->ItemType, InSlot->Quantity, SpawnTransform);
 	
 	int temp = InSlot->Quantity;

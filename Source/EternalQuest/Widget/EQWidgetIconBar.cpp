@@ -60,8 +60,8 @@ void UEQWidgetIconBar::NativeConstruct()
 	Btn_Settings->OnUnhovered.AddDynamic(this, &UEQWidgetIconBar::OnUnhoverSettings);
 	Btn_Settings->OnClicked.AddDynamic(this, &UEQWidgetIconBar::OnClickSettings);
 
-	EQPlayerController = Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController());
-	MenuManager = GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentMenuManager>();
+	// EQPlayerController = Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController());
+	// MenuManager = GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentMenuManager>();
 }
 
 void UEQWidgetIconBar::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -91,8 +91,8 @@ void UEQWidgetIconBar::OnClickStatus()
 	{
 		bOpenStatus = false;
 		ClearIconFlag();
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStatus->SetVisibility(ESlateVisibility::Hidden);
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Visible);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStatus->SetVisibility(ESlateVisibility::Hidden);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Visible);
 		PlaySound(UICloseSound);
 	}
 	else
@@ -100,21 +100,21 @@ void UEQWidgetIconBar::OnClickStatus()
 		ClearIconFlag();
 		OnHoverStatus();
 		bOpenStatus = true;
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStatus->SetVisibility(ESlateVisibility::Visible);
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Hidden);
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetMinimap->SetVisibility(ESlateVisibility::Visible);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStatus->SetVisibility(ESlateVisibility::Visible);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Hidden);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetMinimap->SetVisibility(ESlateVisibility::Visible);
 		PlaySound(UIOpenSound);
 	}
 
 	
-	if (MenuManager->bStateFlag)
+	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentMenuManager>()->bStateFlag)
 	{
-		MenuManager->bStateFlag = false;
+		GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentMenuManager>()->bStateFlag = false;
 	}
 	else
 	{
-		MenuManager->ClearPos();
-		MenuManager->bStateFlag = true;
+		GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentMenuManager>()->ClearPos();
+		GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentMenuManager>()->bStateFlag = true;
 	}
 }
 
@@ -140,9 +140,9 @@ void UEQWidgetIconBar::OnClickInventory()
 	{
 		bOpenInventory = false;
 		OnUnhoverInventory();
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetInventory->OpenCloseInventoryWidget();
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetMinimap->SetVisibility(ESlateVisibility::Visible);
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetBindKeySkillBar->SetVisibility(ESlateVisibility::Visible);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetInventory->OpenCloseInventoryWidget();
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetMinimap->SetVisibility(ESlateVisibility::Visible);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetBindKeySkillBar->SetVisibility(ESlateVisibility::Visible);
 		PlaySound(UICloseSound);
 	}
 	else
@@ -150,21 +150,21 @@ void UEQWidgetIconBar::OnClickInventory()
 		ClearIconFlag();
 		OnHoverInventory();
 		bOpenInventory = true;
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetInventory->OpenCloseInventoryWidget();
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetMinimap->SetVisibility(ESlateVisibility::Hidden);
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetBindKeySkillBar->SetVisibility(ESlateVisibility::Hidden);
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Visible);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetInventory->OpenCloseInventoryWidget();
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetMinimap->SetVisibility(ESlateVisibility::Hidden);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetBindKeySkillBar->SetVisibility(ESlateVisibility::Hidden);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Visible);
 		PlaySound(UIOpenSound);
 	}
 
-	if (MenuManager->bInventoryFlag)
+	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentMenuManager>()->bInventoryFlag)
 	{
-		MenuManager->bInventoryFlag = false;
+		GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentMenuManager>()->bInventoryFlag = false;
 	}
 	else
 	{
-		MenuManager->ClearPos();
-		MenuManager->bInventoryFlag = true;
+		GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentMenuManager>()->ClearPos();
+		GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentMenuManager>()->bInventoryFlag = true;
 	}
 }
 
@@ -190,9 +190,9 @@ void UEQWidgetIconBar::OnClickSkill()
 	{
 		bOpenSkill = false;
 		ClearIconFlag();
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetSkill->SetVisibility(ESlateVisibility::Hidden);
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetMinimap->SetVisibility(ESlateVisibility::Visible);
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetBindKeySkillBar->SetVisibility(ESlateVisibility::Visible);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetSkill->SetVisibility(ESlateVisibility::Hidden);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetMinimap->SetVisibility(ESlateVisibility::Visible);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetBindKeySkillBar->SetVisibility(ESlateVisibility::Visible);
 		PlaySound(UICloseSound);
 	}
 	else
@@ -200,20 +200,20 @@ void UEQWidgetIconBar::OnClickSkill()
 		ClearIconFlag();
 		OnHoverSkill();
 		bOpenSkill = true;
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetSkill->SetVisibility(ESlateVisibility::Visible);
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetMinimap->SetVisibility(ESlateVisibility::Hidden);
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetBindKeySkillBar->SetVisibility(ESlateVisibility::Hidden);
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Visible);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetSkill->SetVisibility(ESlateVisibility::Visible);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetMinimap->SetVisibility(ESlateVisibility::Hidden);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetBindKeySkillBar->SetVisibility(ESlateVisibility::Hidden);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Visible);
 		PlaySound(UIOpenSound);
 	}
-	if (MenuManager->bSkillFlag)
+	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentMenuManager>()->bSkillFlag)
 	{
-		MenuManager->bSkillFlag = false;
+		GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentMenuManager>()->bSkillFlag = false;
 	}
 	else
 	{
-		MenuManager->ClearPos();
-		MenuManager->bSkillFlag = true;
+		GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentMenuManager>()->ClearPos();
+		GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentMenuManager>()->bSkillFlag = true;
 	}
 }
 
@@ -239,8 +239,8 @@ void UEQWidgetIconBar::OnClickQuest()
 	{
 		bOpenQuest = false;
 		ClearIconFlag();
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetQuestList->SetVisibility(ESlateVisibility::Hidden);
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Visible);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetQuestList->SetVisibility(ESlateVisibility::Hidden);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Visible);
 		PlaySound(UICloseSound);
 	}
 	else
@@ -248,20 +248,20 @@ void UEQWidgetIconBar::OnClickQuest()
 		ClearIconFlag();
 		OnHoverQuest();
 		bOpenQuest = true;
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetQuestList->SetVisibility(ESlateVisibility::Visible);
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetQuestList->UpdateQuestIcon();
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Hidden);
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetMinimap->SetVisibility(ESlateVisibility::Visible);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetQuestList->SetVisibility(ESlateVisibility::Visible);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetQuestList->UpdateQuestIcon();
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Hidden);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetMinimap->SetVisibility(ESlateVisibility::Visible);
 		PlaySound(UIOpenSound);
 	}
-	if (MenuManager->bQuestFlag)
+	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentMenuManager>()->bQuestFlag)
 	{
-		MenuManager->bQuestFlag = false;
+		GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentMenuManager>()->bQuestFlag = false;
 	}
 	else
 	{
-		MenuManager->ClearPos();
-		MenuManager->bQuestFlag = true;
+		GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentMenuManager>()->ClearPos();
+		GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentMenuManager>()->bQuestFlag = true;
 	}
 }
 
@@ -287,8 +287,8 @@ void UEQWidgetIconBar::OnClickPostBox()
 	{
 		bOpenPostBox = false;
 		ClearIconFlag();
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetPostBox->SetVisibility(ESlateVisibility::Hidden); // 변경
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Visible);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetPostBox->SetVisibility(ESlateVisibility::Hidden); // 변경
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Visible);
 		PlaySound(UICloseSound);
 	}
 	else
@@ -296,19 +296,19 @@ void UEQWidgetIconBar::OnClickPostBox()
 		ClearIconFlag();
 		OnHoverPostBox();
 		bOpenPostBox = true;
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetPostBox->SetVisibility(ESlateVisibility::Visible); // 변경
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Hidden);
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetMinimap->SetVisibility(ESlateVisibility::Visible);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetPostBox->SetVisibility(ESlateVisibility::Visible); // 변경
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStateUI->SetVisibility(ESlateVisibility::Hidden);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetMinimap->SetVisibility(ESlateVisibility::Visible);
 		PlaySound(UIOpenSound);
 	}
-	if (MenuManager->bPostBoxFlag)
+	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentMenuManager>()->bPostBoxFlag)
 	{
-		MenuManager->bPostBoxFlag = false;
+		GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentMenuManager>()->bPostBoxFlag = false;
 	}
 	else
 	{
-		MenuManager->ClearPos();
-		MenuManager->bPostBoxFlag = true;
+		GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentMenuManager>()->ClearPos();
+		GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentMenuManager>()->bPostBoxFlag = true;
 	}
 }
 
@@ -334,7 +334,7 @@ void UEQWidgetIconBar::OnClickSettings()
 	{
 		bOpenSettings = false;
 		ClearIconFlag();
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetSettings->SetVisibility(ESlateVisibility::Hidden);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetSettings->SetVisibility(ESlateVisibility::Hidden);
 		PlaySound(UICloseSound);
 	}
 	else
@@ -342,7 +342,7 @@ void UEQWidgetIconBar::OnClickSettings()
 		ClearIconFlag();
 		OnHoverSettings();
 		bOpenSettings = true;
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetSettings->SetVisibility(ESlateVisibility::Visible);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetSettings->SetVisibility(ESlateVisibility::Visible);
 		PlaySound(UIOpenSound);
 	}
 }
@@ -353,37 +353,37 @@ void UEQWidgetIconBar::ClearIconFlag()
 	{
 		bOpenStatus = false;
 		OnUnhoverStatus();
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetStatus->SetVisibility(ESlateVisibility::Hidden);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStatus->SetVisibility(ESlateVisibility::Hidden);
 	}
 	if (bOpenInventory)
 	{
 		bOpenInventory = false;
 		OnUnhoverInventory();
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetInventory->OpenCloseInventoryWidget();
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetInventory->OpenCloseInventoryWidget();
 	};
 	if (bOpenSkill)
 	{
 		bOpenSkill = false;
 		OnUnhoverSkill();
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetSkill->SetVisibility(ESlateVisibility::Hidden);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetSkill->SetVisibility(ESlateVisibility::Hidden);
 	}
 	if (bOpenQuest)
 	{
 		bOpenQuest = false;
 		OnUnhoverQuest();
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetQuestList->SetVisibility(ESlateVisibility::Hidden);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetQuestList->SetVisibility(ESlateVisibility::Hidden);
 	}
 	if (bOpenPostBox)
 	{
 		bOpenPostBox = false;
 		OnUnhoverPostBox();
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetPostBox->SetVisibility(ESlateVisibility::Hidden);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetPostBox->SetVisibility(ESlateVisibility::Hidden);
 	}
 	if (bOpenSettings)
 	{
 		bOpenSettings = false;
 		OnUnhoverSettings();
-		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetSettings->SetVisibility(ESlateVisibility::Hidden);
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetSettings->SetVisibility(ESlateVisibility::Hidden);
 	}
 	OnUnhoverStatus();
 	OnUnhoverInventory();
@@ -392,6 +392,6 @@ void UEQWidgetIconBar::ClearIconFlag()
 	OnUnhoverPostBox();
 	OnUnhoverSettings();
 	
-	MenuManager->ClearPos();
+	GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentMenuManager>()->ClearPos();
 }
 

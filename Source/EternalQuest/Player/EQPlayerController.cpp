@@ -55,7 +55,7 @@ void AEQPlayerController::OnPossess(APawn* InPawn)
 	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), TEXT("Begin"));
 
 	Super::OnPossess(InPawn);
-
+	
 	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), TEXT("End"));
 	
 }
@@ -75,12 +75,10 @@ void AEQPlayerController::BeginPlay()
 	if (EQWidgetMainUI && IsLocalController())
 	{
 		EQWidgetMainUI->AddToViewport();
-		auto Inventory = GetCharacter()->FindComponentByClass<UEQComponentInventory>();
+		// auto Inventory = GetCharacter()->FindComponentByClass<UEQComponentInventory>(); // EQComponentInventory에서 대신 해줌.
 		GEngine->AddOnScreenDebugMessage(-1,5,FColor::Red,TEXT("123"));
-		Inventory->LoadInventory();
+		// Inventory->LoadInventory();
 	}
-
-	EQWidgetMainUI->SetVisibility(ESlateVisibility::Visible);
 }
 
 void AEQPlayerController::Tick(float DeltaSeconds)
@@ -88,17 +86,32 @@ void AEQPlayerController::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 }
 
+void AEQPlayerController::PostSeamlessTravel()
+{
+	Super::PostSeamlessTravel();
+
+	FInputModeGameOnly InputModeGameOnly;
+	SetInputMode(InputModeGameOnly);
+	
+	EQWidgetMainUI = Cast<UEQWidgetMainUI>(CreateWidget(GetWorld(), MainUIFactory));
+	if (EQWidgetMainUI && IsLocalController())
+	{
+		EQWidgetMainUI->AddToViewport();
+		// auto Inventory = GetCharacter()->FindComponentByClass<UEQComponentInventory>();
+		GEngine->AddOnScreenDebugMessage(-1,5,FColor::Red,TEXT("123"));
+		// Inventory->LoadInventory();
+		OnSeamlessCompleted.Broadcast();
+	}
+}
+
 void AEQPlayerController::CreateMainWidget()
 {
-	if (!EQWidgetMainUI)
-	{
-		FInputModeGameOnly InputModeGameOnly;
-		SetInputMode(InputModeGameOnly);
+	FInputModeGameOnly InputModeGameOnly;
+	SetInputMode(InputModeGameOnly);
 
-		EQWidgetMainUI = Cast<UEQWidgetMainUI>(CreateWidget(GetWorld(), MainUIFactory));
-		if (EQWidgetMainUI && IsLocalController())
-		{
-			EQWidgetMainUI->AddToViewport();
-		}
+	EQWidgetMainUI = Cast<UEQWidgetMainUI>(CreateWidget(GetWorld(), MainUIFactory));
+	if (EQWidgetMainUI && IsLocalController())
+	{
+		EQWidgetMainUI->AddToViewport();
 	}
 }

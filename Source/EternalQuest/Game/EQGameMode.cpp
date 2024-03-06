@@ -25,7 +25,7 @@ AEQGameMode::AEQGameMode()
 	GameStateClass = AEQGameState::StaticClass();
 	PlayerStateClass = AEQPlayerState::StaticClass();
 
-	bUseSeamlessTravel = false;
+	bUseSeamlessTravel = true;
 }
 
 void AEQGameMode::PreLogin(const FString& Options, const FString& Address, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage)

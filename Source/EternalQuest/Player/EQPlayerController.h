@@ -9,6 +9,8 @@
 class UEQWidgetInventory;
 class UEQWidgetMainUI;
 
+DECLARE_MULTICAST_DELEGATE(FOnSeamlessCompleted);
+
 UCLASS()
 class ETERNALQUEST_API AEQPlayerController : public APlayerController
 {
@@ -23,6 +25,7 @@ protected:
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
+	virtual void PostSeamlessTravel() override;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=MySettings)
@@ -30,6 +33,8 @@ public:
 
 	UPROPERTY()
 	TObjectPtr<UEQWidgetMainUI> EQWidgetMainUI;
+
+	FOnSeamlessCompleted OnSeamlessCompleted;
 	
 	void CreateMainWidget();
 };
