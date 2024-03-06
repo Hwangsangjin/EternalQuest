@@ -324,9 +324,6 @@ void AEQCharacterPlayer::NetMulticast_SetDead_Implementation()
 	{
 		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 		GetWorld()->GetFirstPlayerController()->SetInputMode(FInputModeUIOnly());
-		UAnimInstance* Animinstance = GetMesh()->GetAnimInstance();
-		Animinstance->StopAllMontages(0.0f);
-		Animinstance->Montage_Play(DeadMontage, 1.0f);
 		SetActorEnableCollision(false);
 		HpBarComp->SetHiddenInGame(true);
 		bIsDead = true;
@@ -337,6 +334,10 @@ void AEQCharacterPlayer::NetMulticast_SetDead_Implementation()
 			DisableInput(PlayerController);
 		}
 	}
+
+	UAnimInstance* Animinstance = GetMesh()->GetAnimInstance();
+	Animinstance->StopAllMontages(0.0f);
+	Animinstance->Montage_Play(DeadMontage, 1.0f);
 }
 
 int32 AEQCharacterPlayer::GetLevel() const
