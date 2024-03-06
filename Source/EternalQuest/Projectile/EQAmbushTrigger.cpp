@@ -13,7 +13,6 @@
 
 AEQAmbushTrigger::AEQAmbushTrigger()
 {
- 	
 	PrimaryActorTick.bCanEverTick = false;
 	Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger"));
 	Trigger -> SetupAttachment(RootComponent);
@@ -51,7 +50,7 @@ void AEQAmbushTrigger::OverLapBegin(UPrimitiveComponent* OverlappedComponent, AA
 
 void AEQAmbushTrigger::ServerRPC_OverLapBegin_Implementation(AActor* OtherActor)
 {
-	if(OtherActor == Player && IsOverlapped == false)
+	if(OtherActor -> IsA<AEQCharacterPlayer>() && IsOverlapped == false)
 	{
 		const FTransform SpawnPoint1 = SpawnLoc1->GetComponentTransform();
 		const FTransform SpawnPoint2 = SpawnLoc2->GetComponentTransform();

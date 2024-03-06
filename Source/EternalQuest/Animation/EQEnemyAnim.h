@@ -17,6 +17,8 @@ public:
 	
 	UPROPERTY(EditAnywhere,Replicated,BlueprintReadWrite,Category= EnemyFSM)
 	EMonsterState State;
+
+	virtual void NativeInitializeAnimation() override;
 	
 	//// Spider ////
 	UFUNCTION()

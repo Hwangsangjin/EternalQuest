@@ -66,7 +66,9 @@ AEQAmbushOrc::AEQAmbushOrc()
 		WeaponComp_R->SetRelativeRotation(FRotator(0,180,0));
 		WeaponComp_R->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
-
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+	bReplicates = true;
+	SetReplicateMovement(true);
 	Experience = 35;
 }
 

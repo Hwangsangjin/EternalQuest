@@ -27,6 +27,7 @@ void UEQWarlockOrcFSM::BeginPlay()
 	AttackTime = 2.0f;
 	BasicSpeed = 150.f;
 	DieTime = 10.0f;
+	SetIsReplicated(true);
 }
 
 void UEQWarlockOrcFSM::TickMove()

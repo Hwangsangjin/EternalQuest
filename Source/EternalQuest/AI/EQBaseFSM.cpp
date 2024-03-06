@@ -10,21 +10,16 @@
 #include "Character/EQCharacterBase.h"
 #include "Character/EQCharacterPlayer.h"
 #include "Character/EQNormalEnemy.h"
-#include "Component/EQComponentInventory.h"
-#include "Components/SlateWrapperTypes.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Item/EQItemBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
 
 UEQBaseFSM::UEQBaseFSM()
 {
-
 	PrimaryComponentTick.bCanEverTick = true;
 	bWantsInitializeComponent = true;
 	SetIsReplicated(true);
-	
 }
 
 
@@ -118,7 +113,7 @@ bool UEQBaseFSM::UpdateRandLoc(FVector OldLoc, float Radius, FVector& NewLoc)
 	auto NS = UNavigationSystemV1::GetNavigationSystem(GetWorld());
 	FNavLocation Location;
 	auto Result = NS->GetRandomReachablePointInRadius(OldLoc,Radius,Location);
-	if (!NS)
+	if(!NS)
 	{
 		return false;
 	}
@@ -212,6 +207,7 @@ void UEQBaseFSM::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifeti
 	DOREPLIFETIME(UEQBaseFSM, DieTime);
 	DOREPLIFETIME(UEQBaseFSM, RandomLoc);
 	DOREPLIFETIME(UEQBaseFSM, bCanAttack);
+	DOREPLIFETIME(UEQBaseFSM, AnimInst);
 	
 }
 

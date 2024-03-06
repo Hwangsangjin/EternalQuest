@@ -116,7 +116,7 @@ void AEQWarlockOrc::DropItem()
 		if (CurrItem)
 		{
 			CurrItem->ItemName.DataTable = ItemDataTable;
-			CurrItem->ItemName.RowName = TEXT("HealthPostion");
+			CurrItem->ItemName.RowName = TEXT("HealingPostion");
 			CurrItem->ItemType = EEQItemType::Consumtion;
 			CurrItem->ItemQuantity = 2;
 		}
@@ -147,7 +147,7 @@ void AEQWarlockOrc::DropItem()
 	if (CurrItem5)
 	{
 		CurrItem5->ItemName.DataTable = ItemDataTable;
-		CurrItem5->ItemName.RowName = TEXT("HealthPostion");
+		CurrItem5->ItemName.RowName = TEXT("HealingPostion");
 		CurrItem5->ItemType = EEQItemType::Consumtion;
 		CurrItem5->ItemQuantity = 2;
 	}
