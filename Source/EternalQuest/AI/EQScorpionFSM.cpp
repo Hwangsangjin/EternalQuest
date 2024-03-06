@@ -100,7 +100,6 @@ void UEQScorpionFSM::TickAttack()
 
 void UEQScorpionFSM::TickDie()
 {
-	Super::TickDie();
 	ServerRPC_ScorpionDie();
 }
 
@@ -171,14 +170,11 @@ void UEQScorpionFSM::ScorpionPrj()
 	bIsUsingSkill = false;
 }
 
-void UEQScorpionFSM::MultiRPC_ScopionDie_Implementation()
-{
-	Self->PlayAnimMontage(AnimMontage,1,FName("Die"));
-}
+
 
 void UEQScorpionFSM::ServerRPC_ScorpionDie_Implementation()
 {
-	if(AnimInst->IsDieDone == false) return;
+	if(IsDieDone == false) return;
 	bCanAttack = false;
 	bIsUsingSkill = true;
 	CurrentTime += GetWorld()->GetDeltaSeconds();
@@ -207,5 +203,14 @@ void UEQScorpionFSM::ServerRPC_ScorpionAttack_Implementation()
 void UEQScorpionFSM::MultiRPC_ScorpionAttack_Implementation()
 {
 	Self->PlayAnimMontage(AnimMontage,1,FName("Attack"));
+	FVector SpawnSound = Self->GetMesh()->GetComponentLocation();
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(),MeleeAttackSound,SpawnSound);
 }
 
+
+void UEQScorpionFSM::MultiRPC_ScopionDie_Implementation()
+{
+	Self->PlayAnimMontage(AnimMontage,1,FName("Die"));
+	FVector SpawnSound = Self->GetMesh()->GetComponentLocation();
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(),DieSound,SpawnSound);
+}

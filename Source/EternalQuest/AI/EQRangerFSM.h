@@ -33,4 +33,6 @@ public:
 	void ServerRPC_SpiderAttack();
 	UFUNCTION(NetMulticast,Unreliable)
 	void MultiRPC_SpiderAttack();
+	UFUNCTION(NetMulticast,Unreliable)
+	void MultiRPC_ShootArrow();
 };

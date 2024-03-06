@@ -10,6 +10,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Navigation/PathFollowingComponent.h"
 #include "AIController.h"
+#include "AssetTypeActions/AssetDefinition_SoundBase.h"
 #include "Character/EQCharacterPlayer.h"
 #include "Character/EQSpider.h"
 #include "Components/ArrowComponent.h"
@@ -126,8 +127,15 @@ void UEQRangerFSM::ShootArrow()
 	{
 		AI->SetFocus(Target,EAIFocusPriority::Gameplay);
 	}
+	MultiRPC_ShootArrow();
 	FTransform ShootPoint = Self->GetMesh()->GetSocketTransform(FName("ArrowPoint"));
 	GetWorld()->SpawnActor<AEQRangerOrcArrow>(PrjFactory,ShootPoint);
+}
+
+void UEQRangerFSM::MultiRPC_ShootArrow_Implementation()
+{
+	FVector SpawnSound = Self->GetMesh()->GetComponentLocation();
+	UGameplayStatics::SpawnSoundAtLocation(GetWorld(),ArrowSound,SpawnSound);
 }
 
 
@@ -157,8 +165,9 @@ void UEQRangerFSM::ServerRPC_SpiderAttack_Implementation()
 }
 void UEQRangerFSM::MultiRPC_SpiderAttack_Implementation()
 {
-	//DrawDebugSphere(GetWorld(),Self->GetActorLocation(),AttackRange,100,FColor::Blue);
 	Self->PlayAnimMontage(AnimMontage,1,FName("Attack"));
+	FVector SpawnSound = Self->GetMesh()->GetComponentLocation();
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(),ArrowSound,SpawnSound);
 }
 
 

@@ -13,6 +13,7 @@
 AEQEnemyPool::AEQEnemyPool()
 {
 	PrimaryActorTick.bCanEverTick = false;
+	bReplicates = true;
 }
 
 

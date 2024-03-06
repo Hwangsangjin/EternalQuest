@@ -59,7 +59,8 @@ void UEQEnemyAnim::AnimNotify_DieEnd()
 	if(NormalEnemy != nullptr)
 	{
 		NormalEnemy->DieEffect();
-		IsDieDone = true;
+		NormalEnemy->BaseFsm->IsDieDone = true;
+		//IsDieDone = true;
 	}
 }
 
@@ -136,7 +137,6 @@ void UEQEnemyAnim::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	
 	DOREPLIFETIME(UEQEnemyAnim, State);
-	DOREPLIFETIME(UEQEnemyAnim, IsDieDone);
-	
+	//DOREPLIFETIME(UEQEnemyAnim, IsDieDone);
 }
 

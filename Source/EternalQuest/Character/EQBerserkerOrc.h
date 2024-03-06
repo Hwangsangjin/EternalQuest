@@ -47,6 +47,7 @@ public:
 	void CheckAttack_L(float Damage, float Radius);
 	void CheckAttack_R(float Damage, float Radius);
 	void EndAttack();
+	void DropItem() override;
 	
 	UFUNCTION(NetMulticast,Unreliable)
 	void MultiRPC_Attack();
