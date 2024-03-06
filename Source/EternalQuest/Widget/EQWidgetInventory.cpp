@@ -41,8 +41,8 @@ void UEQWidgetInventory::NativeConstruct()
 	Btn_Material->OnClicked.AddDynamic(this, &UEQWidgetInventory::OnClickBtnMaterial);
 	Btn_QuestItem->OnClicked.AddDynamic(this, &UEQWidgetInventory::OnClickBtnQuestItem);
 
-	Player = Cast<AEQCharacterPlayer>(GetWorld()->GetFirstPlayerController()->GetPawn());
-	EQComponentInventory = Player->FindComponentByClass<UEQComponentInventory>();
+	// Player = Cast<AEQCharacterPlayer>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	// EQComponentInventory = Player->FindComponentByClass<UEQComponentInventory>();
 }
 
 bool UEQWidgetInventory::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
@@ -84,37 +84,37 @@ void UEQWidgetInventory::ClearItemInventory()
 
 void UEQWidgetInventory::AddItemInventory()
 {
-	for (auto& e : EQComponentInventory->EQAllItem.Equipment)
+	for (auto& e : GetWorld()->GetFirstPlayerController()->GetPawn()->FindComponentByClass<UEQComponentInventory>()->EQAllItem.Equipment)
 	{
 		auto temp = CreateWidget(GetWorld(), ItemSlotFactory);
 		Cast<UEQWidgetItemSlot>(temp)->EQSlot = &e;
 		WrapBox_Equip->AddChildToWrapBox(temp);
 	}
-	for (auto& e : EQComponentInventory->EQAllItem.Consumtion)
+	for (auto& e : GetWorld()->GetFirstPlayerController()->GetPawn()->FindComponentByClass<UEQComponentInventory>()->EQAllItem.Consumtion)
 	{
 		auto temp = CreateWidget(GetWorld(), ItemSlotFactory);
 		Cast<UEQWidgetItemSlot>(temp)->EQSlot = &e;
 		WrapBox_Consume->AddChildToWrapBox(temp);
 	}
-	for (auto& e : EQComponentInventory->EQAllItem.Material)
+	for (auto& e : GetWorld()->GetFirstPlayerController()->GetPawn()->FindComponentByClass<UEQComponentInventory>()->EQAllItem.Material)
 	{
 		auto temp = CreateWidget(GetWorld(), ItemSlotFactory);
 		Cast<UEQWidgetItemSlot>(temp)->EQSlot = &e;
 		WrapBox_Material->AddChildToWrapBox(temp);
 	}
-	for (auto& e : EQComponentInventory->EQAllItem.QuestItem)
+	for (auto& e : GetWorld()->GetFirstPlayerController()->GetPawn()->FindComponentByClass<UEQComponentInventory>()->EQAllItem.QuestItem)
 	{
 		auto temp = CreateWidget(GetWorld(), ItemSlotFactory);
 		Cast<UEQWidgetItemSlot>(temp)->EQSlot = &e;
 		WrapBox_QuestItem->AddChildToWrapBox(temp);
 	}
-	for (auto& e : EQComponentInventory->EQAllItem.EquippingSword)
+	for (auto& e : GetWorld()->GetFirstPlayerController()->GetPawn()->FindComponentByClass<UEQComponentInventory>()->EQAllItem.EquippingSword)
 	{
 		auto temp = CreateWidget(GetWorld(), ItemSlotFactory);
 		Cast<UEQWidgetItemSlot>(temp)->EQSlot = &e;
 		WrapBox_Equipping->AddChildToWrapBox(temp);
 	}
-	for (auto& e : EQComponentInventory->EQAllItem.EquippingShield)
+	for (auto& e : GetWorld()->GetFirstPlayerController()->GetPawn()->FindComponentByClass<UEQComponentInventory>()->EQAllItem.EquippingShield)
 	{
 		auto temp = CreateWidget(GetWorld(), ItemSlotFactory);
 		Cast<UEQWidgetItemSlot>(temp)->EQSlot = &e;

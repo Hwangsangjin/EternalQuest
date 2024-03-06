@@ -363,13 +363,13 @@ void AEQCharacterPlayer::SetUserName()
 		const APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
 		if (PlayerController)
 		{
-			// UserName = FText::FromString(PlayerController->GetPlayerState<APlayerState>()->GetPlayerName());
+			UserName = FText::FromString(PlayerController->GetPlayerState<APlayerState>()->GetPlayerName());
 		}
 	}
 
 	if (!HasAuthority())
 	{
-		//Server_SetUserName(UserName);
+		Server_SetUserName(UserName);
 	}
 }
 

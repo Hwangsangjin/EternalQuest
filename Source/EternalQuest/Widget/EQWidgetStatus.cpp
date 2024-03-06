@@ -32,7 +32,7 @@ void UEQWidgetStatus::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	StatComp = GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>();
+	// StatComp = GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>();
 
 	if (Cast<UEQGameInstance>(GetWorld()->GetGameInstance())->GetClassType() == EClassType::ECT_Warrior)
 	{
@@ -48,28 +48,29 @@ void UEQWidgetStatus::NativeConstruct()
 	Btn_IncreaseSTR->OnClicked.AddDynamic(this, &UEQWidgetStatus::OnClickedIncreaseSTR);
 	Btn_IncreaseINT->OnClicked.AddDynamic(this, &UEQWidgetStatus::OnClickedIncreaseINT);
 	Btn_IncreaseDEF->OnClicked.AddDynamic(this, &UEQWidgetStatus::OnClickedIncreaseDEF);
-
-	if (StatComp)
-	{
-		StatComp->OnHpChanged.AddUObject(this, &ThisClass::UpdateState);
-	}
 	
 	UpdateStatUp();
 }
 
 void UEQWidgetStatus::InitUpdateStat()
 {
-	Txt_OriginHP->SetText(FText::FromString(FString::Printf(TEXT("%.f"), StatComp->StatusStat.HP)));
-	Txt_OriginMP->SetText(FText::FromString(FString::Printf(TEXT("%.f"), StatComp->StatusStat.MP)));
-	Txt_OriginSTR->SetText(FText::FromString(FString::Printf(TEXT("%.f"), StatComp->StatusStat.Str)));
-	Txt_OriginINT->SetText(FText::FromString(FString::Printf(TEXT("%.f"), StatComp->StatusStat.Int)));
-	Txt_OriginDEF->SetText(FText::FromString(FString::Printf(TEXT("%.f"), StatComp->StatusStat.Def)));
+	if (GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>() && !bFlagOnHPChangeAddUObject)
+	{
+		bFlagOnHPChangeAddUObject = true;
+		GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>()->OnHpChanged.AddUObject(this, &ThisClass::UpdateState);
+	}
+	
+	Txt_OriginHP->SetText(FText::FromString(FString::Printf(TEXT("%.f"), GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>()->StatusStat.HP)));
+	Txt_OriginMP->SetText(FText::FromString(FString::Printf(TEXT("%.f"), GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>()->StatusStat.MP)));
+	Txt_OriginSTR->SetText(FText::FromString(FString::Printf(TEXT("%.f"), GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>()->StatusStat.Str)));
+	Txt_OriginINT->SetText(FText::FromString(FString::Printf(TEXT("%.f"), GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>()->StatusStat.Int)));
+	Txt_OriginDEF->SetText(FText::FromString(FString::Printf(TEXT("%.f"), GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>()->StatusStat.Def)));
 
-	Prog_HP->SetPercent(StatComp->StatusStat.HP/MaxPoint);
-	Prog_MP->SetPercent(StatComp->StatusStat.MP/MaxPoint);
-	Prog_STR->SetPercent(StatComp->StatusStat.Str/MaxPoint);
-	Prog_INT->SetPercent(StatComp->StatusStat.Int/MaxPoint);
-	Prog_DEF->SetPercent(StatComp->StatusStat.Def/MaxPoint);
+	Prog_HP->SetPercent(GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>()->StatusStat.HP/MaxPoint);
+	Prog_MP->SetPercent(GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>()->StatusStat.MP/MaxPoint);
+	Prog_STR->SetPercent(GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>()->StatusStat.Str/MaxPoint);
+	Prog_INT->SetPercent(GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>()->StatusStat.Int/MaxPoint);
+	Prog_DEF->SetPercent(GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>()->StatusStat.Def/MaxPoint);
 
 }
 
@@ -157,9 +158,9 @@ void UEQWidgetStatus::UpdateAdditionalStat() //아이템 장착 시 스텟 로�
 void UEQWidgetStatus::OnClickedIncreaseHP()
 {
 	StatPoint--;
-	StatComp->StatusStat.HP++;
-	Prog_HP->SetPercent(StatComp->StatusStat.HP/MaxPoint);
-	Txt_OriginHP->SetText(FText::FromString(FString::Printf(TEXT("%.f"), StatComp->StatusStat.HP)));
+	GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>()->StatusStat.HP++;
+	Prog_HP->SetPercent(GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>()->StatusStat.HP/MaxPoint);
+	Txt_OriginHP->SetText(FText::FromString(FString::Printf(TEXT("%.f"), GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>()->StatusStat.HP)));
 	//
 	UpdateStatUp();
 	PlaySound(StatPointClickSound);
@@ -171,9 +172,9 @@ void UEQWidgetStatus::OnClickedIncreaseHP()
 void UEQWidgetStatus::OnClickedIncreaseMP()
 {
 	StatPoint--;
-	StatComp->StatusStat.MP++;
-	Prog_MP->SetPercent(StatComp->StatusStat.MP/MaxPoint);
-	Txt_OriginMP->SetText(FText::FromString(FString::Printf(TEXT("%.f"), StatComp->StatusStat.MP)));
+	GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>()->StatusStat.MP++;
+	Prog_MP->SetPercent(GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>()->StatusStat.MP/MaxPoint);
+	Txt_OriginMP->SetText(FText::FromString(FString::Printf(TEXT("%.f"), GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>()->StatusStat.MP)));
 	//
 	UpdateStatUp();
 	PlaySound(StatPointClickSound);
@@ -185,9 +186,9 @@ void UEQWidgetStatus::OnClickedIncreaseMP()
 void UEQWidgetStatus::OnClickedIncreaseSTR()
 {
 	StatPoint--;
-	StatComp->StatusStat.Str++;
-	Prog_STR->SetPercent(StatComp->StatusStat.Str/MaxPoint);
-	Txt_OriginSTR->SetText(FText::FromString(FString::Printf(TEXT("%.f"), StatComp->StatusStat.Str)));
+	GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>()->StatusStat.Str++;
+	Prog_STR->SetPercent(GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>()->StatusStat.Str/MaxPoint);
+	Txt_OriginSTR->SetText(FText::FromString(FString::Printf(TEXT("%.f"), GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>()->StatusStat.Str)));
 	//
 	UpdateStatUp();
 	PlaySound(StatPointClickSound);
@@ -199,9 +200,9 @@ void UEQWidgetStatus::OnClickedIncreaseSTR()
 void UEQWidgetStatus::OnClickedIncreaseINT()
 {
 	StatPoint--;
-	StatComp->StatusStat.Int++;
-	Prog_INT->SetPercent(StatComp->StatusStat.Int/MaxPoint);
-	Txt_OriginINT->SetText(FText::FromString(FString::Printf(TEXT("%.f"), StatComp->StatusStat.Int)));
+	GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>()->StatusStat.Int++;
+	Prog_INT->SetPercent(GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>()->StatusStat.Int/MaxPoint);
+	Txt_OriginINT->SetText(FText::FromString(FString::Printf(TEXT("%.f"), GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>()->StatusStat.Int)));
 
 	//
 	UpdateStatUp();
@@ -214,9 +215,9 @@ void UEQWidgetStatus::OnClickedIncreaseINT()
 void UEQWidgetStatus::OnClickedIncreaseDEF()
 {
 	StatPoint--;
-	StatComp->StatusStat.Def++;
-	Prog_DEF->SetPercent(StatComp->StatusStat.Def/MaxPoint);
-	Txt_OriginDEF->SetText(FText::FromString(FString::Printf(TEXT("%.f"), StatComp->StatusStat.Def)));
+	GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>()->StatusStat.Def++;
+	Prog_DEF->SetPercent(GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>()->StatusStat.Def/MaxPoint);
+	Txt_OriginDEF->SetText(FText::FromString(FString::Printf(TEXT("%.f"), GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentStat>()->StatusStat.Def)));
 	//
 	UpdateStatUp();
 	PlaySound(StatPointClickSound);

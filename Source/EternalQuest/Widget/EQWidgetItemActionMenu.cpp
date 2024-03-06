@@ -32,8 +32,8 @@ void UEQWidgetItemActionMenu::NativeConstruct()
 	Btn_Cancel->OnUnhovered.AddDynamic(this, &UEQWidgetItemActionMenu::OnUnhoverBtnCancel);
 	Btn_Cancel->OnClicked.AddDynamic(this, &UEQWidgetItemActionMenu::OnClickBtnCancel);
 
-	auto PC_CastTemp = Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController());
-	EQComponentInventory = PC_CastTemp->GetCharacter()->FindComponentByClass<UEQComponentInventory>();
+	// auto PC_CastTemp = Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController());
+	// EQComponentInventory = PC_CastTemp->GetCharacter()->FindComponentByClass<UEQComponentInventory>();
 }
 
 void UEQWidgetItemActionMenu::BringItemSlotRef(UEQWidgetItemSlot*& InItemSlot)
@@ -59,17 +59,17 @@ void UEQWidgetItemActionMenu::OnClickBtnUse()
 		// 장비창을 만들어 스왑해서 옮겨주기
 		if (EQSlot->ItemID.RowName.ToString().Contains(TEXT("Wand")) || EQSlot->ItemID.RowName.ToString().Contains(TEXT("Sword")))
 		{
-			Swap(EQSlot->Quantity, EQComponentInventory->EQAllItem.EquippingSword.Top().Quantity);
-			Swap(EQSlot->ItemID.RowName, EQComponentInventory->EQAllItem.EquippingSword.Top().ItemID.RowName);
-			EQComponentInventory->SaveInventory();
+			Swap(EQSlot->Quantity, GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentInventory>()->EQAllItem.EquippingSword.Top().Quantity);
+			Swap(EQSlot->ItemID.RowName, GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentInventory>()->EQAllItem.EquippingSword.Top().ItemID.RowName);
+			GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentInventory>()->SaveInventory();
 			Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStatus->UpdateAdditionalStat();
 			// EQWidgetInventory->UpdateItemInInventoryUI();
 		}
 		else if (EQSlot->ItemID.RowName.ToString().Contains(TEXT("Shield")))
 		{
-			Swap(EQSlot->Quantity, EQComponentInventory->EQAllItem.EquippingShield.Top().Quantity);
-			Swap(EQSlot->ItemID.RowName, EQComponentInventory->EQAllItem.EquippingShield.Top().ItemID.RowName);
-			EQComponentInventory->SaveInventory();
+			Swap(EQSlot->Quantity, GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentInventory>()->EQAllItem.EquippingShield.Top().Quantity);
+			Swap(EQSlot->ItemID.RowName, GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentInventory>()->EQAllItem.EquippingShield.Top().ItemID.RowName);
+			GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentInventory>()->SaveInventory();
 			Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStatus->UpdateAdditionalStat();
 			// EQWidgetInventory->UpdateItemInInventoryUI();
 		}
@@ -83,7 +83,7 @@ void UEQWidgetItemActionMenu::OnClickBtnUse()
 		
 		EQSlot->Quantity--;
 		InventoryWidget->UpdateItemInInventoryUI();
-		EQComponentInventory->SaveInventory();
+		GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentInventory>()->SaveInventory();
 		StatComp->SetHp(StatComp->GetCurrentHp() + UseItem->Healing);
 	}
 	else
@@ -118,7 +118,7 @@ void UEQWidgetItemActionMenu::OnClickBtnDrop()
 	// 	EQSlot->Quantity--;
 	// }
 	// EQSlot->ItemID.RowName = TEXT("");
-	EQComponentInventory->DropItem(EQSlot);
+	GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentInventory>()->DropItem(EQSlot);
 	Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetInventory->
 	                                                                   UpdateItemInInventoryUI();
 	this->SetVisibility(ESlateVisibility::Hidden);

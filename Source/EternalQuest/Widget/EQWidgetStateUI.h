@@ -25,6 +25,7 @@ public:
 
 	void UpdateStateUI(float InCurrentHP, float InMaxHP);
 	void SetMaxHP();
+	void AddCallBackFunc();
 
 	float MaxHP;
 
