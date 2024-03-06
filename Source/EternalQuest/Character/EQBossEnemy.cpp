@@ -5,6 +5,7 @@
 
 #include "EQCharacterPlayer.h"
 #include "AI/EQMonsterAbility.h"
+#include "Player/EQPlayerController.h"
 #include "Widget/EQBossMonsterHPUI.h"
 
 AEQBossEnemy::AEQBossEnemy()
@@ -58,3 +59,20 @@ void AEQBossEnemy::RemoveBossHPBar()
 		BossHp = Cast<UEQBossMonsterHPUI>(UI);
 	}
 }
+
+void AEQBossEnemy::BackToVillage()
+{
+	if (HasAuthority())
+	{
+		UWorld* World = GetWorld();
+		if (World)
+		{
+			FString PathToLevel = FString("/Game/Maps/VillageMap?listen");
+			World->ServerTravel(PathToLevel);
+			World->SeamlessTravel(PathToLevel);
+			Cast<AEQPlayerController>(World->GetFirstPlayerController())->CreateMainWidget();
+		}
+	}
+}
+
+
