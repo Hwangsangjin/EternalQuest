@@ -741,7 +741,6 @@ void UEQComponentSkill::UpdatePreviewMesh()
 {
 	if (!bDoOnceMeshSet)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Cyan, TEXT("bDoOnceMeshSet"));
 		UActorComponent* TempComponent = Player->AddComponentByClass(PreviewMeshFactory, false, PreviewMeshTransform, false);
 		PreviewMeshComponent = Cast<UStaticMeshComponent>(TempComponent);
 		PreviewMeshComponent->SetStaticMesh(PreviewMesh);
