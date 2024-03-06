@@ -7,6 +7,7 @@
 #include "Component/EQComponentQuest.h"
 #include "Component/EQComponentStat.h"
 #include "Item/EQItemBase.h"
+#include "Player/EQPlayerController.h"
 
 AEQCharacterNeutralPlayerKHO::AEQCharacterNeutralPlayerKHO()
 {
@@ -53,6 +54,8 @@ void AEQCharacterNeutralPlayerKHO::QuestAccepted()
 		{
 			FString PathToLevel = FString("/Game/Maps/DungeonMap?listen");
 			World->ServerTravel(PathToLevel);
+			World->SeamlessTravel(PathToLevel);
+			Cast<AEQPlayerController>(World->GetFirstPlayerController())->CreateMainWidget();
 		}
 	}
 }

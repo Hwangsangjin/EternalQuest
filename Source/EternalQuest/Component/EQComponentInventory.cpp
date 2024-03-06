@@ -36,7 +36,8 @@ void UEQComponentInventory::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	// LoadInventory();
+	LoadInventory();
+	
 	if (EQAllItem.IsEmpty())
 	{
 		EmptySlot.ItemID.DataTable = ItemID;
@@ -227,10 +228,10 @@ void UEQComponentInventory::SaveInventory()
 void UEQComponentInventory::LoadInventory()
 {
 	UEQSaveGame* SaveGameInstance = Cast<UEQSaveGame>(UGameplayStatics::CreateSaveGameObject(SaveGameFactory));
+	SaveGameInstance = Cast<UEQSaveGame>(UGameplayStatics::LoadGameFromSlot("EQSlot", 0));
 	
 	if (SaveGameInstance)
 	{
-		SaveGameInstance = Cast<UEQSaveGame>(UGameplayStatics::LoadGameFromSlot("EQSlot", 0));
 		EQAllItem = SaveGameInstance->EQAllItem;
 		GetOwner()->FindComponentByClass<UEQComponentStat>()->StatusStat = SaveGameInstance->StatusStat;
 		GetOwner()->FindComponentByClass<UEQComponentQuest>()->QuestCondition = SaveGameInstance->QuestCondition;

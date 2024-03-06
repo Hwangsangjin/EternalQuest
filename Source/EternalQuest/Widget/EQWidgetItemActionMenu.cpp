@@ -61,6 +61,7 @@ void UEQWidgetItemActionMenu::OnClickBtnUse()
 		{
 			Swap(EQSlot->Quantity, EQComponentInventory->EQAllItem.EquippingSword.Top().Quantity);
 			Swap(EQSlot->ItemID.RowName, EQComponentInventory->EQAllItem.EquippingSword.Top().ItemID.RowName);
+			EQComponentInventory->SaveInventory();
 			Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStatus->UpdateAdditionalStat();
 			// EQWidgetInventory->UpdateItemInInventoryUI();
 		}
@@ -68,6 +69,7 @@ void UEQWidgetItemActionMenu::OnClickBtnUse()
 		{
 			Swap(EQSlot->Quantity, EQComponentInventory->EQAllItem.EquippingShield.Top().Quantity);
 			Swap(EQSlot->ItemID.RowName, EQComponentInventory->EQAllItem.EquippingShield.Top().ItemID.RowName);
+			EQComponentInventory->SaveInventory();
 			Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetStatus->UpdateAdditionalStat();
 			// EQWidgetInventory->UpdateItemInInventoryUI();
 		}
@@ -81,6 +83,7 @@ void UEQWidgetItemActionMenu::OnClickBtnUse()
 		
 		EQSlot->Quantity--;
 		InventoryWidget->UpdateItemInInventoryUI();
+		EQComponentInventory->SaveInventory();
 		StatComp->SetHp(StatComp->GetCurrentHp() + UseItem->Healing);
 	}
 	else

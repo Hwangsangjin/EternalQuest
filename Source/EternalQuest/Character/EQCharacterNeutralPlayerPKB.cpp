@@ -28,8 +28,8 @@ void AEQCharacterNeutralPlayerPKB::BeginPlay()
 	NPCName = TEXT("경복");
 	NPCPrompt.PushLast(TEXT("승태한테 새로운 모험가가 왔다고 이야기는 들었어"));
 	NPCPrompt.PushLast(TEXT("나는 VFX 대장장이 경복이라고 해"));
-	NPCPrompt.PushLast(TEXT("마을에 나가서 내가 만든 새로운 펭귄소드를 시험해보려 하는데"));
-	NPCPrompt.PushLast(TEXT("엄청 큰 전갈이 와서 내 펭귄 소드를 뺏어버렸지 뭐야?"));
+	NPCPrompt.PushLast(TEXT("마을에 나가서 내가 만든 새로운 펭귄빠따를 시험해보려 하는데"));
+	NPCPrompt.PushLast(TEXT("엄청 큰 전갈이 와서 내 펭귄빠따를 뺏어버렸지 뭐야?"));
 	NPCPrompt.PushLast(TEXT("나 혼자서는 감당 못할것 같아서 네가 가져다줬으면 하는데"));
 	NPCPrompt.PushLast(TEXT("혹시 가능하겠니?, 가져다주면 새로운 무기를 줄게! QuestTag"));
 }
@@ -42,7 +42,7 @@ void AEQCharacterNeutralPlayerPKB::QuestAccepted()
 	{
 		GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentQuest>()->QuestCondition.QuestStateArray[1] = 1;
 	}
-	NPCPrompt.PushLast(TEXT("내 펭귄 소드..."));
+	NPCPrompt.PushLast(TEXT("내 펭귄 빠따..."));
 	QuestIcon->SetVisibility(false);
 }
 
@@ -72,7 +72,7 @@ void AEQCharacterNeutralPlayerPKB::QuestSuccess()
 	}
 	
 	NPCPrompt.Reset();
-	NPCPrompt.PushLast(TEXT("내 펭귄소드 찾아주었구나! 고마워, 이건 내 혼이 담긴 새싹혼 무기야."));
+	NPCPrompt.PushLast(TEXT("내 펭귄빠따를 찾아주었구나! 고마워, 이건 내 혼이 담긴 새싹혼 무기야."));
 	auto CurrItem = GetWorld()->SpawnActorDeferred<AEQItemBase>(SpawnItemFactory, GetActorTransform());
 	if (CurrItem)
 	{

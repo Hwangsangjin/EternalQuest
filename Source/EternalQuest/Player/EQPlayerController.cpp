@@ -8,6 +8,7 @@
 
 AEQPlayerController::AEQPlayerController()
 {
+	
 	static ConstructorHelpers::FClassFinder<UEQWidgetMainUI> MainUIRef(TEXT("/Game/Blueprints/UI/WBP_WidgetMain.WBP_WidgetMain_C"));
 	if (MainUIRef.Succeeded())
 	{
@@ -22,6 +23,7 @@ void AEQPlayerController::PostInitializeComponents()
 	Super::PostInitializeComponents();
 
 	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), TEXT("End"));
+	
 }
 
 void AEQPlayerController::PostNetInit()
@@ -66,10 +68,32 @@ void AEQPlayerController::BeginPlay()
 
 	FInputModeGameOnly InputModeGameOnly;
 	SetInputMode(InputModeGameOnly);
-
+	
 	EQWidgetMainUI = Cast<UEQWidgetMainUI>(CreateWidget(GetWorld(), MainUIFactory));
 	if (EQWidgetMainUI && IsLocalController())
 	{
 		EQWidgetMainUI->AddToViewport();
+	}
+
+	EQWidgetMainUI->SetVisibility(ESlateVisibility::Visible);
+}
+
+void AEQPlayerController::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+}
+
+void AEQPlayerController::CreateMainWidget()
+{
+	if (!EQWidgetMainUI)
+	{
+		FInputModeGameOnly InputModeGameOnly;
+		SetInputMode(InputModeGameOnly);
+
+		EQWidgetMainUI = Cast<UEQWidgetMainUI>(CreateWidget(GetWorld(), MainUIFactory));
+		if (EQWidgetMainUI && IsLocalController())
+		{
+			EQWidgetMainUI->AddToViewport();
+		}
 	}
 }

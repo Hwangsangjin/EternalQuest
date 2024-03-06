@@ -22,6 +22,7 @@ protected:
 	virtual void PostNetInit() override;
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=MySettings)
@@ -29,4 +30,6 @@ public:
 
 	UPROPERTY()
 	TObjectPtr<UEQWidgetMainUI> EQWidgetMainUI;
+	
+	void CreateMainWidget();
 };
