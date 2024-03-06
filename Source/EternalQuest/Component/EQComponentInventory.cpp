@@ -36,7 +36,7 @@ void UEQComponentInventory::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	LoadInventory();
+	// LoadInventory();
 	
 	if (EQAllItem.IsEmpty())
 	{

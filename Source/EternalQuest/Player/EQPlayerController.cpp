@@ -4,6 +4,8 @@
 #include "Player/EQPlayerController.h"
 #include "EternalQuest.h"
 #include "Blueprint/UserWidget.h"
+#include "Component/EQComponentInventory.h"
+#include "GameFramework/Character.h"
 #include "Widget/EQWidgetMainUI.h"
 
 AEQPlayerController::AEQPlayerController()
@@ -73,6 +75,9 @@ void AEQPlayerController::BeginPlay()
 	if (EQWidgetMainUI && IsLocalController())
 	{
 		EQWidgetMainUI->AddToViewport();
+		auto Inventory = GetCharacter()->FindComponentByClass<UEQComponentInventory>();
+		GEngine->AddOnScreenDebugMessage(-1,5,FColor::Red,TEXT("123"));
+		Inventory->LoadInventory();
 	}
 
 	EQWidgetMainUI->SetVisibility(ESlateVisibility::Visible);

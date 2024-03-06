@@ -55,7 +55,6 @@ protected:
 	virtual void PostNetInit() override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
-
 public:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	virtual void Jump() override;

@@ -20,4 +20,5 @@ public:
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 	virtual void StartPlay() override;
 	virtual void Logout(AController* Exiting) override;
+
 };
