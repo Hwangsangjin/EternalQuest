@@ -6,11 +6,11 @@
 #include "Blueprint/UserWidget.h"
 #include "Component/EQComponentInventory.h"
 #include "GameFramework/Character.h"
+#include "Net/UnrealNetwork.h"
 #include "Widget/EQWidgetMainUI.h"
 
 AEQPlayerController::AEQPlayerController()
 {
-	
 	static ConstructorHelpers::FClassFinder<UEQWidgetMainUI> MainUIRef(TEXT("/Game/Blueprints/UI/WBP_WidgetMain.WBP_WidgetMain_C"));
 	if (MainUIRef.Succeeded())
 	{
@@ -75,9 +75,6 @@ void AEQPlayerController::BeginPlay()
 	if (EQWidgetMainUI && IsLocalController())
 	{
 		EQWidgetMainUI->AddToViewport();
-		// auto Inventory = GetCharacter()->FindComponentByClass<UEQComponentInventory>(); // EQComponentInventory에서 대신 해줌.
-		GEngine->AddOnScreenDebugMessage(-1,5,FColor::Red,TEXT("123"));
-		// Inventory->LoadInventory();
 	}
 }
 
@@ -90,6 +87,15 @@ void AEQPlayerController::PostSeamlessTravel()
 {
 	Super::PostSeamlessTravel();
 
+	if (HasAuthority())
+	{
+		GEngine->AddOnScreenDebugMessage(-1,50,FColor::Red, TEXT("서버일 때"));
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1,50,FColor::Green, TEXT("클라일 때"));
+	}
+	
 	FInputModeGameOnly InputModeGameOnly;
 	SetInputMode(InputModeGameOnly);
 	
@@ -97,11 +103,15 @@ void AEQPlayerController::PostSeamlessTravel()
 	if (EQWidgetMainUI && IsLocalController())
 	{
 		EQWidgetMainUI->AddToViewport();
-		// auto Inventory = GetCharacter()->FindComponentByClass<UEQComponentInventory>();
-		GEngine->AddOnScreenDebugMessage(-1,5,FColor::Red,TEXT("123"));
-		// Inventory->LoadInventory();
-		OnSeamlessCompleted.Broadcast();
+		
 	}
+}
+
+void AEQPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AEQPlayerController, MainUIFactory);
 }
 
 void AEQPlayerController::CreateMainWidget()
