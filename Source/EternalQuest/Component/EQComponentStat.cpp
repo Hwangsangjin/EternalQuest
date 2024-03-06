@@ -25,6 +25,8 @@ void UEQComponentStat::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 
 	DOREPLIFETIME(ThisClass, CurrentHp);
 	DOREPLIFETIME(ThisClass, MaxHp);
+	DOREPLIFETIME(ThisClass, CurrentExp);
+	DOREPLIFETIME(ThisClass, MaxExp);
 	DOREPLIFETIME_CONDITION(ThisClass, BaseStat, COND_OwnerOnly);
 	DOREPLIFETIME_CONDITION(ThisClass, ModifierStat, COND_OwnerOnly);
 }
@@ -37,6 +39,7 @@ void UEQComponentStat::InitializeComponent()
 	ResetStat();
 
 	OnStatChanged.AddUObject(this, &ThisClass::SetNewMaxHp);
+	OnStatChanged.AddUObject(this, &ThisClass::SetNewMaxExp);
 
 	SetIsReplicated(true);
 }
@@ -123,9 +126,10 @@ void UEQComponentStat::SetNewMaxExp(const FEQCharacterStat& InBaseStat, const FE
 
 void UEQComponentStat::SetExp(float ExpAmount)
 {
-	CurrentExp = FMath::Clamp<float>(CurrentExp + ExpAmount, 0.0f, MaxExp);
+	CurrentExp = CurrentExp + ExpAmount;
+	SetLevelStat(CurrentLevel++);
 
-	OnExpChanged.Broadcast(CurrentExp, MaxExp);
+	//OnExpChanged.Broadcast(CurrentExp, MaxExp);
 }
 
 void UEQComponentStat::OnRep_CurrentHp()
@@ -155,7 +159,7 @@ void UEQComponentStat::OnRep_CurrentExp()
 
 	if (CurrentExp >= MaxExp)
 	{
-		OnExpChanged.Broadcast(CurrentExp, MaxExp);
+		SetLevelStat(CurrentLevel++);
 	}
 }
 

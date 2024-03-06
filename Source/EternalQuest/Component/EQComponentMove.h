@@ -23,7 +23,6 @@ protected:
 
 public:
 	virtual void SetupPlayerInput(UInputComponent* PlayerInputComponent) override;
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 // Jump
 protected:
@@ -74,6 +73,7 @@ public:
 protected:
 	void Sprint(const FInputActionValue& Value);
 	void StopSprinting(const FInputActionValue& Value);
+	void ResetFieldOfView();
 
 private:
 	bool bIsSprinting = false;

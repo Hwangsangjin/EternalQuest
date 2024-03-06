@@ -24,8 +24,6 @@
 
 UEQComponentMove::UEQComponentMove()
 {
-	PrimaryComponentTick.bCanEverTick = true;
-
 	static ConstructorHelpers::FObjectFinder<UInputAction> JumpActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/Input/Actions/IA_Jump.IA_Jump'"));
 	if (JumpActionRef.Succeeded())
 	{
@@ -87,19 +85,6 @@ void UEQComponentMove::SetupPlayerInput(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &ThisClass::Sprint);
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ThisClass::StopSprinting);
 		EnhancedInputComponent->BindAction(EnterAction, ETriggerEvent::Completed, this, &ThisClass::Enter);
-	}
-}
-
-void UEQComponentMove::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	if (!bIsSprinting)
-	{
-		constexpr float DefaultFieldOfView = 90.0f;
-		constexpr int32 DefaultInterpSpeed = 5;
-		CurrentFieldOfView = FMath::FInterpTo(CurrentFieldOfView, DefaultFieldOfView, DeltaTime, DefaultInterpSpeed);
-		Player->GetFollowCamera()->FieldOfView = CurrentFieldOfView;
 	}
 }
 
@@ -254,19 +239,22 @@ void UEQComponentMove::StopSprinting(const FInputActionValue& Value)
 		constexpr float DefaultSpeed = 450.0f;
 		Player->GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
 		
-		/*constexpr float DefaultFieldOfView = 90.0f;
+		constexpr float DefaultFieldOfView = 90.0f;
 		if (CurrentFieldOfView >= DefaultFieldOfView - KINDA_SMALL_NUMBER)
 		{
 			GetWorld()->GetGameInstance()->GetTimerManager().ClearTimer(SprintTimerHandle);
 		}
 
-		GetWorld()->GetGameInstance()->GetTimerManager().SetTimer(SprintTimerHandle, FTimerDelegate::CreateLambda([&]
-			{
-				constexpr int32 DefaultInterpSpeed = 5;
-				CurrentFieldOfView = FMath::FInterpTo(CurrentFieldOfView, DefaultFieldOfView, GetWorld()->GetDeltaSeconds(), DefaultInterpSpeed);
-				Player->GetFollowCamera()->FieldOfView = CurrentFieldOfView;
-			}), GetWorld()->GetDeltaSeconds(), true);*/
+		GetWorld()->GetGameInstance()->GetTimerManager().SetTimer(SprintTimerHandle, this, &ThisClass::ResetFieldOfView, GetWorld()->GetDeltaSeconds(), true);
 	}
+}
+
+void UEQComponentMove::ResetFieldOfView()
+{
+	constexpr int32 DefaultInterpSpeed = 5;
+	constexpr float DefaultFieldOfView = 90.0f;
+	CurrentFieldOfView = FMath::FInterpTo(CurrentFieldOfView, DefaultFieldOfView, GetWorld()->GetDeltaSeconds(), DefaultInterpSpeed);
+	Player->GetFollowCamera()->FieldOfView = CurrentFieldOfView;
 }
 
 void UEQComponentMove::Enter(const FInputActionValue& Value)

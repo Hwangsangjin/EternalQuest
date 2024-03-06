@@ -212,6 +212,22 @@ protected:
 protected:
 	virtual void SetupCharacterWidget(UEQWidgetBase* InWidgetBase) override;
 
+// User Name
+public:
+	FORCEINLINE FText GetUserName() const { return UserName; }
+	void SetUserName();
+
+protected:
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_SetUserName(const FText& InUserName);
+
+	UFUNCTION(Client, Reliable)
+	void Client_SetUserName(const FText& InUserName);
+
+private:
+	UPROPERTY(Replicated)
+	FText UserName;
+
 // Component
 public:
 	FORCEINLINE UEQComponentMove* GetMoveComponent() const { return MoveComp; }

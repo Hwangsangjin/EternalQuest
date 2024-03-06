@@ -1,8 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Widget/EQWidgetUserName.h"
 #include "Components/TextBlock.h"
+#include "Character/EQCharacterPlayer.h"
 #include "Interface/EQInterfaceCharacterWidget.h"
 
 UEQWidgetUserName::UEQWidgetUserName(const FObjectInitializer& ObjectInitialzer)
@@ -14,7 +15,7 @@ void UEQWidgetUserName::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	TextBlock_UserName = Cast<UTextBlock>(GetWidgetFromName(TEXT("TextBlock_UserName")));
+	TextBlock_UserName->SetText(Cast<AEQCharacterPlayer>(OwningActor)->GetUserName());
 	ensure(TextBlock_UserName);
 
 	IEQInterfaceCharacterWidget* CharacterWidget = Cast<IEQInterfaceCharacterWidget>(OwningActor);
@@ -22,9 +23,4 @@ void UEQWidgetUserName::NativeConstruct()
 	{
 		CharacterWidget->SetupCharacterWidget(this);
 	}
-}
-
-void UEQWidgetUserName::SetUserName(FText InUserName)
-{
-	TextBlock_UserName->SetText(InUserName);
 }
