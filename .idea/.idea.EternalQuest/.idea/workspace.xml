@@ -11,12 +11,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="63226f85-0a41-4fd5-9731-20837f29bd3b" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/BP_Berserker.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/BP_Berserker.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Maps/DungeonMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/DungeonMap.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Sequence/BossSequence.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Sequence/BossSequence.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/AI/EQMonsterAbility.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/AI/EQMonsterAbility.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Character/EQScorpion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Character/EQScorpion.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Character/EQSpider.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Character/EQSpider.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.EternalQuest/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.EternalQuest/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Character/EQCharacterPlayer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Character/EQCharacterPlayer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Component/EQComponentInventory.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Component/EQComponentInventory.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/EternalQuest/Widget/EQWidgetQuestList.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EternalQuest/Widget/EQWidgetQuestList.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,7 +45,7 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;KSE&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;LDJ&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -195,6 +193,8 @@
       <workItem from="1709109537782" duration="2000" />
       <workItem from="1709538693085" duration="65000" />
       <workItem from="1709623475925" duration="253000" />
+      <workItem from="1709686650178" duration="361000" />
+      <workItem from="1709687023655" duration="1192000" />
     </task>
     <servers />
   </component>
