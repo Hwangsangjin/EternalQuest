@@ -176,8 +176,6 @@ void AEQCharacterPlayer::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(ThisClass, UserName);
-
 	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), *GetName(), TEXT("End"));
 }
 
@@ -202,7 +200,7 @@ void AEQCharacterPlayer::PossessedBy(AController* NewController)
 
 	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), TEXT("End"));
 
-	SetUserName();
+	UpdateUserName();
 	UpdateMesh();
 }
 
@@ -233,7 +231,7 @@ void AEQCharacterPlayer::OnRep_PlayerState()
 
 	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), *GetName(), TEXT("End"));
 
-	SetUserName();
+	UpdateUserName();
 	UpdateMesh();
 }
 
@@ -356,50 +354,58 @@ void AEQCharacterPlayer::SetupCharacterWidget(UEQWidgetBase* InWidgetBase)
 	}
 }
 
-void AEQCharacterPlayer::SetUserName()
+void AEQCharacterPlayer::UpdateUserName()
 {
 	if (IsLocallyControlled())
 	{
-		const APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-		if (PlayerController)
+		UEQWidgetUserName* UserNameWidget = Cast<UEQWidgetUserName>(Cast<UEQWidgetBase>(UserNameComp->GetWidget()));
+		if (UserNameWidget)
 		{
-			UserName = FText::FromString(PlayerController->GetPlayerState<APlayerState>()->GetPlayerName());
+			FString UserName = GetWorld()->GetFirstPlayerController()->GetPlayerState<AEQPlayerState>()->GetUserName();
+			UserNameWidget->SetUserName(UserName);
 		}
 	}
 
 	if (!HasAuthority())
 	{
-		Server_SetUserName(UserName);
+		FString UserName = Cast<UEQGameInstance>(GetGameInstance())->GetUserName();
+		Server_UpdateUserName(UserName);
 	}
 }
 
-bool AEQCharacterPlayer::Server_SetUserName_Validate(const FText& InUserName)
+bool AEQCharacterPlayer::Server_UpdateUserName_Validate(const FString& InUserName)
 {
 	return true;
 }
 
-void AEQCharacterPlayer::Server_SetUserName_Implementation(const FText& InUserName)
+void AEQCharacterPlayer::Server_UpdateUserName_Implementation(const FString& InUserName)
 {
 	for (AEQCharacterPlayer* CharacterPlayer : TActorRange<AEQCharacterPlayer>(GetWorld()))
 	{
 		if (CharacterPlayer->IsLocallyControlled())
 		{
-			continue;
+			UEQWidgetUserName* UserNameWidget = Cast<UEQWidgetUserName>(Cast<UEQWidgetBase>(CharacterPlayer->UserNameComp->GetWidget()));
+			if (UserNameWidget)
+			{
+				FString UserName = CharacterPlayer->GetWorld()->GetFirstPlayerController()->GetPlayerState<AEQPlayerState>()->GetUserName();
+				UserNameWidget->SetUserName(UserName);
+			}
 		}
 		else
 		{
-			const APlayerController* PlayerController = CharacterPlayer->GetWorld()->GetFirstPlayerController();
-			if (PlayerController)
+			UEQWidgetUserName* UserNameWidget = Cast<UEQWidgetUserName>(Cast<UEQWidgetBase>(CharacterPlayer->UserNameComp->GetWidget()));
+			if (UserNameWidget)
 			{
-				CharacterPlayer->UserName = FText::FromString(PlayerController->GetPlayerState<APlayerState>()->GetPlayerName());
+				UserNameWidget->SetUserName(InUserName);
 			}
 		}
 	}
 
-	Client_SetUserName(UserName);
+	FString UserName = GetWorld()->GetFirstPlayerController()->GetPlayerState<AEQPlayerState>()->GetUserName();
+	Client_UpdateUserName(UserName);
 }
 
-void AEQCharacterPlayer::Client_SetUserName_Implementation(const FText& InUserName)
+void AEQCharacterPlayer::Client_UpdateUserName_Implementation(const FString& InUserName)
 {
 	for (AEQCharacterPlayer* CharacterPlayer : TActorRange<AEQCharacterPlayer>(GetWorld()))
 	{
@@ -409,7 +415,11 @@ void AEQCharacterPlayer::Client_SetUserName_Implementation(const FText& InUserNa
 		}
 		else
 		{
-			CharacterPlayer->UserName = InUserName;
+			UEQWidgetUserName* UserNameWidget = Cast<UEQWidgetUserName>(Cast<UEQWidgetBase>(CharacterPlayer->UserNameComp->GetWidget()));
+			if (UserNameWidget)
+			{
+				UserNameWidget->SetUserName(InUserName);
+			}
 		}
 	}
 }

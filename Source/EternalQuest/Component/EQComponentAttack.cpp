@@ -8,6 +8,7 @@
 #include "Character/EQCharacterComboAttackData.h"
 #include "Character/EQCharacterEnemy.h"
 #include "Component/EQComponentStat.h"
+#include "Component/EQComponentSkill.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Game/EQGameInstance.h"
 #include "Components/CapsuleComponent.h"
@@ -115,6 +116,11 @@ void UEQComponentAttack::AttackHitCheck()
 void UEQComponentAttack::LeftAttack()
 {
 	if (IsAttack())
+	{
+		return;
+	}
+
+	if (Player->GetSkillComponent()->IsSkill())
 	{
 		return;
 	}
@@ -267,6 +273,11 @@ void UEQComponentAttack::RightAttack()
 	}
 
 	if (Player->GetCharacterMovement()->IsFalling())
+	{
+		return;
+	}
+
+	if (Player->GetSkillComponent()->IsSkill())
 	{
 		return;
 	}

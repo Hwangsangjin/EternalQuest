@@ -9,6 +9,7 @@
 #include "Components/BackgroundBlur.h"
 #include "Components/Border.h"
 #include "Components/TextBlock.h"
+#include "GameFramework/PlayerState.h"
 
 void UEQWidgetLogin::LoginSetup(int32 NumberOfPublicConnections, FString TypeOfMatch, FString LevelPath)
 {
@@ -237,6 +238,9 @@ void UEQWidgetLogin::CloseLoadingBorder()
 
 void UEQWidgetLogin::HostButtonClicked()
 {
+	FString UserName = GetOwningPlayerState()->GetPlayerName();
+	GameInstance->SetUserName(UserName);
+
 	Button_Host->SetIsEnabled(false);
 	OpenCharacterSelect();
 	bIsCreateSession = true;
@@ -258,6 +262,9 @@ void UEQWidgetLogin::HostButtonUnhovered()
 
 void UEQWidgetLogin::JoinButtonClicked()
 {
+	FString UserName = GetOwningPlayerState()->GetPlayerName();
+	GameInstance->SetUserName(UserName);
+
 	Button_Join->SetIsEnabled(false);
 	
 	OpenCharacterSelect();
@@ -294,11 +301,6 @@ void UEQWidgetLogin::OnCreateSession(bool bWasSuccessful)
 {
 	if (bWasSuccessful)
 	{
-		/*if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, FString(TEXT("Session created successfully")));
-		}*/
-
 		UWorld* World = GetWorld();
 		if (World)
 		{
@@ -307,11 +309,6 @@ void UEQWidgetLogin::OnCreateSession(bool bWasSuccessful)
 	}
 	else
 	{
-		/*if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString(TEXT("Failed to create session")));
-		}*/
-
 		Button_Host->SetIsEnabled(true);
 	}
 }
@@ -332,11 +329,6 @@ void UEQWidgetLogin::OnFindSessions(const TArray<FOnlineSessionSearchResult>& Se
 
 		if (SettingsValue == MatchType)
 		{
-			/*if (GEngine)
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Cyan, FString::Printf(TEXT("Id: %s, User: %s"), *Id, *User));
-			}*/
-
 			GameInstance->JoinSession(Result);
 			return;
 		}
@@ -358,11 +350,6 @@ void UEQWidgetLogin::OnJoinSession(EOnJoinSessionCompleteResult::Type Result)
 		{
 			FString Address;
 			SessionInterface->GetResolvedConnectString(NAME_GameSession, Address);
-
-			/*if (GEngine)
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, FString::Printf(TEXT("Connect String: %s"), *Address));
-			}*/
 
 			APlayerController* PlayerController = GetGameInstance()->GetFirstLocalPlayerController();
 			if (PlayerController)

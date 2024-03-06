@@ -15,6 +15,19 @@ class ETERNALQUEST_API AEQPlayerState : public APlayerState
 public:
 	virtual void PostInitializeComponents() override;
 
+// User Name
+public:
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE FString GetUserName() { return UserName; }
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE void SetUserName(FString NewUserName) { UserName = NewUserName; }
+	void UpdateUserName();
+
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character, Meta = (AllowPrivateAccess = true))
+	FString UserName;
+
 // Class Type
 public:
 	UFUNCTION(BlueprintCallable)
