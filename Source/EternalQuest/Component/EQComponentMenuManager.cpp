@@ -73,6 +73,7 @@ void UEQComponentMenuManager::TickComponent(float DeltaTime, ELevelTick TickType
 	FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	
 	if (bStateFlag)
 	{
 		if (StatePos.X < 550)
@@ -202,7 +203,10 @@ void UEQComponentMenuManager::FlipFlopMouseMode(const FInputActionValue& Value)
 
 void UEQComponentMenuManager::SeamlessTravelUIRefresh()
 {
+	// Cast<AEQCharacterPlayer>(GetOwner())->CreateMinimap();
+
 	EQPlayerController->UIRefresh();
+	
 	Cast<AEQCharacterPlayer>(GetOwner())->CreateMinimap();
 }
 
