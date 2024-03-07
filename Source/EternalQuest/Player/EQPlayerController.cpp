@@ -107,26 +107,22 @@ void AEQPlayerController::PostSeamlessTravel()
 	// }
 }
 
-void AEQPlayerController::UIRefresh()
+void AEQPlayerController::CreateMainWidget()
 {
-	ServerRPC_UIRefresh();
-}
+	FInputModeGameOnly InputModeGameOnly;
+	SetInputMode(InputModeGameOnly);
 
-void AEQPlayerController::ServerRPC_UIRefresh_Implementation()
-{
-	MultiRPC_UIRefresh();
-}
-
-void AEQPlayerController::MultiRPC_UIRefresh_Implementation()
-{
-	for (const auto& e : TActorRange<AEQPlayerController>(GetWorld()))
+	EQWidgetMainUI = Cast<UEQWidgetMainUI>(CreateWidget(GetWorld(), MainUIFactory));
+	if (EQWidgetMainUI && IsLocalController())
 	{
-		e->UIRefresh();
+		EQWidgetMainUI->AddToViewport();
 	}
 }
 
-void AEQPlayerController::CreateMainWidget()
+void AEQPlayerController::UIRefresh()
 {
+	EQWidgetMainUI->RemoveFromParent();
+	
 	FInputModeGameOnly InputModeGameOnly;
 	SetInputMode(InputModeGameOnly);
 

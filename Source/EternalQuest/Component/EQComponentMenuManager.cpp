@@ -66,6 +66,7 @@ void UEQComponentMenuManager::BeginPlay()
 {
 	Super::BeginPlay();
 	// EQComponentInventory = Player->FindComponentByClass<UEQComponentInventory>();
+	
 }
 
 void UEQComponentMenuManager::TickComponent(float DeltaTime, ELevelTick TickType,
@@ -116,7 +117,18 @@ void UEQComponentMenuManager::TickComponent(float DeltaTime, ELevelTick TickType
 		}
 		EQPlayerController->EQWidgetMainUI->WBP_EQWidgetPostBox->SetRenderTransform(FWidgetTransform(PostBoxPos, FVector2D(1), FVector2D(0), 0));
 	}
+
+	if (bUIRefresh == false)
+	{
+		CurrTimeUIRefresh+=DeltaTime;
+	}
 	
+	if (CurrTimeUIRefresh > 10.f)
+	{
+		bUIRefresh = true;
+		CurrTimeUIRefresh = 0;
+		SeamlessTravelUIRefresh();
+	}
 }
 
 void UEQComponentMenuManager::SetupPlayerInput(UInputComponent* PlayerInputComponent)
@@ -185,6 +197,12 @@ void UEQComponentMenuManager::FlipFlopMouseMode(const FInputActionValue& Value)
 		const FInputModeGameAndUI GameAndUI;
 		EQPlayerController->SetInputMode(GameAndUI);
 	}
+}
+
+void UEQComponentMenuManager::SeamlessTravelUIRefresh()
+{
+	EQPlayerController->UIRefresh();
+	Cast<AEQCharacterPlayer>(GetOwner())->CreateMinimap();
 }
 
 void UEQComponentMenuManager::ClearPos()

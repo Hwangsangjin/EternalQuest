@@ -38,10 +38,4 @@ public:
 	
 	void CreateMainWidget();
 	void UIRefresh();
-
-	UFUNCTION(Server, Reliable)
-	void ServerRPC_UIRefresh();
-
-	UFUNCTION(NetMulticast, Reliable)
-	void MultiRPC_UIRefresh();
 };

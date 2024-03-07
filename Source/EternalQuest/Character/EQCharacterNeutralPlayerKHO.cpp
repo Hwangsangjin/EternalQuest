@@ -47,7 +47,6 @@ void AEQCharacterNeutralPlayerKHO::QuestAccepted()
 	NPCPrompt.PushLast(TEXT("던전에서 수료증을 가져와줘!"));
 
 	GetWorld()->GetFirstPlayerController()->GetCharacter()->FindComponentByClass<UEQComponentInventory>()->SaveInventory();
-	Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->UIRefresh();
 	
 	if (HasAuthority())
 	{

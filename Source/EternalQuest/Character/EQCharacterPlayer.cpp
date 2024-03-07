@@ -244,6 +244,22 @@ void AEQCharacterPlayer::PostNetInit()
 	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), TEXT("End"));
 }
 
+void AEQCharacterPlayer::CreateMinimap()
+{
+	if (IsLocallyControlled())
+	{
+		RenderTarget = NewObject<UTextureRenderTarget2D>();
+		RenderTarget->InitCustomFormat(256, 256, EPixelFormat::PF_FloatRGBA, false);
+		MinimapSceneCaptureComp->TextureTarget = RenderTarget;
+
+		// MinimapMaterialInterface->SetTextureParameterValue(RenderTex)
+		UMaterialInstanceDynamic* FrameMaterial = UMaterialInstanceDynamic::Create(MinimapMaterialInterface, this);
+		FrameMaterial->SetTextureParameterValue("RenderTexture", RenderTarget);
+	
+		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetMinimap->Minimap_Mask->SetBrushFromMaterial(FrameMaterial);
+	}
+}
+
 void AEQCharacterPlayer::BeginPlay()
 {
 	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), TEXT("Begin"));
@@ -258,18 +274,7 @@ void AEQCharacterPlayer::BeginPlay()
 
 	SetPlayerController();
 
-	if (IsLocallyControlled())
-	{
-		RenderTarget = NewObject<UTextureRenderTarget2D>();
-		RenderTarget->InitCustomFormat(256, 256, EPixelFormat::PF_FloatRGBA, false);
-		MinimapSceneCaptureComp->TextureTarget = RenderTarget;
-
-		// MinimapMaterialInterface->SetTextureParameterValue(RenderTex)
-		UMaterialInstanceDynamic* FrameMaterial = UMaterialInstanceDynamic::Create(MinimapMaterialInterface, this);
-		FrameMaterial->SetTextureParameterValue("RenderTexture", RenderTarget);
-	
-		Cast<AEQPlayerController>(GetWorld()->GetFirstPlayerController())->EQWidgetMainUI->WBP_EQWidgetMinimap->Minimap_Mask->SetBrushFromMaterial(FrameMaterial);
-	}
+	CreateMinimap();
 }
 
 void AEQCharacterPlayer::Tick(float DeltaSeconds)
