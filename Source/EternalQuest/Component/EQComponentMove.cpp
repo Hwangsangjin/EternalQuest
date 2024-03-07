@@ -203,22 +203,7 @@ void UEQComponentMove::Look(const FInputActionValue& Value)
 
 void UEQComponentMove::Sprint(const FInputActionValue& Value)
 {
-	Server_Sprint(Value);
-}
-
-bool UEQComponentMove::Server_Sprint_Validate(const FInputActionValue& Value)
-{
-	return true;
-}
-
-void UEQComponentMove::Server_Sprint_Implementation(const FInputActionValue& Value)
-{
-	NetMulticast_Sprint(Value);
-}
-
-void UEQComponentMove::NetMulticast_Sprint_Implementation(const FInputActionValue& Value)
-{
-	if (Player->IsLocallyControlled())
+	if (Player->HasAuthority())
 	{
 		if (Player->GetCharacterMovement()->GetCurrentAcceleration().IsZero())
 		{
@@ -246,6 +231,50 @@ void UEQComponentMove::NetMulticast_Sprint_Implementation(const FInputActionValu
 			CurrentFieldOfView = FMath::FInterpTo(CurrentFieldOfView, SprintFieldOfView, GetWorld()->GetDeltaSeconds(), SprintInterpSpeed);
 			Player->GetFollowCamera()->FieldOfView = CurrentFieldOfView;
 		}
+	}
+	else
+	{
+		Server_Sprint(Value);
+	}
+}
+
+bool UEQComponentMove::Server_Sprint_Validate(const FInputActionValue& Value)
+{
+	return true;
+}
+
+void UEQComponentMove::Server_Sprint_Implementation(const FInputActionValue& Value)
+{
+	Client_Sprint(Value);
+}
+
+void UEQComponentMove::Client_Sprint_Implementation(const FInputActionValue& Value)
+{
+	if (Player->GetCharacterMovement()->GetCurrentAcceleration().IsZero())
+	{
+		return;
+	}
+
+	if (Player->GetAttackComponent()->IsAttack())
+	{
+		return;
+	}
+
+	bIsSprinting = Value.Get<bool>();
+	if (bIsSprinting)
+	{
+		constexpr float SprintSpeed = 600.0f;
+		Player->GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
+
+		if (GetWorld()->GetGameInstance()->GetTimerManager().IsTimerActive(SprintTimerHandle))
+		{
+			GetWorld()->GetGameInstance()->GetTimerManager().ClearTimer(SprintTimerHandle);
+		}
+
+		constexpr float SprintFieldOfView = 70.0f;
+		constexpr int32 SprintInterpSpeed = 1;
+		CurrentFieldOfView = FMath::FInterpTo(CurrentFieldOfView, SprintFieldOfView, GetWorld()->GetDeltaSeconds(), SprintInterpSpeed);
+		Player->GetFollowCamera()->FieldOfView = CurrentFieldOfView;
 	}
 }
 

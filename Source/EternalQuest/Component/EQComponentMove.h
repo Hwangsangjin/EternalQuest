@@ -76,8 +76,8 @@ protected:
 	UFUNCTION(Server, Reliable, WithValidation)
 	void Server_Sprint(const FInputActionValue& Value);
 
-	UFUNCTION(NetMulticast, Reliable)
-	void NetMulticast_Sprint(const FInputActionValue& Value);
+	UFUNCTION(Client, Reliable)
+	void Client_Sprint(const FInputActionValue& Value);
 
 	void StopSprinting(const FInputActionValue& Value);
 
