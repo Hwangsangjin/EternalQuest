@@ -117,7 +117,7 @@ void UEQComponentSkill::SkillHitCheck()
 
 	constexpr float SkillRange = 150.0f;
 	constexpr float SkillRadius = 150.0f;
-	constexpr float SkillDamage = 2.0f;
+	constexpr float SkillDamage = 10.0f;
 	const FVector Start = Player->GetActorLocation();
 	const FVector End = Start;
 
@@ -146,6 +146,11 @@ void UEQComponentSkill::SkillHitCheck()
 void UEQComponentSkill::FirstSkill()
 {
 	if (Player->GetAttackComponent()->IsAttack())
+	{
+		return;
+	}
+
+	if (Player->GetAttackComponent()->IsComboAttack())
 	{
 		return;
 	}
@@ -311,6 +316,11 @@ void UEQComponentSkill::SecondSkill()
 		return;
 	}
 
+	if (Player->GetAttackComponent()->IsComboAttack())
+	{
+		return;
+	}
+
 	if (Player->GetCharacterMovement()->IsFalling())
 	{
 		return;
@@ -452,6 +462,11 @@ void UEQComponentSkill::ThirdSkill()
 		return;
 	}
 
+	if (Player->GetAttackComponent()->IsComboAttack())
+	{
+		return;
+	}
+
 	if (Player->GetCharacterMovement()->IsFalling())
 	{
 		return;
@@ -521,7 +536,7 @@ void UEQComponentSkill::MageThirdSkillEnd(UAnimMontage* TargetMontage, bool bIsP
 
 	constexpr float SkillRange = 200.0f;
 	constexpr float SkillRadius = 200.0f;
-	constexpr float SkillDamage = 20.0f;
+	constexpr float SkillDamage = 30.0f;
 	const FVector Start = Player->GetActorLocation();
 	const FVector End = Start + Player->GetActorForwardVector();
 
@@ -613,6 +628,11 @@ void UEQComponentSkill::FourthSkill()
 		return;
 	}
 
+	if (Player->GetAttackComponent()->IsComboAttack())
+	{
+		return;
+	}
+
 	if (Player->GetCharacterMovement()->IsFalling())
 	{
 		return;
@@ -677,37 +697,8 @@ void UEQComponentSkill::MageFourthSkillBegin()
 
 void UEQComponentSkill::MageFourthSkillEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded)
 {
-	TArray<FHitResult> OutHitResults;
-	FCollisionQueryParams Params(SCENE_QUERY_STAT(Skill), false, Player);
-
-	constexpr float SkillRange = 200.0f;
-	constexpr float SkillRadius = 200.0f;
-	constexpr float SkillDamage = 20.0f;
-	const FVector Start = Player->GetActorLocation();
-	const FVector End = Start + Player->GetActorForwardVector();
-
-	bHitDetected = GetWorld()->SweepMultiByChannel(OutHitResults, Start, End, FQuat::Identity, ECC_GameTraceChannel1, FCollisionShape::MakeSphere(SkillRadius), Params);
-	if (bHitDetected)
-	{
-		FDamageEvent DamageEvent;
-		for (const auto& OutHitResult : OutHitResults)
-		{
-			AEQCharacterEnemy* Enemy = Cast<AEQCharacterEnemy>(OutHitResult.GetActor());
-			if (Enemy)
-			{
-				Enemy->TakeDamage(SkillDamage, DamageEvent, Player->GetController(), Player);
-			}
-		}
-	}
-
-	//#if ENABLE_DRAW_DEBUG
-	//	const FVector CapsuleOrigin = Start + (End - Start) * 0.5f;
-	//	const float CapsuleHalfHeight = SkillRange * 0.5f;
-	//	const FColor DrawColor = bHitDetected ? FColor::Green : FColor::Red;
-	//	DrawDebugCapsule(GetWorld(), CapsuleOrigin, CapsuleHalfHeight, SkillRadius, FRotationMatrix::MakeFromZ(Player->GetActorForwardVector()).ToQuat(), DrawColor, false, 1.0f);
-	//#endif
-
 	Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	Player->GetStatComponent()->HealHp(100.0f);
 	IsSkilling = false;
 }
 
@@ -727,13 +718,14 @@ void UEQComponentSkill::WarriorFourthSkillBegin()
 	AnimInstance->Montage_JumpToSection(TEXT("FourthSkill"), WarriorSkillMontage);
 
 	FOnMontageEnded EndDelegate;
-	EndDelegate.BindUObject(this, &ThisClass::WarriorThirdSkillEnd);
+	EndDelegate.BindUObject(this, &ThisClass::WarriorFourthSkillEnd);
 	AnimInstance->Montage_SetEndDelegate(EndDelegate, WarriorSkillMontage);
 }
 
 void UEQComponentSkill::WarriorFourthSkillEnd(UAnimMontage* TargetMontage, bool bIsProperlyEnded)
 {
 	Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	Player->GetStatComponent()->HealHp(100.0f);
 	IsSkilling = false;
 }
 
