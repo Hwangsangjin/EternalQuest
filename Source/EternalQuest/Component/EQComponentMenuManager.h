@@ -34,6 +34,7 @@ public:
 	
 	void CallSettings(const FInputActionValue& Value);
 	void FlipFlopMouseMode(const FInputActionValue& Value);
+	void SeamlessTravelUIRefresh();
 
 	void ClearPos();
 	// ----- 함수 -----
@@ -64,6 +65,8 @@ public:
 	TObjectPtr<UEQComponentInventory> EQComponentInventory;
 	
 	bool bMouseModeFlag = false;
+	float CurrTimeUIRefresh = 10.0f;
+	bool bUIRefresh = false;
 
 	bool bStateFlag = false;
 	FVector2D StatePos = FVector2D(0);
