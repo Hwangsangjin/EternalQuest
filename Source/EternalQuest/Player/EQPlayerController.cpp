@@ -107,6 +107,24 @@ void AEQPlayerController::PostSeamlessTravel()
 	// }
 }
 
+void AEQPlayerController::UIRefresh()
+{
+	ServerRPC_UIRefresh();
+}
+
+void AEQPlayerController::ServerRPC_UIRefresh_Implementation()
+{
+	MultiRPC_UIRefresh();
+}
+
+void AEQPlayerController::MultiRPC_UIRefresh_Implementation()
+{
+	for (const auto& e : TActorRange<AEQPlayerController>(GetWorld()))
+	{
+		e->UIRefresh();
+	}
+}
+
 void AEQPlayerController::CreateMainWidget()
 {
 	FInputModeGameOnly InputModeGameOnly;
