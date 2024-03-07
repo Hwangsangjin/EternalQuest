@@ -6,6 +6,7 @@
 #include "EngineUtils.h"
 #include "Net/UnrealNetwork.h"
 #include "Engine/AssetManager.h"
+#include "GameFramework/PlayerStart.h"
 #include "Player/EQPlayerController.h"
 #include "Player/EQPlayerState.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -131,6 +132,12 @@ AEQCharacterPlayer::AEQCharacterPlayer()
 	if (DeadMontageRef.Succeeded())
 	{
 		DeadMontage = DeadMontageRef.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> RespawnMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Assets/StylizedCharactersPack/Common/Animation/Montage/AM_Respawn.AM_Respawn'"));
+	if (RespawnMontageRef.Succeeded())
+	{
+		RespawnMontage = RespawnMontageRef.Object;
 	}
 
 	// Component
@@ -330,6 +337,9 @@ void AEQCharacterPlayer::NetMulticast_SetDead_Implementation()
 		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 		GetWorld()->GetFirstPlayerController()->SetInputMode(FInputModeUIOnly());
 		SetActorEnableCollision(false);
+		UAnimInstance* Animinstance = GetMesh()->GetAnimInstance();
+		Animinstance->StopAllMontages(0.0f);
+		Animinstance->Montage_Play(DeadMontage, 1.0f);
 		HpBarComp->SetHiddenInGame(true);
 		bIsDead = true;
 
@@ -338,11 +348,57 @@ void AEQCharacterPlayer::NetMulticast_SetDead_Implementation()
 		{
 			DisableInput(PlayerController);
 		}
-	}
 
-	UAnimInstance* Animinstance = GetMesh()->GetAnimInstance();
-	Animinstance->StopAllMontages(0.0f);
-	Animinstance->Montage_Play(DeadMontage, 1.0f);
+		FTimerHandle RespawnTimerHandle;
+		GetWorld()->GetGameInstance()->GetTimerManager().SetTimer(RespawnTimerHandle, this, &ThisClass::RespawnPlayer, 10.0f, false);
+	}
+}
+
+void AEQCharacterPlayer::RespawnPlayer()
+{
+	if (IsLocallyControlled())
+	{
+		UWorld* World = GetWorld();
+		if (!World)
+		{
+			return;
+		}
+
+		APlayerController* PlayerController = World->GetFirstPlayerController();
+		if (!PlayerController)
+		{
+			return;
+		}
+
+		AEQCharacterPlayer* CharacterPlayer = Cast<AEQCharacterPlayer>(PlayerController->GetPawn());
+		if (!CharacterPlayer)
+		{
+			return;
+		}
+
+		APlayerStart* PlayerStart = nullptr;
+		for (TActorIterator<APlayerStart> ActorItr(World); ActorItr; ++ActorItr)
+		{
+			PlayerStart = *ActorItr;
+			break;
+		}
+
+		if (PlayerController && CharacterPlayer && PlayerStart)
+		{
+			CharacterPlayer->SetActorLocation(PlayerStart->GetActorLocation());
+			PlayerController->SetControlRotation(PlayerStart->GetActorRotation());
+		}
+
+		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+		GetWorld()->GetFirstPlayerController()->SetInputMode(FInputModeGameOnly());
+		EnableInput(PlayerController);
+		SetActorEnableCollision(true);
+		UAnimInstance* Animinstance = GetMesh()->GetAnimInstance();
+		Animinstance->Montage_Play(RespawnMontage);
+		StatComp->ResetStat();
+		HpBarComp->SetHiddenInGame(false);
+		bIsDead = false;
+	}
 }
 
 int32 AEQCharacterPlayer::GetLevel() const

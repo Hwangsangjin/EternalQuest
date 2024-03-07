@@ -29,10 +29,12 @@ public:
 // Attack
 public:
 	FORCEINLINE bool IsAttack() const { return bIsAttacking; }
+	FORCEINLINE bool IsComboAttack() const { return bIsComboAttacking; }
 	void AttackHitCheck();
 
 private:
 	bool bIsAttacking = false;
+	bool bIsComboAttacking = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UInputAction> LeftAttackAction;

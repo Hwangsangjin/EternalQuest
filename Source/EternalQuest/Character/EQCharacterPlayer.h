@@ -61,7 +61,6 @@ public:
 	virtual void StopJumping() override;
 	void CreateMinimap();
 
-
 // Controller
 protected:
 	void SetPlayerController();
@@ -199,13 +198,20 @@ protected:
 	UFUNCTION(NetMulticast, Reliable)
 	void NetMulticast_SetDead();
 
-
 private:
 	bool bIsDead = false;
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UAnimMontage> DeadMontage;
+
+// Respawn Player
+protected:
+	void RespawnPlayer();
+
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UAnimMontage> RespawnMontage;
 
 // Stat
 public:
