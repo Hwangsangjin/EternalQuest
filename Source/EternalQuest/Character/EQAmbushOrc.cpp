@@ -75,7 +75,8 @@ AEQAmbushOrc::AEQAmbushOrc()
 void AEQAmbushOrc::BeginPlay()
 {
 	Super::BeginPlay();
-	MultiPRC_Ambushing();
+	//MultiPRC_Ambushing();
+	PlayAnimMontage(Montage,1,FName("Ambush"));
 }
 
 FString AEQAmbushOrc::SetName()
