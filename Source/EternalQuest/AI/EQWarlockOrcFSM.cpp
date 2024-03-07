@@ -185,6 +185,7 @@ void UEQWarlockOrcFSM::TickDie()
 	WarlockDie = true;
 	Door->IsOpen = true;
 	DoorOpen();
+	
 	if(CurrentTime>DieTime)
 	{
 		Target->TakeExp(Self->Experience);
@@ -208,6 +209,7 @@ void UEQWarlockOrcFSM::DoorOpen()
 {
 	if(Door->IsOpen == true)
 	{
+		
 		FRotator TargetRotation1 = FRotator(0, 130, 0);
 		FRotator CurrentRotation1 = Door->Door1->GetRelativeRotation();
 		float InterpFactor = FMath::Clamp(GetWorld()->DeltaTimeSeconds / 2.0f, 0.0f, 1.0f);
@@ -218,6 +220,11 @@ void UEQWarlockOrcFSM::DoorOpen()
 		FRotator LerpedRotation2 = FMath::Lerp(CurrentRotation2, TargetRotation2, InterpFactor);
 		Door->Door2->SetRelativeRotation(LerpedRotation2);
 	}
+}
+
+void UEQWarlockOrcFSM::MultiRPC_DoorOpen_Implementation()
+{
+	UGameplayStatics::SpawnSound2D(GetWorld(),DoorSound);
 }
 
 
