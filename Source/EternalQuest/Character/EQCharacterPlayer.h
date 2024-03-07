@@ -59,6 +59,8 @@ public:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	virtual void Jump() override;
 	virtual void StopJumping() override;
+	void CreateMinimap();
+
 
 // Controller
 protected:

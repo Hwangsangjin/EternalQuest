@@ -166,6 +166,8 @@ void UEQComponentMenuManager::CallPostBox(const FInputActionValue& Value)
 
 void UEQComponentMenuManager::CallSettings(const FInputActionValue& Value)
 {
+	EQPlayerController->UIRefresh();
+	Cast<AEQCharacterPlayer>(GetOwner())->CreateMinimap();
 	EQPlayerController->EQWidgetMainUI->WBP_EQWidgetIconBar->OnClickSettings();
 }
 
