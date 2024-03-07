@@ -128,8 +128,6 @@ void UEQComponentMenuManager::TickComponent(float DeltaTime, ELevelTick TickType
 		bUIRefresh = true;
 		CurrTimeUIRefresh = 0;
 		SeamlessTravelUIRefresh();
-		
-		GEngine->AddOnScreenDebugMessage(-1,5,FColor::Red,TEXT("UI 리프레시 테스트"));
 	}
 }
 
@@ -180,7 +178,6 @@ void UEQComponentMenuManager::CallPostBox(const FInputActionValue& Value)
 
 void UEQComponentMenuManager::CallSettings(const FInputActionValue& Value)
 {
-	SeamlessTravelUIRefresh();
 	EQPlayerController->EQWidgetMainUI->WBP_EQWidgetIconBar->OnClickSettings();
 }
 
