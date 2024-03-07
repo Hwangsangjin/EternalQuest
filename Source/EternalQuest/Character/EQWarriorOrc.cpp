@@ -77,7 +77,7 @@ void AEQWarriorOrc::DropItem()
 		if (CurrItem)
 		{
 			CurrItem->ItemName.DataTable = ItemDataTable;
-			CurrItem->ItemName.RowName = TEXT("HealthPostion");
+			CurrItem->ItemName.RowName = TEXT("HealingPostion");
 			CurrItem->ItemType = EEQItemType::Consumtion;
 			CurrItem->ItemQuantity = 2;
 		}
