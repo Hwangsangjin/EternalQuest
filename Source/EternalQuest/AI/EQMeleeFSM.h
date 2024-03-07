@@ -26,6 +26,8 @@ public:
 
 	UFUNCTION(Server,Reliable)
 	void ServerRPC_MushMove();
+	UFUNCTION(NetMulticast,Unreliable)
+	void MultiRPC_MushMove();
 	UFUNCTION(Server,Reliable)
 	void ServerRPC_MushAttack();
 	UFUNCTION(NetMulticast,Unreliable)

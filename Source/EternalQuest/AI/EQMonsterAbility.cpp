@@ -82,9 +82,10 @@ void UEQMonsterAbility::TakeDamage(AActor* DamagedActor, float Damage, const UDa
 		}
 		else
 		{
+			FCollisionQueryParams TraceParams;
 			Monster->BaseFsm->bIsDead = true;
 			Monster->BaseFsm->MultiRPC_TickDie();
-			Monster->SetActorEnableCollision(ECollisionEnabled::NoCollision);
+			TraceParams.AddIgnoredActor(Target);
 			Monster->BaseFsm->SetState(EMonsterState::Die);
 		}
 	}
