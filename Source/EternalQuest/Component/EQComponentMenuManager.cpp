@@ -193,7 +193,6 @@ void UEQComponentMenuManager::FlipFlopMouseMode(const FInputActionValue& Value)
 	}
 	else
 	{
-		SeamlessTravelUIRefresh();
 		bMouseModeFlag = true;
 		EQPlayerController->SetShowMouseCursor(true);
 		const FInputModeGameAndUI GameAndUI;
