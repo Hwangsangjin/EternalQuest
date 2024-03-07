@@ -218,31 +218,34 @@ void UEQComponentMove::Server_Sprint_Implementation(const FInputActionValue& Val
 
 void UEQComponentMove::NetMulticast_Sprint_Implementation(const FInputActionValue& Value)
 {
-	if (Player->GetCharacterMovement()->GetCurrentAcceleration().IsZero())
+	if (Player->IsLocallyControlled())
 	{
-		return;
-	}
-
-	if (Player->GetAttackComponent()->IsAttack())
-	{
-		return;
-	}
-
-	bIsSprinting = Value.Get<bool>();
-	if (bIsSprinting)
-	{
-		constexpr float SprintSpeed = 600.0f;
-		Player->GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
-
-		if (GetWorld()->GetGameInstance()->GetTimerManager().IsTimerActive(SprintTimerHandle))
+		if (Player->GetCharacterMovement()->GetCurrentAcceleration().IsZero())
 		{
-			GetWorld()->GetGameInstance()->GetTimerManager().ClearTimer(SprintTimerHandle);
+			return;
 		}
 
-		constexpr float SprintFieldOfView = 70.0f;
-		constexpr int32 SprintInterpSpeed = 1;
-		CurrentFieldOfView = FMath::FInterpTo(CurrentFieldOfView, SprintFieldOfView, GetWorld()->GetDeltaSeconds(), SprintInterpSpeed);
-		Player->GetFollowCamera()->FieldOfView = CurrentFieldOfView;
+		if (Player->GetAttackComponent()->IsAttack())
+		{
+			return;
+		}
+
+		bIsSprinting = Value.Get<bool>();
+		if (bIsSprinting)
+		{
+			constexpr float SprintSpeed = 600.0f;
+			Player->GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
+
+			if (GetWorld()->GetGameInstance()->GetTimerManager().IsTimerActive(SprintTimerHandle))
+			{
+				GetWorld()->GetGameInstance()->GetTimerManager().ClearTimer(SprintTimerHandle);
+			}
+
+			constexpr float SprintFieldOfView = 70.0f;
+			constexpr int32 SprintInterpSpeed = 1;
+			CurrentFieldOfView = FMath::FInterpTo(CurrentFieldOfView, SprintFieldOfView, GetWorld()->GetDeltaSeconds(), SprintInterpSpeed);
+			Player->GetFollowCamera()->FieldOfView = CurrentFieldOfView;
+		}
 	}
 }
 
@@ -263,19 +266,22 @@ void UEQComponentMove::Server_StopSprinting_Implementation(const FInputActionVal
 
 void UEQComponentMove::NetMulticast_StopSprinting_Implementation(const FInputActionValue& Value)
 {
-	bIsSprinting = Value.Get<bool>();
-	if (!bIsSprinting)
+	if (Player->IsLocallyControlled())
 	{
-		constexpr float DefaultSpeed = 450.0f;
-		Player->GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
-
-		constexpr float DefaultFieldOfView = 90.0f;
-		if (CurrentFieldOfView >= DefaultFieldOfView - KINDA_SMALL_NUMBER)
+		bIsSprinting = Value.Get<bool>();
+		if (!bIsSprinting)
 		{
-			GetWorld()->GetGameInstance()->GetTimerManager().ClearTimer(SprintTimerHandle);
-		}
+			constexpr float DefaultSpeed = 450.0f;
+			Player->GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
 
-		GetWorld()->GetGameInstance()->GetTimerManager().SetTimer(SprintTimerHandle, this, &ThisClass::ResetFieldOfView, GetWorld()->GetDeltaSeconds(), true);
+			constexpr float DefaultFieldOfView = 90.0f;
+			if (CurrentFieldOfView >= DefaultFieldOfView - KINDA_SMALL_NUMBER)
+			{
+				GetWorld()->GetGameInstance()->GetTimerManager().ClearTimer(SprintTimerHandle);
+			}
+
+			GetWorld()->GetGameInstance()->GetTimerManager().SetTimer(SprintTimerHandle, this, &ThisClass::ResetFieldOfView, GetWorld()->GetDeltaSeconds(), true);
+		}
 	}
 }
 

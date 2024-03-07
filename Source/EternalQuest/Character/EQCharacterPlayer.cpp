@@ -188,7 +188,7 @@ void AEQCharacterPlayer::PostInitializeComponents()
 	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), TEXT("End"));
 
 	StatComp->OnHpZero.AddUObject(this, &ThisClass::SetDead);
-	StatComp->OnStatChanged.AddUObject(this, &ThisClass::ApplyStat);
+	//StatComp->OnStatChanged.AddUObject(this, &ThisClass::ApplyStat);
 	
 }
 
