@@ -6,6 +6,7 @@
 #include "EngineUtils.h"
 #include "EternalQuest.h"
 #include "Blueprint/UserWidget.h"
+#include "Character/EQCharacterPlayer.h"
 #include "Component/EQComponentInventory.h"
 #include "GameFramework/Character.h"
 #include "Net/UnrealNetwork.h"
@@ -131,4 +132,5 @@ void AEQPlayerController::UIRefresh()
 	{
 		EQWidgetMainUI->AddToViewport();
 	}
+	Cast<AEQCharacterPlayer>(GetCharacter())->CreateMinimap();
 }
