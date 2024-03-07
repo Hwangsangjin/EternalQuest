@@ -32,6 +32,7 @@ void UEQRangerFSM::TickMove()
 {
 	Super::TickMove();
 	if(!Self->HasAuthority()) return;
+	MultiRPC_Move();
 	TArray<AActor*> AllPlayer;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(),AEQCharacterPlayer::StaticClass(),AllPlayer);
 	float Dist = 10000;
@@ -130,6 +131,11 @@ void UEQRangerFSM::ShootArrow()
 	MultiRPC_ShootArrow();
 	FTransform ShootPoint = Self->GetMesh()->GetSocketTransform(FName("ArrowPoint"));
 	GetWorld()->SpawnActor<AEQRangerOrcArrow>(PrjFactory,ShootPoint);
+}
+
+void UEQRangerFSM::MultiRPC_Move_Implementation()
+{
+	Self->PlayAnimMontage(AnimMontage,1,FName("Move"));
 }
 
 void UEQRangerFSM::MultiRPC_ShootArrow_Implementation()

@@ -80,6 +80,7 @@ void AEQEnemyPool::ReturnEnemyToPool(AEQNormalEnemy* Enemy)
 		Enemy->Ability->CurrentHealth = 100.f;
 		Enemy->StopAnimMontage();
 		Enemy->Deactivate();
+		Enemy->SetActorEnableCollision(true);
 	}
 }
 
