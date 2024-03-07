@@ -65,7 +65,7 @@ public:
 	TObjectPtr<UEQComponentInventory> EQComponentInventory;
 	
 	bool bMouseModeFlag = false;
-	float CurrTimeUIRefresh = 5.f;
+	float CurrTimeUIRefresh = 9.9f;
 	bool bUIRefresh = false;
 
 	bool bStateFlag = false;
