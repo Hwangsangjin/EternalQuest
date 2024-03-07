@@ -37,4 +37,5 @@ public:
 	FOnSeamlessCompleted OnSeamlessCompleted;
 	
 	void CreateMainWidget();
+
 };
