@@ -18,7 +18,6 @@ class ETERNALQUEST_API UEQWarlockOrcFSM : public UEQBaseFSM
 	GENERATED_BODY()
 
 	
-	
 public:
 	UPROPERTY(EditAnywhere,Category="Skills")
 	TSubclassOf<AEQWarlockOrcSkill> SkillFactory;
@@ -28,9 +27,7 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	AEQDoor* Door;
-
-	UPROPERTY(EditAnywhere)
-	USoundBase* DoorSound;
+	
 	
 protected:
 	virtual void BeginPlay() override;
@@ -60,8 +57,4 @@ public:
 	
 	UFUNCTION(NetMulticast,Unreliable)
 	void MultiRPC_OrcWarlockSkill();
-
-	UFUNCTION(NetMulticast,Unreliable)
-	void MultiRPC_DoorOpen();
-	
 };

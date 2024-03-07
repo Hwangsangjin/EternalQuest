@@ -7,7 +7,6 @@
 #include "EQEnemyPool.h"
 #include "NavigationSystem.h"
 #include "Animation/EQEnemyAnim.h"
-#include "Character/EQAmbushOrc.h"
 #include "Character/EQCharacterBase.h"
 #include "Character/EQCharacterPlayer.h"
 #include "Character/EQNormalEnemy.h"
@@ -165,10 +164,6 @@ void UEQBaseFSM::ServerRPC_TickDie_Implementation()
 		Self->DropItem();
 		SetState(EMonsterState::Idle);
 		Pool->ReturnEnemyToPool(Self);
-		if(Self->IsA<AEQAmbushOrc>())
-		{
-			Self->Destroy();
-		}
 	}
 }
 
