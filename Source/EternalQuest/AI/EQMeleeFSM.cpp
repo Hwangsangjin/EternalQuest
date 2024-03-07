@@ -62,6 +62,7 @@ void UEQMeleeFSM::TickMove()
 {
 	Super::TickMove();
 	if(!Self->HasAuthority()) return;
+	MultiRPC_MushMove();
 	TArray<AActor*> allPlayer;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEQCharacterPlayer::StaticClass(), allPlayer);
 	float dist = 100000;
@@ -153,14 +154,16 @@ void UEQMeleeFSM::MeleeAttackCheck()
 	}
 }
 
-
+void UEQMeleeFSM::MultiRPC_MushMove_Implementation()
+{
+	Self->PlayAnimMontage(AnimMontage,1,FName("Move"));
+}
 
 
 void UEQMeleeFSM::ServerRPC_MushMove_Implementation()
 {
 	FVector Direction = Target->GetActorLocation() - Self->GetActorLocation();
 	FVector Destination = Target->GetActorLocation();
-	
 	if(Self->HasAuthority())
 	{
 		UNavigationSystemV1* NaviSys = UNavigationSystemV1::GetNavigationSystem(GetWorld());
