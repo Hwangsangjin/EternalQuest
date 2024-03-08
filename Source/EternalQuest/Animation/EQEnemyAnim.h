@@ -55,6 +55,8 @@ public:
 	UFUNCTION()
 	void AnimNotify_AbAttack();
 
+	UFUNCTION()
+	void AnimNotify_WarriorAttack();
 	
 
 public:
