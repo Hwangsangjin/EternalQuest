@@ -12,6 +12,7 @@
 #include "Character/EQScorpion.h"
 #include "Character/EQSpider.h"
 #include "Character/EQWarlockOrc.h"
+#include "Character/EQWarriorOrc.h"
 #include "Net/UnrealNetwork.h"
 
 
@@ -120,6 +121,15 @@ void UEQEnemyAnim::AnimNotify_AbAttack()
 	if( AmbushOrc != nullptr)
 	{
 		AmbushOrc->BaseFsm->MeleeAttackCheck();
+	}
+}
+
+void UEQEnemyAnim::AnimNotify_WarriorAttack()
+{
+	auto* Warrior = Cast<AEQWarriorOrc>(TryGetPawnOwner());
+	if( Warrior != nullptr)
+	{
+		Warrior->BaseFsm->MeleeAttackCheck();
 	}
 }
 
