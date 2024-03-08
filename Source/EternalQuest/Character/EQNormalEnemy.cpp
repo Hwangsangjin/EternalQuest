@@ -38,7 +38,6 @@ AEQNormalEnemy::AEQNormalEnemy()
 
 void AEQNormalEnemy::ActivateEnemy(const FVector& SpawnLocation)
 {
-	StopAnimMontage();
 	SetActorLocation(SpawnLocation);
 	SetActorEnableCollision(true);
 	SetActorHiddenInGame(false);

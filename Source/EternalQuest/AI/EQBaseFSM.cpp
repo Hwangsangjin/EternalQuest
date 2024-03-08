@@ -158,12 +158,12 @@ void UEQBaseFSM::ServerRPC_TickDie_Implementation()
 	if(IsDieDone == false) return;
 	CurrentTime += GetWorld()->GetDeltaSeconds();
 	bCanAttack = false;
+	
 	if(CurrentTime>DieTime)
 	{
 		Target->TakeExp(Self->Experience);
 		Self->DropItem();
-		//SetState(EMonsterState::Idle);
-		SetState(EMonsterState::Attack);
+		SetState(EMonsterState::Idle);
 		Pool->ReturnEnemyToPool(Self);
 		if(Self->IsA<AEQAmbushOrc>())
 		{

@@ -28,8 +28,6 @@ public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AEQEnemyProjectile> PrjFactory;
 
-
-	
 	
 	UFUNCTION(Server,Reliable)
 	void ServerRPC_SpiderAttack();
@@ -37,6 +35,4 @@ public:
 	void MultiRPC_SpiderAttack();
 	UFUNCTION(NetMulticast,Unreliable)
 	void MultiRPC_ShootArrow();
-	UFUNCTION(NetMulticast,Unreliable)
-	void MultiRPC_Move();
 };
