@@ -208,6 +208,8 @@ void UEQComponentAttack::WarriorLeftAttack()
 
 void UEQComponentAttack::WarriorLeftAttackBegin()
 {
+	bIsComboAttacking = true;
+
 	Player->GetSwordEffect()->SetHiddenInGame(false);
 	Player->GetCharacterMovement()->MaxWalkSpeed = 350.0f;
 	CurrentCombo = 1;
@@ -229,6 +231,7 @@ void UEQComponentAttack::WarriorLeftAttackEnd(UAnimMontage* TargetMontage, bool 
 {
 	ensure(CurrentCombo != 0);
 	CurrentCombo = 0;
+	bIsComboAttacking = false;
 	Player->GetCharacterMovement()->MaxWalkSpeed = 450.0f;
 	Player->GetSwordEffect()->SetHiddenInGame(true);
 }
@@ -262,12 +265,18 @@ void UEQComponentAttack::ComboCheck()
 		SetComboCheckTimer();
 
 		bHasNextComboCommand = false;
+		bIsAttacking = false;
 	}
 }
 
 void UEQComponentAttack::RightAttack()
 {
 	if (IsAttack())
+	{
+		return;
+	}
+
+	if (IsComboAttack())
 	{
 		return;
 	}
