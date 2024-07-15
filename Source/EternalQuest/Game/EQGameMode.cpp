@@ -16,7 +16,7 @@ AEQGameMode::AEQGameMode()
 		DefaultPawnClass = DefaultPawnClassRef.Class;
 	}
 
-	static ConstructorHelpers::FClassFinder<APlayerController> PlayerControllerClassRef(TEXT("/Script/EternalQuest.EQPlayerController"));
+	static ConstructorHelpers::FClassFinder<APlayerController> PlayerControllerClassRef(TEXT("/Game/Blueprints/Player/BP_PlayerController.BP_PlayerController_C"));
 	if (PlayerControllerClassRef.Succeeded())
 	{
 		PlayerControllerClass = PlayerControllerClassRef.Class;

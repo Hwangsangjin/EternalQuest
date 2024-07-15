@@ -10,7 +10,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Navigation/PathFollowingComponent.h"
 #include "AIController.h"
-#include "AssetTypeActions/AssetDefinition_SoundBase.h"
+//#include "AssetTypeActions/AssetDefinition_SoundBase.h"
 #include "Character/EQCharacterPlayer.h"
 #include "Character/EQSpider.h"
 #include "Components/ArrowComponent.h"

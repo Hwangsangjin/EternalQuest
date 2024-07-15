@@ -736,7 +736,7 @@ void UEQComponentSkill::UpdatePreviewMesh()
 		UActorComponent* TempComponent = Player->AddComponentByClass(PreviewMeshFactory, false, PreviewMeshTransform, false);
 		PreviewMeshComponent = Cast<UStaticMeshComponent>(TempComponent);
 		PreviewMeshComponent->SetStaticMesh(PreviewMesh);
-		PreviewMesh->SetMaterial(0, MaterialInterface);
+		//PreviewMesh->SetMaterial(0, MaterialInterface);
 		PreviewMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		bDoOnceMeshSet = true;
 	}

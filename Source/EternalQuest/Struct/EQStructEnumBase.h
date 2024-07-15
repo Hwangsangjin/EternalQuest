@@ -94,7 +94,7 @@ struct FEQSlot : public FTableRowBase
 	int32 Quantity = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TEnumAsByte<EEQItemType> ItemType;
+	TEnumAsByte<EEQItemType> ItemType = EEQItemType::Equipment;
 };
 
 USTRUCT(BlueprintType, Atomic)

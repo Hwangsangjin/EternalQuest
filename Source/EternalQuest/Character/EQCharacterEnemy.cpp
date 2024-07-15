@@ -14,7 +14,7 @@ AEQCharacterEnemy::AEQCharacterEnemy()
 	Ability = CreateDefaultSubobject<UEQMonsterAbility>(TEXT("Ability"));
 	DamageComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("DamageComp"));
 	DamageComp->SetupAttachment(RootComponent);
-	ConstructorHelpers::FClassFinder<UEQDamageAmoutUI> TempUI(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blueprints/UI/WBP_DamageUI.WBP_DamageUI'"));
+	ConstructorHelpers::FClassFinder<UEQDamageAmoutUI> TempUI(TEXT("/Game/Blueprints/UI/WBP_DamageUI.WBP_DamageUI_C"));
 	if(TempUI.Succeeded())
 	{
 		DamageComp->SetWidgetClass(TempUI.Class);
