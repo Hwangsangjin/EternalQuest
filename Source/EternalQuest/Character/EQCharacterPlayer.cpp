@@ -119,7 +119,6 @@ AEQCharacterPlayer::AEQCharacterPlayer()
 	MinimapSceneCaptureComp->OrthoWidth = 3072;
 	MinimapSceneCaptureComp->PrimitiveRenderMode = ESceneCapturePrimitiveRenderMode::PRM_LegacySceneCapture;
 
-
 	// Input
 	static ConstructorHelpers::FObjectFinder<UInputMappingContext> InputMappingContextRef(TEXT("/Script/EnhancedInput.InputMappingContext'/Game/Blueprints/Input/IMC_Default.IMC_Default'"));
 	if (InputMappingContextRef.Succeeded())
@@ -208,7 +207,7 @@ void AEQCharacterPlayer::PossessedBy(AController* NewController)
 	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), TEXT("End"));
 
 	UpdateUserName();
-	UpdateMesh();
+	UpdateClassType();
 }
 
 void AEQCharacterPlayer::OnRep_Owner()
@@ -239,7 +238,7 @@ void AEQCharacterPlayer::OnRep_PlayerState()
 	EQ_LOG(LogEternalQuest, Log, TEXT("%s"), *GetName(), TEXT("End"));
 
 	UpdateUserName();
-	UpdateMesh();
+	UpdateClassType();
 }
 
 void AEQCharacterPlayer::PostNetInit()
@@ -527,22 +526,22 @@ void AEQCharacterPlayer::SetPlayerController()
 	}
 }
 
-void AEQCharacterPlayer::UpdateMesh()
+void AEQCharacterPlayer::UpdateClassType()
 {
 	ClassType = Cast<UEQGameInstance>(GetGameInstance())->GetClassType();
 
 	if (IsLocallyControlled())
 	{
-		SwitchClassType(ClassType, this);
+		CharacterMeshLoad(ClassType, this);
 	}
 
 	if (!HasAuthority())
 	{
-		Server_UpdateMesh(ClassType);
+		Server_UpdateClassType(ClassType);
 	}
 }
 
-void AEQCharacterPlayer::Server_UpdateMesh_Implementation(EClassType InClassType)
+void AEQCharacterPlayer::Server_UpdateClassType_Implementation(EClassType InClassType)
 {
 	for (AEQCharacterPlayer* CharacterPlayer : TActorRange<AEQCharacterPlayer>(GetWorld()))
 	{
@@ -553,15 +552,15 @@ void AEQCharacterPlayer::Server_UpdateMesh_Implementation(EClassType InClassType
 		else
 		{
 			CharacterPlayer->ClassType = InClassType;
-			SwitchClassType(CharacterPlayer->ClassType, CharacterPlayer);
+			CharacterMeshLoad(CharacterPlayer->ClassType, CharacterPlayer);
 		}
 	}
 
 	EClassType CClassType = GetWorld()->GetFirstPlayerController()->GetPlayerState<AEQPlayerState>()->GetClassType();
-	Client_UpdateMesh(CClassType);
+	Client_UpdateClassType(CClassType);
 }
 
-void AEQCharacterPlayer::Client_UpdateMesh_Implementation(EClassType InClassType)
+void AEQCharacterPlayer::Client_UpdateClassType_Implementation(EClassType InClassType)
 {
 	for (AEQCharacterPlayer* CharacterPlayer : TActorRange<AEQCharacterPlayer>(GetWorld()))
 	{
@@ -572,12 +571,12 @@ void AEQCharacterPlayer::Client_UpdateMesh_Implementation(EClassType InClassType
 		else
 		{
 			CharacterPlayer->ClassType = InClassType;
-			SwitchClassType(CharacterPlayer->ClassType, CharacterPlayer);
+			CharacterMeshLoad(CharacterPlayer->ClassType, CharacterPlayer);
 		}
 	}
 }
 
-void AEQCharacterPlayer::SwitchClassType(EClassType InClassType, AEQCharacterPlayer* CharacterPlayer)
+void AEQCharacterPlayer::CharacterMeshLoad(EClassType InClassType, AEQCharacterPlayer* CharacterPlayer)
 {
 	switch (InClassType)
 	{

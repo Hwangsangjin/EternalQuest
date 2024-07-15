@@ -3,8 +3,8 @@
 
 #include "Animation/AnimNotifyState_BasicAttack.h"
 
-#include "InputBehavior.h"
-#include "ToolContextInterfaces.h"
+//#include "InputBehavior.h"
+//#include "ToolContextInterfaces.h"
 #include "AI/EQMonsterAbility.h"
 #include "Character/EQBerserkerOrc.h"
 #include "Components/CapsuleComponent.h"

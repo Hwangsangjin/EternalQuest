@@ -15,19 +15,19 @@ struct FEQStatusStat : public FTableRowBase
 	GENERATED_BODY()
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float HP;
+	float HP = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MP;
+	float MP = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Str;
+	float Str = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Int;
+	float Int = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Def;
+	float Def = 0.f;
 };
 
 DECLARE_MULTICAST_DELEGATE(FOnHpZeroDelegate);
@@ -129,7 +129,6 @@ private:
 	FEQCharacterStat ModifierStat;
 
 public:
-	// Status UI 적용 관련 로직 //
 	UPROPERTY()
 	FEQStatusStat StatusStat;
 

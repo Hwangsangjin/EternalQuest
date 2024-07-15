@@ -203,7 +203,7 @@ void UEQComponentMove::Look(const FInputActionValue& Value)
 
 void UEQComponentMove::Sprint(const FInputActionValue& Value)
 {
-	if (Player->HasAuthority())
+	if (Player->IsLocallyControlled())
 	{
 		if (Player->GetCharacterMovement()->GetCurrentAcceleration().IsZero())
 		{
@@ -245,11 +245,6 @@ bool UEQComponentMove::Server_Sprint_Validate(const FInputActionValue& Value)
 
 void UEQComponentMove::Server_Sprint_Implementation(const FInputActionValue& Value)
 {
-	Client_Sprint(Value);
-}
-
-void UEQComponentMove::Client_Sprint_Implementation(const FInputActionValue& Value)
-{
 	if (Player->GetCharacterMovement()->GetCurrentAcceleration().IsZero())
 	{
 		return;
@@ -276,6 +271,12 @@ void UEQComponentMove::Client_Sprint_Implementation(const FInputActionValue& Val
 		CurrentFieldOfView = FMath::FInterpTo(CurrentFieldOfView, SprintFieldOfView, GetWorld()->GetDeltaSeconds(), SprintInterpSpeed);
 		Player->GetFollowCamera()->FieldOfView = CurrentFieldOfView;
 	}
+
+	Client_Sprint(Value);
+}
+
+void UEQComponentMove::Client_Sprint_Implementation(const FInputActionValue& Value)
+{
 }
 
 void UEQComponentMove::StopSprinting(const FInputActionValue& Value)

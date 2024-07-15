@@ -2,7 +2,6 @@
 
 
 #include "Player/EQPlayerController.h"
-
 #include "EngineUtils.h"
 #include "EternalQuest.h"
 #include "Blueprint/UserWidget.h"

@@ -35,6 +35,7 @@ void UEQWidgetLogin::LoginSetup(int32 NumberOfPublicConnections, FString TypeOfM
 	}
 
 	GameInstance = Cast<UEQGameInstance>(GetGameInstance());
+
 	if (GameInstance)
 	{
 		GameInstance->MultiplayerOnCreateSessionComplete.AddDynamic(this, &ThisClass::OnCreateSession);

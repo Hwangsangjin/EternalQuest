@@ -18,7 +18,6 @@
 UEQMonsterAbility::UEQMonsterAbility()
 {
 	PrimaryComponentTick.bCanEverTick = true;
-	SetIsReplicated(true);
 }
 
 void UEQMonsterAbility::BeginPlay()
@@ -35,6 +34,8 @@ void UEQMonsterAbility::BeginPlay()
 			GetWorld()->GetTimerManager().SetTimer(RecoveryTimerHandle,this,&UEQMonsterAbility::StaminaRecovery,1.0f,true);
 		}
 	}
+
+	SetIsReplicated(true);
 }
 
 void UEQMonsterAbility::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

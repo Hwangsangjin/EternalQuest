@@ -20,10 +20,7 @@ UEQBaseFSM::UEQBaseFSM()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 	bWantsInitializeComponent = true;
-	SetIsReplicated(true);
 }
-
-
 
 void UEQBaseFSM::BeginPlay()
 {
@@ -33,10 +30,8 @@ void UEQBaseFSM::BeginPlay()
 	AI = Cast<AAIController>(Self->GetController());
 	BasicSpeed = Self->GetCharacterMovement()->MaxWalkSpeed = 100;
 	AnimInst = Cast<UEQEnemyAnim>(Self->GetMesh()->GetAnimInstance());
+	SetIsReplicated(true);
 }
-
-
-
 
 void UEQBaseFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "Engine/StreamableManager.h"
 #include "Interfaces/OnlineSessionInterface.h"
 #include "EQGameInstance.generated.h"
 
@@ -73,8 +74,8 @@ private:
 	FOnStartSessionCompleteDelegate StartSessionCompleteDelegate;
 	FDelegateHandle StartSessionCompleteDelegateHandle;
 
-	bool bCreateSessionOnDestroy{ false };
-	int32 NumPublicConnections;
+	bool bCreateSessionOnDestroy = false;
+	int32 NumPublicConnections = 4;
 	FString MatchType;
 
 // User Name
@@ -97,4 +98,9 @@ public:
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character, Meta = (AllowPrivateAccess = true))
 	EClassType ClassType = EClassType::ECT_None;
+
+// StreamableManager
+public:
+	FStreamableManager StreamableManager;
+	TSharedPtr<FStreamableHandle> Handle;
 };

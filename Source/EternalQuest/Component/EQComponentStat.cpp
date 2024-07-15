@@ -16,7 +16,10 @@ UEQComponentStat::UEQComponentStat()
 	: CurrentLevel(1)
 {
 	static ConstructorHelpers::FClassFinder<UEQSaveGame> SaveGameRef(TEXT("/Script/Engine.Blueprint'/Game/Blueprints/SaveGame/BP_EQSaveGame.BP_EQSaveGame_C'"));
-	if (SaveGameRef.Succeeded()) SaveGameFactory = SaveGameRef.Class;
+	if (SaveGameRef.Succeeded())
+	{
+		SaveGameFactory = SaveGameRef.Class;
+	}
 }
 
 void UEQComponentStat::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

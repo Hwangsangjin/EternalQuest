@@ -18,7 +18,7 @@ AEQNormalEnemy::AEQNormalEnemy()
 	BaseFsm = CreateDefaultSubobject<UEQBaseFSM>("BasFSM");
 	HPComp = CreateDefaultSubobject<UWidgetComponent>("HPComp");
 	HPComp -> SetupAttachment(RootComponent);
-	ConstructorHelpers::FClassFinder<UEQNormalMonsterHPBar>WidgetTemp(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blueprints/UI/WBP_MonsterHPBar.WBP_MonsterHPBar_C'"));
+	ConstructorHelpers::FClassFinder<UEQNormalMonsterHPBar>WidgetTemp(TEXT("/Game/Blueprints/UI/WBP_MonsterHPBar.WBP_MonsterHPBar_C"));
 	if(WidgetTemp.Succeeded())
 	{
 		HPComp->SetWidgetClass(WidgetTemp.Class);

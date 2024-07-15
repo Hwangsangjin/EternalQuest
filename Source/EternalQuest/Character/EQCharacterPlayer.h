@@ -76,13 +76,13 @@ private:
 // Mesh
 protected:
 	UFUNCTION(Server, Reliable)
-	void Server_UpdateMesh(EClassType InClassType);
+	void Server_UpdateClassType(EClassType InClassType);
 
 	UFUNCTION(Client, Reliable)
-	void Client_UpdateMesh(EClassType InClassType);
+	void Client_UpdateClassType(EClassType InClassType);
 
-	void UpdateMesh();
-	void SwitchClassType(EClassType InClassType, AEQCharacterPlayer* CharacterPlayer);
+	void UpdateClassType();
+	void CharacterMeshLoad(EClassType InClassType, AEQCharacterPlayer* CharacterPlayer);
 	void BodyMeshLoadCompleted();
 	void HairMeshLoadCompleted();
 	void HatMeshLoadCompleted();

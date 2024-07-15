@@ -1,1 +1,1 @@
-"C:\Program Files\Epic Games\UE_5.3\Engine\Binaries\Win64\UnrealEditor.exe" "C:\Unreal Projects\EternalQuest\EternalQuest.uproject" -game -log -ResX=600 -ResY=400 -WinX=10 -WinY=10
+"C:\Program Files\Epic Games\UE_5.3\Engine\Binaries\Win64\UnrealEditor.exe" "C:\EternalQuest\EternalQuest.uproject" -game -log -ResX=600 -ResY=400 -WinX=10 -WinY=10
